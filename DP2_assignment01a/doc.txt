@@ -1,0 +1,9 @@
+nffgInfo.dtd documentation:
+
+Root element: nffgWrapper.
+Child elements:
+- catalog:
+	each network functionality has a global identifier attribute (id) unique through all the XML document
+	and a child element (name) with the name of the functionality.
+- policy:
+	each policy has a global identifier attribute (id) unique through all the XML document.
