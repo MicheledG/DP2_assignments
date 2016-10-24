@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nffgInfo SYSTEM "nffgInfo.dtd">
+
+<nffgInfo>
+
+	<nffg id="NFFG_01">
+		<node id="NODE_01">
+			<networkFunctionality functionTypeId="FUNC_TYPE_08"/>
+			<linkRef linkId="LINK_01"/>
+			<linkRef linkId="LINK_03"/>
+		</node>
+		<node id="NODE_02">
+			<networkFunctionality functionTypeId="FUNC_TYPE_03"/>
+			<linkRef linkId="LINK_02"/>
+		</node>
+		<node id="NODE_03">
+			<networkFunctionality functionTypeId="FUNC_TYPE_07"/>
+			<linkRef linkId="LINK_04"/>
+		</node>
+		<link id="LINK_01">
+			<sourceNode nodeId="NODE_01"/>
+			<destinationNode nodeId="NODE_02"/>
+		</link>
+		<link id="LINK_02">
+			<sourceNode nodeId="NODE_02"/>
+			<destinationNode nodeId="NODE_01"/>
+		</link>
+		<link id="LINK_03">
+			<sourceNode nodeId="NODE_01"/>
+			<destinationNode nodeId="NODE_03"/>
+		</link>
+		<link id="LINK_04">
+			<sourceNode nodeId="NODE_03"/>
+			<destinationNode nodeId="NODE_01"/>
+		</link>
+	</nffg>
+	
+	<nffg id="NFFG_02">
+		<node id="NODE_01">
+			<networkFunctionality functionTypeId="FUNC_TYPE_08"/>
+			<linkRef linkId="LINK_01"/>
+			<linkRef linkId="LINK_03"/>
+		</node>
+		<node id="NODE_02">
+			<networkFunctionality functionTypeId="FUNC_TYPE_03"/>
+			<linkRef linkId="LINK_02"/>
+		</node>
+		<node id="NODE_03">
+			<networkFunctionality functionTypeId="FUNC_TYPE_07"/>
+			<linkRef linkId="LINK_04"/>
+		</node>
+		<link id="LINK_01">
+			<sourceNode nodeId="NODE_01"/>
+			<destinationNode nodeId="NODE_02"/>
+		</link>
+		<link id="LINK_02">
+			<sourceNode nodeId="NODE_02"/>
+			<destinationNode nodeId="NODE_01"/>
+		</link>
+		<link id="LINK_03">
+			<sourceNode nodeId="NODE_01"/>
+			<destinationNode nodeId="NODE_03"/>
+		</link>
+		<link id="LINK_04">
+			<sourceNode nodeId="NODE_03"/>
+			<destinationNode nodeId="NODE_01"/>
+		</link>
+	</nffg>
+	
+	<policy id="POLICY_01">
+		<property property="REACHABILITY"/>
+		<result result="POSITIVE"/>
+		<nffgRef nffgId="NFFG_01"/>
+		<sourceNode nodeId="NODE_01"/>
+		<destinationNode nodeId="NODE_03"/>
+	</policy>
+	
+	<policy id="POLICY_02">
+		<property property="TRAVERSAL"/>
+		<result result="POSITIVE"/>
+		<networkFunctionality functionTypeId="FUNC_TYPE_02"/>
+		<networkFunctionality functionTypeId="FUNC_TYPE_04"/>
+		<nffgRef nffgId="NFFG_01"/>
+		<sourceNode nodeId="NODE_01"/>
+		<destinationNode nodeId="NODE_02"/>
+	</policy>
+	
+	<policy id="POLICY_03">
+		<property property="REACHABILITY"/>
+		<result result="NEGATIVE"/>
+		<nffgRef nffgId="NFFG_02"/>
+		<sourceNode nodeId="NODE_02"/>
+		<destinationNode nodeId="NODE_03"/>
+	</policy>
+	
+	<catalog>
+		<functionalType id="FUNC_TYPE_01">
+			<name>FIREWALL</name>
+		</functionalType>
+		<functionalType id="FUNC_TYPE_02">
+			<name>DPI</name>
+		</functionalType>
+		<functionalType id="FUNC_TYPE_03">
+			<name>NAT</name>
+		</functionalType>
+		<functionalType id="FUNC_TYPE_04">
+			<name>ANTISPAM</name>
+		</functionalType>
+		<functionalType id="FUNC_TYPE_05">
+			<name>WEB-CACHE</name>
+		</functionalType>
+		<functionalType id="FUNC_TYPE_06">
+			<name>VPN GATEWAY</name>
+		</functionalType>
+		<functionalType id="FUNC_TYPE_07">
+			<name>WEB SERVER</name>
+		</functionalType>
+		<functionalType id="FUNC_TYPE_08">
+			<name>WEB CLIENT</name>
+		</functionalType>
+		<functionalType id="FUNC_TYPE_09">
+			<name>MAIL SERVER</name>
+		</functionalType>
+		<functionalType id="FUNC_TYPE_10">
+			<name>MAIL CLIENT</name>
+		</functionalType>
+	</catalog>
+	
+</nffgInfo>

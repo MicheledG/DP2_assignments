@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT nffgInfo (nffg+, policy*, catalog)>
+
+<!ELEMENT catalog (functionalType+)>
+<!ELEMENT functionalType (name)>
+<!ATTLIST functionalType
+	id ID #REQUIRED>
+<!ELEMENT name (#PCDATA)>
+
+<!ELEMENT policy (property, result, networkFunctionality*, nffgRef, sourceNode, destinationNode)>
+<!ATTLIST policy
+	id ID #REQUIRED>
+
+<!ELEMENT property EMPTY>
+<!ATTLIST property
+	property (REACHABILITY|TRAVERSAL) "REACHABILITY">
+
+<!ELEMENT result EMPTY>
+<!ATTLIST result
+	result (POSITIVE|NEGATIVE) "POSITIVE">
+	
+<!ELEMENT networkFunctionality EMPTY>
+<!ATTLIST networkFunctionality
+	functionTypeId IDREF #REQUIRED>
+
+<!ELEMENT nffgRef EMPTY>
+<!ATTLIST nffgRef
+	nffgId IDREF #REQUIRED>
+	
+<!ELEMENT sourceNode EMPTY>
+<!ATTLIST sourceNode
+	nodeId NMTOKEN #REQUIRED>
+
+<!ELEMENT destinationNode EMPTY>
+<!ATTLIST destinationNode
+	nodeId NMTOKEN #REQUIRED>
+
+<!ELEMENT nffg (node+, link+)>
+<!ATTLIST nffg
+	id ID #REQUIRED>
+	
+<!ELEMENT node (networkFunctionality, linkRef+)>
+<!ATTLIST node
+	id NMTOKEN #REQUIRED>
+
+<!ELEMENT linkRef EMPTY>
+<!ATTLIST linkRef
+	linkId NMTOKEN #REQUIRED>
+
+<!ELEMENT link (sourceNode, destinationNode)>
+<!ATTLIST link
+	id NMTOKEN #REQUIRED>
