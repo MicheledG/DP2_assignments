@@ -33,24 +33,37 @@
 			<sourceNode nodeId="NODE_03"/>
 			<destinationNode nodeId="NODE_01"/>
 		</link>
+		
+		<lastUpdate>
+			<date>
+				<year>2016</year>
+				<month>10</month>
+				<day>26</day>
+				<hour>11</hour>
+				<min>05</min>
+				<sec>30</sec>
+				<utcZone>+01:00</utcZone>
+			</date>
+		</lastUpdate>
+		
 	</nffg>
 	
 	<nffg id="NFFG_02">
 		<node id="NODE_01">
-			<networkFunctionality functionTypeId="FUNC_TYPE_08"/>
-			<linkRef linkId="LINK_01"/>
+			<networkFunctionality functionTypeId="FUNC_TYPE_05"/>
+			<linkRef linkId="LINK_02"/>
 			<linkRef linkId="LINK_03"/>
 		</node>
 		<node id="NODE_02">
-			<networkFunctionality functionTypeId="FUNC_TYPE_03"/>
+			<networkFunctionality functionTypeId="FUNC_TYPE_04"/>
 			<linkRef linkId="LINK_02"/>
 		</node>
 		<node id="NODE_03">
-			<networkFunctionality functionTypeId="FUNC_TYPE_07"/>
+			<networkFunctionality functionTypeId="FUNC_TYPE_10"/>
 			<linkRef linkId="LINK_04"/>
 		</node>
 		<link id="LINK_01">
-			<sourceNode nodeId="NODE_01"/>
+			<sourceNode nodeId="NODE_03"/>
 			<destinationNode nodeId="NODE_02"/>
 		</link>
 		<link id="LINK_02">
@@ -62,35 +75,85 @@
 			<destinationNode nodeId="NODE_03"/>
 		</link>
 		<link id="LINK_04">
-			<sourceNode nodeId="NODE_03"/>
-			<destinationNode nodeId="NODE_01"/>
+			<sourceNode nodeId="NODE_01"/>
+			<destinationNode nodeId="NODE_03"/>
 		</link>
+		
+		<lastUpdate>
+			<date>
+				<year>2014</year>
+				<month>05</month>
+				<day>12</day>
+				<hour>18</hour>
+				<min>30</min>
+				<sec>12</sec>
+				<utcZone>+01:00</utcZone>
+			</date>
+		</lastUpdate>
+		
+		
 	</nffg>
 	
 	<policy id="POLICY_01">
 		<property property="REACHABILITY"/>
-		<result result="POSITIVE"/>
+		<positive positive="TRUE"/>
 		<nffgRef nffgId="NFFG_01"/>
 		<sourceNode nodeId="NODE_01"/>
 		<destinationNode nodeId="NODE_03"/>
+		<result result="VIOLATED"/>
+		<lastVerification>
+			<date>
+				<year>2016</year>
+				<month>09</month>
+				<day>11</day>
+				<hour>16</hour>
+				<min>45</min>
+				<sec>10</sec>
+				<utcZone>+01:00</utcZone>
+			</date>
+		</lastVerification>
 	</policy>
 	
 	<policy id="POLICY_02">
 		<property property="TRAVERSAL"/>
-		<result result="POSITIVE"/>
-		<networkFunctionality functionTypeId="FUNC_TYPE_02"/>
-		<networkFunctionality functionTypeId="FUNC_TYPE_04"/>
-		<nffgRef nffgId="NFFG_01"/>
-		<sourceNode nodeId="NODE_01"/>
-		<destinationNode nodeId="NODE_02"/>
+		<positive positive="FALSE"/>
+		<networkFunctionality functionTypeId="FUNC_TYPE_03"/>
+		<networkFunctionality functionTypeId="FUNC_TYPE_07"/>
+		<nffgRef nffgId="NFFG_02"/>
+		<sourceNode nodeId="NODE_02"/>
+		<destinationNode nodeId="NODE_01"/>
+		<result result="VIOLATED"/>
+		<lastVerification>
+			<date>
+				<year>2016</year>
+				<month>09</month>
+				<day>11</day>
+				<hour>16</hour>
+				<min>45</min>
+				<sec>10</sec>
+				<utcZone>+01:00</utcZone>
+			</date>
+		</lastVerification>
 	</policy>
 	
 	<policy id="POLICY_03">
 		<property property="REACHABILITY"/>
-		<result result="NEGATIVE"/>
+		<positive positive="TRUE"/>
 		<nffgRef nffgId="NFFG_02"/>
 		<sourceNode nodeId="NODE_02"/>
 		<destinationNode nodeId="NODE_03"/>
+		<result result="SATISFIED"/>
+		<lastVerification>
+			<date>
+				<year>2016</year>
+				<month>07</month>
+				<day>27</day>
+				<hour>21</hour>
+				<min>40</min>
+				<sec>50</sec>
+				<utcZone>+01:00</utcZone>
+			</date>
+		</lastVerification>
 	</policy>
 	
 	<catalog>

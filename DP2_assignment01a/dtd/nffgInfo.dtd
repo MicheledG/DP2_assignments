@@ -8,7 +8,7 @@
 	id ID #REQUIRED>
 <!ELEMENT name (#PCDATA)>
 
-<!ELEMENT policy (property, result, networkFunctionality*, nffgRef, sourceNode, destinationNode)>
+<!ELEMENT policy (property, positive, networkFunctionality*, nffgRef, sourceNode, destinationNode, result, lastVerification)>
 <!ATTLIST policy
 	id ID #REQUIRED>
 
@@ -16,9 +16,9 @@
 <!ATTLIST property
 	property (REACHABILITY|TRAVERSAL) "REACHABILITY">
 
-<!ELEMENT result EMPTY>
-<!ATTLIST result
-	result (POSITIVE|NEGATIVE) "POSITIVE">
+<!ELEMENT positive EMPTY>
+<!ATTLIST positive
+	positive (TRUE|FALSE) "TRUE">
 	
 <!ELEMENT networkFunctionality EMPTY>
 <!ATTLIST networkFunctionality
@@ -36,7 +36,21 @@
 <!ATTLIST destinationNode
 	nodeId NMTOKEN #REQUIRED>
 
-<!ELEMENT nffg (node+, link+)>
+<!ELEMENT result EMPTY>
+<!ATTLIST result
+	result (SATISFIED|VIOLATED) "VIOLATED">
+
+<!ELEMENT lastVerification (date)>
+<!ELEMENT date (year, month, day, hour, min, sec, utcZone)>
+<!ELEMENT year (#PCDATA)>
+<!ELEMENT month (#PCDATA)>
+<!ELEMENT day (#PCDATA)>
+<!ELEMENT hour (#PCDATA)>
+<!ELEMENT min (#PCDATA)>
+<!ELEMENT sec (#PCDATA)>
+<!ELEMENT utcZone (#PCDATA)>
+
+<!ELEMENT nffg (node+, link+, lastUpdate)>
 <!ATTLIST nffg
 	id ID #REQUIRED>
 	
@@ -51,3 +65,6 @@
 <!ELEMENT link (sourceNode, destinationNode)>
 <!ATTLIST link
 	id NMTOKEN #REQUIRED>
+
+<!ELEMENT lastUpdate (date)>
+	
