@@ -1,3 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema">
-</schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:element name="nffg" type="nffgType" />
+	<xsd:element name="catalog" type="catalogType"/>
+	
+	<xsd:complexType name="nffgType">
+		<xsd:sequence>
+			<xsd:element name="id" type="xsd:string"/>
+			<xsd:element name="node" type="nodeType" maxOccurs="unbounded"/>
+			<xsd:element name="link" type="linkType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="nodeType">
+		<xsd:sequence>
+			<xsd:element name="id" type="xsd:string"/>
+			<xsd:element name="networkFunctionalityRef" type="networkFunctionalityRefType"/>
+			<xsd:element name="linkRef" type="linkRefType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="nodeRefType">
+		<xsd:attribute name="nodeId" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="linkType">
+		<xsd:sequence>
+			<xsd:element name="id" type="xsd:string"/>
+			<xsd:element name="sourceNode" type="nodeRefType"/>
+			<xsd:element name="destinationNode" type="nodeRefType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="linkRefType">
+		<xsd:attribute name="linkId" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="catalogType">
+		<xsd:sequence>
+			<xsd:element name="networkFunctionality" type="networkFunctionalityType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="networkFunctinalityType">
+		<xsd:sequence>
+			<xsd:element name="id" type="xsd:string"/>
+			<xds:element name="name" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+</xsd:schema>

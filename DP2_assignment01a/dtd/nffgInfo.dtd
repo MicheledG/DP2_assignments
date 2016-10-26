@@ -2,13 +2,13 @@
 
 <!ELEMENT nffgInfo (nffg+, policy*, catalog)>
 
-<!ELEMENT catalog (functionalType+)>
-<!ELEMENT functionalType (name)>
-<!ATTLIST functionalType
+<!ELEMENT catalog (networkFunctionality+)>
+<!ELEMENT networkFunctionality (name)>
+<!ATTLIST networkFunctionality
 	id ID #REQUIRED>
 <!ELEMENT name (#PCDATA)>
 
-<!ELEMENT policy (property, positive, networkFunctionality*, nffgRef, sourceNode, destinationNode, result, lastVerification)>
+<!ELEMENT policy (property, positive, networkFunctionalityRef*, nffgRef, sourceNode, destinationNode, result, lastVerification)>
 <!ATTLIST policy
 	id ID #REQUIRED>
 
@@ -20,9 +20,9 @@
 <!ATTLIST positive
 	positive (TRUE|FALSE) "TRUE">
 	
-<!ELEMENT networkFunctionality EMPTY>
-<!ATTLIST networkFunctionality
-	functionTypeId IDREF #REQUIRED>
+<!ELEMENT networkFunctionalityRef EMPTY>
+<!ATTLIST networkFunctionalityRef
+	networkFunctionalityId IDREF #REQUIRED>
 
 <!ELEMENT nffgRef EMPTY>
 <!ATTLIST nffgRef
@@ -54,7 +54,7 @@
 <!ATTLIST nffg
 	id ID #REQUIRED>
 	
-<!ELEMENT node (networkFunctionality, linkRef+)>
+<!ELEMENT node (networkFunctionalityRef, linkRef+)>
 <!ATTLIST node
 	id NMTOKEN #REQUIRED>
 
