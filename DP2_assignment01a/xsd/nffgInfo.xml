@@ -1,1 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<nffgInfo 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:noNamespaceSchemaLocation="nffgInfo.xsd">
+
+	<nffg name="NFFG_01">
+		
+		<node name="NODE_01"> 
+			<networkFunctionality>FIREWALL</networkFunctionality>
+			<link>LINK_01</link>
+			<link>LINK_03</link>
+		</node>
+		<node name="NODE_02">
+			<networkFunctionality>NAT</networkFunctionality>
+			<link>LINK_02</link>
+		</node>
+		<node name="NODE_03">
+			<networkFunctionality>WEB CLIENT</networkFunctionality>
+			<link>LINK_04</link>
+		</node>
+		
+		<link name="LINK_01">
+			<sourceNode>NODE_01</sourceNode>
+			<destinationNode>NODE_02</destinationNode>
+		</link>
+		<link name="LINK_02">
+			<sourceNode>NODE_03</sourceNode>
+			<destinationNode>NODE_01</destinationNode>
+		</link>
+		<link name="LINK_03">
+			<sourceNode>NODE_01</sourceNode>
+			<destinationNode>NODE_03</destinationNode>
+		</link>
+		<link name="LINK_04">
+			<sourceNode>NODE_03</sourceNode>
+			<destinationNode>NODE_01</destinationNode>
+		</link>
+				
+	</nffg>
+	
+	<nffg name="NFFG_02">
+		
+		<node name="NODE_01">
+			<networkFunctionality>WEB SERVER</networkFunctionality>
+			<link>LINK_02</link>
+			<link>LINK_03</link>
+		</node>
+		<node name="NODE_02">
+			<networkFunctionality>MAIL CLIENT</networkFunctionality>
+			<link>LINK_02</link>
+		</node>
+		<node name="NODE_03">
+			<networkFunctionality>ANTISPAM</networkFunctionality>
+			<link>LINK_04</link>
+		</node>
+		
+		<link name="LINK_01">
+			<sourceNode>NODE_03</sourceNode>
+			<destinationNode>NODE_02</destinationNode>
+		</link>
+		<link name="LINK_02">
+			<sourceNode>NODE_02</sourceNode>
+			<destinationNode>NODE_01</destinationNode>
+		</link>
+		<link name="LINK_03">
+			<sourceNode>NODE_01</sourceNode>
+			<destinationNode>NODE_03</destinationNode>
+		</link>
+		<link name="LINK_04">
+			<sourceNode>NODE_01</sourceNode>
+			<destinationNode>NODE_03</destinationNode>
+		</link>
+		
+	</nffg>
+	
+	<catalog>
+		<networkFunctionality>FIREWALL</networkFunctionality>
+		<networkFunctionality>DPI</networkFunctionality>
+		<networkFunctionality>NAT</networkFunctionality>
+		<networkFunctionality>ANTISPAM</networkFunctionality>
+		<networkFunctionality>WEB-CACHE</networkFunctionality>
+		<networkFunctionality>VPN GATEWAY</networkFunctionality>
+		<networkFunctionality>WEB SERVER</networkFunctionality>
+		<networkFunctionality>WEB CLIENT</networkFunctionality> 
+		<networkFunctionality>MAIL SERVER</networkFunctionality>
+		<networkFunctionality>MAIL CLIENT</networkFunctionality>
+	</catalog>
+	
+</nffgInfo>

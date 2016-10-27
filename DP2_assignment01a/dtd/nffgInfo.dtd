@@ -10,7 +10,7 @@
 
 <!ELEMENT policy (property, positive, networkFunctionalityRef*, nffgRef, sourceNode, destinationNode, result, lastVerification)>
 <!ATTLIST policy
-	id ID #REQUIRED>
+	name ID #REQUIRED>
 
 <!ELEMENT property EMPTY>
 <!ATTLIST property
@@ -26,15 +26,15 @@
 
 <!ELEMENT nffgRef EMPTY>
 <!ATTLIST nffgRef
-	nffgId IDREF #REQUIRED>
+	nffgName IDREF #REQUIRED>
 	
 <!ELEMENT sourceNode EMPTY>
 <!ATTLIST sourceNode
-	nodeId NMTOKEN #REQUIRED>
+	nodeName NMTOKEN #REQUIRED>
 
 <!ELEMENT destinationNode EMPTY>
 <!ATTLIST destinationNode
-	nodeId NMTOKEN #REQUIRED>
+	nodeName NMTOKEN #REQUIRED>
 
 <!ELEMENT result EMPTY>
 <!ATTLIST result
@@ -52,19 +52,19 @@
 
 <!ELEMENT nffg (node+, link+, lastUpdate)>
 <!ATTLIST nffg
-	id ID #REQUIRED>
+	name ID #REQUIRED>
 	
 <!ELEMENT node (networkFunctionalityRef, linkRef+)>
 <!ATTLIST node
-	id NMTOKEN #REQUIRED>
+	name NMTOKEN #REQUIRED>
 
 <!ELEMENT linkRef EMPTY>
 <!ATTLIST linkRef
-	linkId NMTOKEN #REQUIRED>
+	linkName NMTOKEN #REQUIRED>
 
 <!ELEMENT link (sourceNode, destinationNode)>
 <!ATTLIST link
-	id NMTOKEN #REQUIRED>
+	name NMTOKEN #REQUIRED>
 
 <!ELEMENT lastUpdate (date)>
 	

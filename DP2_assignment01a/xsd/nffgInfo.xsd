@@ -1,51 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-
-	<xsd:element name="nffg" type="nffgType" />
-	<xsd:element name="catalog" type="catalogType"/>
+	
+	<xsd:element name="nffgInfo">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="nffg" type="nffgType" maxOccurs="unbounded">
+					<xsd:key name="keyNffgNodeName">
+						<!-- Ensure uniqueness of nodes' name within the same nffg and their referenceabilty-->
+						<xsd:selector xpath="node"/>
+						<xsd:field xpath="@name"/>
+					</xsd:key>
+					<xsd:key name="keyNffgLinkName">
+						<!-- Ensure uniqueness of links' name within the same nffg and their referenceabilty-->
+						<xsd:selector xpath="link"/>
+						<xsd:field xpath="@name"/>
+					</xsd:key>
+					<xsd:keyref name="keyrefNffgSourceNodeName" refer="keyNffgNodeName">
+						<!-- reference unique source nodes' name within the same nffg -->
+						<xsd:selector xpath="link/sourceNode"/>
+						<xsd:field xpath="."/>
+					</xsd:keyref>
+					<xsd:keyref name="keyrefNffgDestinationNodeName" refer="keyNffgNodeName">
+						<!-- reference unique destination nodes' name within the same nffg -->
+						<xsd:selector xpath="link/destinationNode"/>
+						<xsd:field xpath="."/>
+					</xsd:keyref>
+					<xsd:keyref name="keyrefNffgLinkName" refer="keyNffgLinkName">
+						<!-- reference unique links' name within the same nffg -->
+						<xsd:selector xpath="node/link"/>
+						<xsd:field xpath="."/>
+					</xsd:keyref>
+													
+				</xsd:element>
+				<xsd:element name="catalog" type="catalogType">
+					<xsd:key name="keyCatalogNetworkFunctionality">
+						<!-- Ensure uniqueness of network functionalities -->
+						<xsd:selector xpath="networkFunctionality"/>
+						<xsd:field xpath="."/>
+					</xsd:key>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+		
+		
+		<xsd:keyref name="keyrefCatalogNetworkFunctionality" refer="keyCatalogNetworkFunctionality">
+			<xsd:selector xpath="nffg/node"/>
+			<xsd:field xpath="networkFunctionality"/>
+		</xsd:keyref>
+	</xsd:element>
 	
 	<xsd:complexType name="nffgType">
 		<xsd:sequence>
-			<xsd:element name="id" type="xsd:string"/>
 			<xsd:element name="node" type="nodeType" maxOccurs="unbounded"/>
 			<xsd:element name="link" type="linkType" maxOccurs="unbounded"/>
 		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string"/>
 	</xsd:complexType>
 	
 	<xsd:complexType name="nodeType">
 		<xsd:sequence>
-			<xsd:element name="id" type="xsd:string"/>
-			<xsd:element name="networkFunctionalityRef" type="networkFunctionalityRefType"/>
-			<xsd:element name="linkRef" type="linkRefType"/>
+			<xsd:element name="networkFunctionality" type="xsd:string"/>
+			<xsd:element name="link" type="xsd:string" maxOccurs="unbounded"/>
 		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="nodeRefType">
-		<xsd:attribute name="nodeId" type="xsd:string" use="required"/>
+		<xsd:attribute name="name" type="xsd:string"/>
 	</xsd:complexType>
 	
 	<xsd:complexType name="linkType">
 		<xsd:sequence>
-			<xsd:element name="id" type="xsd:string"/>
-			<xsd:element name="sourceNode" type="nodeRefType"/>
-			<xsd:element name="destinationNode" type="nodeRefType"/>
+			<xsd:element name="sourceNode" type="xsd:string"/>
+			<xsd:element name="destinationNode" type="xsd:string"/>
 		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="linkRefType">
-		<xsd:attribute name="linkId" type="xsd:string" use="required"/>
+		<xsd:attribute name="name" type="xsd:string"/>
 	</xsd:complexType>
 	
 	<xsd:complexType name="catalogType">
 		<xsd:sequence>
-			<xsd:element name="networkFunctionality" type="networkFunctionalityType" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="networkFunctinalityType">
-		<xsd:sequence>
-			<xsd:element name="id" type="xsd:string"/>
-			<xds:element name="name" type="xsd:string"/>
+			<xsd:element name="networkFunctionality" type="xsd:string" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

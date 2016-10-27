@@ -3,35 +3,35 @@
 
 <nffgInfo>
 
-	<nffg id="NFFG_01">
-		<node id="NODE_01">
+	<nffg name="NFFG_01">
+		<node name="NODE_01">
 			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_08"/>
-			<linkRef linkId="LINK_01"/>
-			<linkRef linkId="LINK_03"/>
+			<linkRef linkName="LINK_01"/>
+			<linkRef linkName="LINK_03"/>
 		</node>
-		<node id="NODE_02">
+		<node name="NODE_02">
 			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_03"/>
-			<linkRef linkId="LINK_02"/>
+			<linkRef linkName="LINK_02"/>
 		</node>
-		<node id="NODE_03">
+		<node name="NODE_03">
 			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_07"/>
-			<linkRef linkId="LINK_04"/>
+			<linkRef linkName="LINK_04"/>
 		</node>
-		<link id="LINK_01">
-			<sourceNode nodeId="NODE_01"/>
-			<destinationNode nodeId="NODE_02"/>
+		<link name="LINK_01">
+			<sourceNode nodeName="NODE_01"/>
+			<destinationNode nodeName="NODE_02"/>
 		</link>
-		<link id="LINK_02">
-			<sourceNode nodeId="NODE_02"/>
-			<destinationNode nodeId="NODE_01"/>
+		<link name="LINK_02">
+			<sourceNode nodeName="NODE_02"/>
+			<destinationNode nodeName="NODE_01"/>
 		</link>
-		<link id="LINK_03">
-			<sourceNode nodeId="NODE_01"/>
-			<destinationNode nodeId="NODE_03"/>
+		<link name="LINK_03">
+			<sourceNode nodeName="NODE_01"/>
+			<destinationNode nodeName="NODE_03"/>
 		</link>
-		<link id="LINK_04">
-			<sourceNode nodeId="NODE_03"/>
-			<destinationNode nodeId="NODE_01"/>
+		<link name="LINK_04">
+			<sourceNode nodeName="NODE_03"/>
+			<destinationNode nodeName="NODE_01"/>
 		</link>
 		
 		<lastUpdate>
@@ -48,35 +48,35 @@
 		
 	</nffg>
 	
-	<nffg id="NFFG_02">
-		<node id="NODE_01">
+	<nffg name="NFFG_02">
+		<node name="NODE_01">
 			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_05"/>
-			<linkRef linkId="LINK_02"/>
-			<linkRef linkId="LINK_03"/>
+			<linkRef linkName="LINK_02"/>
+			<linkRef linkName="LINK_03"/>
 		</node>
-		<node id="NODE_02">
+		<node name="NODE_02">
 			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_04"/>
-			<linkRef linkId="LINK_02"/>
+			<linkRef linkName="LINK_02"/>
 		</node>
-		<node id="NODE_03">
+		<node name="NODE_03">
 			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_10"/>
-			<linkRef linkId="LINK_04"/>
+			<linkRef linkName="LINK_04"/>
 		</node>
-		<link id="LINK_01">
-			<sourceNode nodeId="NODE_03"/>
-			<destinationNode nodeId="NODE_02"/>
+		<link name="LINK_01">
+			<sourceNode nodeName="NODE_03"/>
+			<destinationNode nodeName="NODE_02"/>
 		</link>
-		<link id="LINK_02">
-			<sourceNode nodeId="NODE_02"/>
-			<destinationNode nodeId="NODE_01"/>
+		<link name="LINK_02">
+			<sourceNode nodeName="NODE_02"/>
+			<destinationNode nodeName="NODE_01"/>
 		</link>
-		<link id="LINK_03">
-			<sourceNode nodeId="NODE_01"/>
-			<destinationNode nodeId="NODE_03"/>
+		<link name="LINK_03">
+			<sourceNode nodeName="NODE_01"/>
+			<destinationNode nodeName="NODE_03"/>
 		</link>
-		<link id="LINK_04">
-			<sourceNode nodeId="NODE_01"/>
-			<destinationNode nodeId="NODE_03"/>
+		<link name="LINK_04">
+			<sourceNode nodeName="NODE_01"/>
+			<destinationNode nodeName="NODE_03"/>
 		</link>
 		
 		<lastUpdate>
@@ -94,12 +94,12 @@
 		
 	</nffg>
 	
-	<policy id="POLICY_01">
+	<policy name="POLICY_01">
 		<property property="REACHABILITY"/>
 		<positive positive="TRUE"/>
-		<nffgRef nffgId="NFFG_01"/>
-		<sourceNode nodeId="NODE_01"/>
-		<destinationNode nodeId="NODE_03"/>
+		<nffgRef nffgName="NFFG_01"/>
+		<sourceNode nodeName="NODE_01"/>
+		<destinationNode nodeName="NODE_03"/>
 		<result result="VIOLATED"/>
 		<lastVerification>
 			<date>
@@ -114,14 +114,14 @@
 		</lastVerification>
 	</policy>
 	
-	<policy id="POLICY_02">
+	<policy name="POLICY_02">
 		<property property="TRAVERSAL"/>
 		<positive positive="FALSE"/>
 		<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_03"/>
 		<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_07"/>
-		<nffgRef nffgId="NFFG_02"/>
-		<sourceNode nodeId="NODE_02"/>
-		<destinationNode nodeId="NODE_01"/>
+		<nffgRef nffgName="NFFG_02"/>
+		<sourceNode nodeName="NODE_02"/>
+		<destinationNode nodeName="NODE_01"/>
 		<result result="VIOLATED"/>
 		<lastVerification>
 			<date>
@@ -136,12 +136,12 @@
 		</lastVerification>
 	</policy>
 	
-	<policy id="POLICY_03">
+	<policy name="POLICY_03">
 		<property property="REACHABILITY"/>
 		<positive positive="TRUE"/>
-		<nffgRef nffgId="NFFG_02"/>
-		<sourceNode nodeId="NODE_02"/>
-		<destinationNode nodeId="NODE_03"/>
+		<nffgRef nffgName="NFFG_02"/>
+		<sourceNode nodeName="NODE_02"/>
+		<destinationNode nodeName="NODE_03"/>
 		<result result="SATISFIED"/>
 		<lastVerification>
 			<date>
