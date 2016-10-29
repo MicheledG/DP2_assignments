@@ -1,76 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<nffgInfo 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xsi:noNamespaceSchemaLocation="nffgInfo.xsd">
-
-	<nffg name="NFFG_01">
-		
-		<node name="NODE_01"> 
-			<networkFunctionality>FIREWALL</networkFunctionality>
-			<link>LINK_01</link>
-			<link>LINK_03</link>
-		</node>
-		<node name="NODE_02">
-			<networkFunctionality>NAT</networkFunctionality>
-			<link>LINK_02</link>
-		</node>
-		<node name="NODE_03">
-			<networkFunctionality>WEB CLIENT</networkFunctionality>
-			<link>LINK_04</link>
-		</node>
-		
-		<link name="LINK_01">
-			<sourceNode>NODE_01</sourceNode>
-			<destinationNode>NODE_02</destinationNode>
-		</link>
-		<link name="LINK_02">
-			<sourceNode>NODE_03</sourceNode>
-			<destinationNode>NODE_01</destinationNode>
-		</link>
-		<link name="LINK_03">
-			<sourceNode>NODE_01</sourceNode>
-			<destinationNode>NODE_03</destinationNode>
-		</link>
-		<link name="LINK_04">
-			<sourceNode>NODE_03</sourceNode>
-			<destinationNode>NODE_01</destinationNode>
-		</link>
-				
-	</nffg>
-	
-	<nffg name="NFFG_02">
-		
-		<node name="NODE_01">
-			<networkFunctionality>WEB SERVER</networkFunctionality>
-			<link>LINK_02</link>
-			<link>LINK_03</link>
-		</node>
-		<node name="NODE_02">
-			<networkFunctionality>MAIL CLIENT</networkFunctionality>
-			<link>LINK_02</link>
-		</node>
-		<node name="NODE_03">
-			<networkFunctionality>ANTISPAM</networkFunctionality>
-			<link>LINK_04</link>
-		</node>
-		
-		<link name="LINK_01">
-			<sourceNode>NODE_03</sourceNode>
-			<destinationNode>NODE_02</destinationNode>
-		</link>
-		<link name="LINK_02">
-			<sourceNode>NODE_02</sourceNode>
-			<destinationNode>NODE_01</destinationNode>
-		</link>
-		<link name="LINK_03">
-			<sourceNode>NODE_01</sourceNode>
-			<destinationNode>NODE_03</destinationNode>
-		</link>
-		<link name="LINK_04">
-			<sourceNode>NODE_01</sourceNode>
-			<destinationNode>NODE_03</destinationNode>
-		</link>
-		
-	</nffg>
+<nffgInfoWrapper 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:noNamespaceSchemaLocation="nffgInfo.xsd">
 	
 	<catalog>
 		<networkFunctionality>FIREWALL</networkFunctionality>
@@ -85,4 +15,163 @@
 		<networkFunctionality>MAIL CLIENT</networkFunctionality>
 	</catalog>
 	
-</nffgInfo>
+	<nffgInfos>
+		<nffgInfo>
+			<nffg name="NFFG_01">
+				<nodes>
+					<node name="NODE_01"> 
+						<networkFunctionality>FIREWALL</networkFunctionality>
+						<link>LINK_01</link>
+						<link>LINK_03</link>
+					</node>
+					<node name="NODE_02">
+						<networkFunctionality>NAT</networkFunctionality>
+						<link>LINK_02</link>
+					</node>
+					<node name="NODE_03">
+						<networkFunctionality>WEB CLIENT</networkFunctionality>
+						<link>LINK_04</link>
+					</node>
+					<node name="NODE_04">
+						<networkFunctionality>WEB CLIENT</networkFunctionality>
+						<link>LINK_05</link>
+					</node>
+				</nodes>		
+				<links>
+					<link name="LINK_01">
+						<sourceNode>NODE_01</sourceNode>
+						<destinationNode>NODE_02</destinationNode>
+					</link>
+					<link name="LINK_02">
+						<sourceNode>NODE_03</sourceNode>
+						<destinationNode>NODE_01</destinationNode>
+					</link>
+					<link name="LINK_03">
+						<sourceNode>NODE_01</sourceNode>
+						<destinationNode>NODE_03</destinationNode>
+					</link>
+					<link name="LINK_04">
+						<sourceNode>NODE_03</sourceNode>
+						<destinationNode>NODE_01</destinationNode>
+					</link>
+					<link name="LINK_05">
+						<sourceNode>NODE_04</sourceNode>
+						<destinationNode>NODE_01</destinationNode>
+					</link>
+				</links>
+				<lastUpdate>
+					<year>2016</year>
+					<month>10</month>
+					<day>26</day>
+					<hour>11</hour>
+					<min>05</min>
+					<sec>30</sec>
+					<utcZone>+01:00</utcZone>
+				</lastUpdate>
+			</nffg>
+			<policies>
+				<policy name="POLICY_01">
+						<property>REACHABILITY</property>
+						<positive>TRUE</positive>
+						<nffg>NFFG_01</nffg>
+						<sourceNode>NODE_01</sourceNode>
+						<destinationNode>NODE_03</destinationNode>
+						<result>VIOLATED</result>
+					<lastVerification>
+						<year>2016</year>
+						<month>09</month>
+						<day>11</day>
+						<hour>16</hour>
+						<min>45</min>
+						<sec>10</sec>
+						<utcZone>+01:00</utcZone>
+					</lastVerification>
+				</policy>
+			</policies>
+		</nffgInfo>
+		<nffgInfo>
+			<nffg name="NFFG_02">
+				<nodes>
+					<node name="NODE_01">
+						<networkFunctionality>WEB SERVER</networkFunctionality>
+						<link>LINK_02</link>
+						<link>LINK_03</link>
+					</node>
+					<node name="NODE_02">
+						<networkFunctionality>MAIL CLIENT</networkFunctionality>
+						<link>LINK_02</link>
+					</node>
+					<node name="NODE_03">
+						<networkFunctionality>ANTISPAM</networkFunctionality>
+						<link>LINK_04</link>
+					</node>	
+				</nodes>
+				<links>
+					<link name="LINK_01">
+						<sourceNode>NODE_03</sourceNode>
+						<destinationNode>NODE_02</destinationNode>
+					</link>
+					<link name="LINK_02">
+						<sourceNode>NODE_02</sourceNode>
+						<destinationNode>NODE_01</destinationNode>
+					</link>
+					<link name="LINK_03">
+						<sourceNode>NODE_01</sourceNode>
+						<destinationNode>NODE_03</destinationNode>
+					</link>
+					<link name="LINK_04">
+						<sourceNode>NODE_01</sourceNode>
+						<destinationNode>NODE_03</destinationNode>
+					</link>
+				</links>
+				<lastUpdate>
+					<year>2014</year>
+					<month>05</month>
+					<day>12</day>
+					<hour>18</hour>
+					<min>30</min>
+					<sec>12</sec>
+					<utcZone>+01:00</utcZone>
+				</lastUpdate>
+			</nffg>
+			<policies>
+				<policy name="POLICY_02">
+					<property>TRAVERSAL"</property>
+					<positive>FALSE</positive>
+					<networkFunctionality>FUNC_TYPE_03</networkFunctionality>
+					<networkFunctionality>FUNC_TYPE_07</networkFunctionality>
+					<nffg>NFFG_02</nffg>
+					<sourceNode>NODE_02</sourceNode>
+					<destinationNode>NODE_01</destinationNode>
+					<result>VIOLATED</result>
+					<lastVerification>
+						<year>2016</year>
+						<month>09</month>
+						<day>11</day>
+						<hour>16</hour>
+						<min>45</min>
+						<sec>10</sec>
+						<utcZone>+01:00</utcZone>
+					</lastVerification>
+				</policy>
+				<policy name="POLICY_03">
+					<property>REACHABILITY</property>
+					<positive>TRUE</positive>
+					<nffg>NFFG_02</nffg>
+					<sourceNode>NODE_02</sourceNode>
+					<destinationNode>NODE_03</destinationNode>
+					<result>SATISFIED</result>
+					<lastVerification>
+						<year>2016</year>
+						<month>07</month>
+						<day>27</day>
+						<hour>21</hour>
+						<min>40</min>
+						<sec>50</sec>
+						<utcZone>+01:00</utcZone>
+					</lastVerification>
+				</policy>
+			</policies>
+		</nffgInfo>
+	</nffgInfos>
+</nffgInfoWrapper>
