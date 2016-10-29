@@ -16,8 +16,11 @@
 	</catalog>
 	
 	<nffgInfos>
+	
 		<nffgInfo>
+			
 			<nffg name="NFFG_01">
+				
 				<nodes>
 					<node name="NODE_01"> 
 						<networkFunctionality>FIREWALL</networkFunctionality>
@@ -37,6 +40,7 @@
 						<link>LINK_05</link>
 					</node>
 				</nodes>		
+				
 				<links>
 					<link name="LINK_01">
 						<sourceNode>NODE_01</sourceNode>
@@ -59,6 +63,7 @@
 						<destinationNode>NODE_01</destinationNode>
 					</link>
 				</links>
+				
 				<lastUpdate>
 					<year>2016</year>
 					<month>10</month>
@@ -69,6 +74,7 @@
 					<utcZone>+01:00</utcZone>
 				</lastUpdate>
 			</nffg>
+			
 			<policies>
 				<policy name="POLICY_01">
 						<property>REACHABILITY</property>
@@ -89,8 +95,11 @@
 				</policy>
 			</policies>
 		</nffgInfo>
+		
 		<nffgInfo>
+			
 			<nffg name="NFFG_02">
+				
 				<nodes>
 					<node name="NODE_01">
 						<networkFunctionality>WEB SERVER</networkFunctionality>
@@ -106,6 +115,7 @@
 						<link>LINK_04</link>
 					</node>	
 				</nodes>
+				
 				<links>
 					<link name="LINK_01">
 						<sourceNode>NODE_03</sourceNode>
@@ -124,6 +134,7 @@
 						<destinationNode>NODE_03</destinationNode>
 					</link>
 				</links>
+				
 				<lastUpdate>
 					<year>2014</year>
 					<month>05</month>
@@ -134,6 +145,7 @@
 					<utcZone>+01:00</utcZone>
 				</lastUpdate>
 			</nffg>
+			
 			<policies>
 				<policy name="POLICY_02">
 					<property>TRAVERSAL"</property>
