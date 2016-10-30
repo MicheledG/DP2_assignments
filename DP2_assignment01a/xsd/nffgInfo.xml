@@ -64,15 +64,7 @@
 					</link>
 				</links>
 				
-				<lastUpdate>
-					<year>2016</year>
-					<month>10</month>
-					<day>26</day>
-					<hour>11</hour>
-					<min>05</min>
-					<sec>30</sec>
-					<utcZone>+01:00</utcZone>
-				</lastUpdate>
+				<lastUpdate>2016-10-26T11:05:30+01:00</lastUpdate>
 			</nffg>
 			
 			<policies>
@@ -83,15 +75,7 @@
 						<sourceNode>NODE_01</sourceNode>
 						<destinationNode>NODE_03</destinationNode>
 						<result>VIOLATED</result>
-					<lastVerification>
-						<year>2016</year>
-						<month>09</month>
-						<day>11</day>
-						<hour>16</hour>
-						<min>45</min>
-						<sec>10</sec>
-						<utcZone>+01:00</utcZone>
-					</lastVerification>
+					<lastVerification>2016-09-11T16:45:10+01:00</lastVerification>
 				</policy>
 			</policies>
 		</nffgInfo>
@@ -135,36 +119,20 @@
 					</link>
 				</links>
 				
-				<lastUpdate>
-					<year>2014</year>
-					<month>05</month>
-					<day>12</day>
-					<hour>18</hour>
-					<min>30</min>
-					<sec>12</sec>
-					<utcZone>+01:00</utcZone>
-				</lastUpdate>
+				<lastUpdate>2014-05-12T18:30:12+01:00</lastUpdate>
 			</nffg>
 			
 			<policies>
 				<policy name="POLICY_02">
-					<property>TRAVERSAL"</property>
+					<property>TRAVERSAL</property>
 					<positive>FALSE</positive>
-					<networkFunctionality>FUNC_TYPE_03</networkFunctionality>
-					<networkFunctionality>FUNC_TYPE_07</networkFunctionality>
+					<networkFunctionality>NAT</networkFunctionality>
+					<networkFunctionality>WEB SERVER</networkFunctionality>
 					<nffg>NFFG_02</nffg>
-					<sourceNode>NODE_02</sourceNode>
+					<sourceNode>NODE_03</sourceNode>
 					<destinationNode>NODE_01</destinationNode>
 					<result>VIOLATED</result>
-					<lastVerification>
-						<year>2016</year>
-						<month>09</month>
-						<day>11</day>
-						<hour>16</hour>
-						<min>45</min>
-						<sec>10</sec>
-						<utcZone>+01:00</utcZone>
-					</lastVerification>
+					<lastVerification>2016-09-11T16:45:10+01:00</lastVerification>
 				</policy>
 				<policy name="POLICY_03">
 					<property>REACHABILITY</property>
@@ -173,15 +141,7 @@
 					<sourceNode>NODE_02</sourceNode>
 					<destinationNode>NODE_03</destinationNode>
 					<result>SATISFIED</result>
-					<lastVerification>
-						<year>2016</year>
-						<month>07</month>
-						<day>27</day>
-						<hour>21</hour>
-						<min>40</min>
-						<sec>50</sec>
-						<utcZone>+01:00</utcZone>
-					</lastVerification>
+					<lastVerification>2016-07-27T21:40:50+01:00</lastVerification>
 				</policy>
 			</policies>
 		</nffgInfo>
