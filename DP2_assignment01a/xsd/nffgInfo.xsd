@@ -77,11 +77,11 @@
 	<xsd:complexType name="nffgInfoType">
 		<xsd:sequence>
 			<xsd:element name="nffg" type="nffgType"/>
-			<xsd:element name="policies">
+			<xsd:element name="policies" minOccurs="0">
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="policy" type="policyType" maxOccurs="unbounded"/>
-					</xsd:sequence>
+					</xsd:sequence>							
 				</xsd:complexType>
 			</xsd:element>
 		</xsd:sequence>
@@ -127,13 +127,13 @@
 	<xsd:complexType name="policyType">
 		<xsd:sequence>
 			<xsd:element name="property">
-			    <xsd:simpleType>
-			 		<xsd:restriction base="xsd:string">
-			 			<xsd:enumeration value="REACHABILITY"/>
-			 			<xsd:enumeration value="TRAVERSAL"/>
-			 		</xsd:restriction>
-			 	</xsd:simpleType>
-			</xsd:element>
+						<xsd:simpleType>
+			 				<xsd:restriction base="xsd:string">
+		 						<xsd:enumeration value="REACHABILITY"/>
+			 					<xsd:enumeration value="TRAVERSAL"/>
+			 				</xsd:restriction>
+			 			</xsd:simpleType>
+					</xsd:element>
 			<xsd:element name="positive">
 			    <xsd:simpleType>
 			 		<xsd:restriction base="xsd:string">
@@ -158,5 +158,5 @@
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string"/>
 	</xsd:complexType>
-		
+	
 </xsd:schema>

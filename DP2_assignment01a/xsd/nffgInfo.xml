@@ -75,7 +75,7 @@
 						<sourceNode>NODE_01</sourceNode>
 						<destinationNode>NODE_03</destinationNode>
 						<result>VIOLATED</result>
-					<lastVerification>2016-09-11T16:45:10+01:00</lastVerification>
+						<lastVerification>2016-09-11T16:45:10+01:00</lastVerification>
 				</policy>
 			</policies>
 		</nffgInfo>
