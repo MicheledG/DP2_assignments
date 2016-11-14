@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nffgInfoWrapper 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:noNamespaceSchemaLocation="nffgInfo.xsd">
+	
+	<catalog>
+		<networkFunctionality>FIREWALL</networkFunctionality>
+		<networkFunctionality>DPI</networkFunctionality>
+		<networkFunctionality>NAT</networkFunctionality>
+		<networkFunctionality>ANTISPAM</networkFunctionality>
+		<networkFunctionality>WEB-CACHE</networkFunctionality>
+		<networkFunctionality>VPN GATEWAY</networkFunctionality>
+		<networkFunctionality>WEB SERVER</networkFunctionality>
+		<networkFunctionality>WEB CLIENT</networkFunctionality> 
+		<networkFunctionality>MAIL SERVER</networkFunctionality>
+		<networkFunctionality>MAIL CLIENT</networkFunctionality>
+	</catalog>
+	
+	<nffgInfos>
+	
+		<nffgInfo>
+			
+			<nffg name="NFFG_01">
+				
+				<nodes>
+					<node name="NODE_01"> 
+						<networkFunctionality>FIREWALL</networkFunctionality>
+						<link>LINK_01</link>
+						<link>LINK_03</link>
+					</node>
+					<node name="NODE_02">
+						<networkFunctionality>NAT</networkFunctionality>
+						<link>LINK_02</link>
+					</node>
+					<node name="NODE_03">
+						<networkFunctionality>WEB CLIENT</networkFunctionality>
+						<link>LINK_04</link>
+					</node>
+					<node name="NODE_04">
+						<networkFunctionality>WEB CLIENT</networkFunctionality>
+						<link>LINK_05</link>
+					</node>
+				</nodes>		
+				
+				<links>
+					<link name="LINK_01">
+						<sourceNode>NODE_01</sourceNode>
+						<destinationNode>NODE_02</destinationNode>
+					</link>
+					<link name="LINK_02">
+						<sourceNode>NODE_03</sourceNode>
+						<destinationNode>NODE_01</destinationNode>
+					</link>
+					<link name="LINK_03">
+						<sourceNode>NODE_01</sourceNode>
+						<destinationNode>NODE_03</destinationNode>
+					</link>
+					<link name="LINK_04">
+						<sourceNode>NODE_03</sourceNode>
+						<destinationNode>NODE_01</destinationNode>
+					</link>
+					<link name="LINK_05">
+						<sourceNode>NODE_04</sourceNode>
+						<destinationNode>NODE_01</destinationNode>
+					</link>
+				</links>
+				
+				<lastUpdate>2016-10-26T11:05:30+01:00</lastUpdate>
+			</nffg>
+			
+			<policies>
+				<policy name="POLICY_01">
+						<property>REACHABILITY</property>
+						<positive>TRUE</positive>
+						<nffg>NFFG_01</nffg>
+						<sourceNode>NODE_01</sourceNode>
+						<destinationNode>NODE_03</destinationNode>
+						<result>VIOLATED</result>
+						<lastVerification>2016-09-11T16:45:10+01:00</lastVerification>
+				</policy>
+			</policies>
+		</nffgInfo>
+		
+		<nffgInfo>
+			
+			<nffg name="NFFG_02">
+				
+				<nodes>
+					<node name="NODE_01">
+						<networkFunctionality>WEB SERVER</networkFunctionality>
+						<link>LINK_02</link>
+						<link>LINK_03</link>
+					</node>
+					<node name="NODE_02">
+						<networkFunctionality>MAIL CLIENT</networkFunctionality>
+						<link>LINK_02</link>
+					</node>
+					<node name="NODE_03">
+						<networkFunctionality>ANTISPAM</networkFunctionality>
+						<link>LINK_04</link>
+					</node>	
+				</nodes>
+				
+				<links>
+					<link name="LINK_01">
+						<sourceNode>NODE_03</sourceNode>
+						<destinationNode>NODE_02</destinationNode>
+					</link>
+					<link name="LINK_02">
+						<sourceNode>NODE_02</sourceNode>
+						<destinationNode>NODE_01</destinationNode>
+					</link>
+					<link name="LINK_03">
+						<sourceNode>NODE_01</sourceNode>
+						<destinationNode>NODE_03</destinationNode>
+					</link>
+					<link name="LINK_04">
+						<sourceNode>NODE_01</sourceNode>
+						<destinationNode>NODE_03</destinationNode>
+					</link>
+				</links>
+				
+				<lastUpdate>2014-05-12T18:30:12+01:00</lastUpdate>
+			</nffg>
+			
+			<policies>
+				<policy name="POLICY_02">
+					<property>TRAVERSAL</property>
+					<positive>FALSE</positive>
+					<networkFunctionality>NAT</networkFunctionality>
+					<networkFunctionality>WEB SERVER</networkFunctionality>
+					<nffg>NFFG_02</nffg>
+					<sourceNode>NODE_03</sourceNode>
+					<destinationNode>NODE_01</destinationNode>
+					<result>VIOLATED</result>
+					<lastVerification>2016-09-11T16:45:10+01:00</lastVerification>
+				</policy>
+				<policy name="POLICY_03">
+					<property>REACHABILITY</property>
+					<positive>TRUE</positive>
+					<nffg>NFFG_02</nffg>
+					<sourceNode>NODE_02</sourceNode>
+					<destinationNode>NODE_03</destinationNode>
+					<result>SATISFIED</result>
+					<lastVerification>2016-07-27T21:40:50+01:00</lastVerification>
+				</policy>
+			</policies>
+		</nffgInfo>
+	</nffgInfos>
+</nffgInfoWrapper>

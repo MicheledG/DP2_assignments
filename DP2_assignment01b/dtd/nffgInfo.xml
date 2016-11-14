@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nffgInfo SYSTEM "nffgInfo.dtd">
+
+<nffgInfo>
+
+	<nffg name="NFFG_01">
+		<node name="NODE_01">
+			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_08"/>
+			<linkRef linkName="LINK_01"/>
+			<linkRef linkName="LINK_03"/>
+		</node>
+		<node name="NODE_02">
+			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_03"/>
+			<linkRef linkName="LINK_02"/>
+		</node>
+		<node name="NODE_03">
+			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_07"/>
+			<linkRef linkName="LINK_04"/>
+		</node>
+		<link name="LINK_01">
+			<sourceNode nodeName="NODE_01"/>
+			<destinationNode nodeName="NODE_02"/>
+		</link>
+		<link name="LINK_02">
+			<sourceNode nodeName="NODE_02"/>
+			<destinationNode nodeName="NODE_01"/>
+		</link>
+		<link name="LINK_03">
+			<sourceNode nodeName="NODE_01"/>
+			<destinationNode nodeName="NODE_03"/>
+		</link>
+		<link name="LINK_04">
+			<sourceNode nodeName="NODE_03"/>
+			<destinationNode nodeName="NODE_01"/>
+		</link>
+		
+		<lastUpdate>
+			<date>
+				<year>2016</year>
+				<month>10</month>
+				<day>26</day>
+				<hour>11</hour>
+				<min>05</min>
+				<sec>30</sec>
+				<utcZone>+01:00</utcZone>
+			</date>
+		</lastUpdate>
+		
+	</nffg>
+	
+	<nffg name="NFFG_02">
+		<node name="NODE_01">
+			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_05"/>
+			<linkRef linkName="LINK_02"/>
+			<linkRef linkName="LINK_03"/>
+		</node>
+		<node name="NODE_02">
+			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_04"/>
+			<linkRef linkName="LINK_02"/>
+		</node>
+		<node name="NODE_03">
+			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_10"/>
+			<linkRef linkName="LINK_04"/>
+		</node>
+		<link name="LINK_01">
+			<sourceNode nodeName="NODE_03"/>
+			<destinationNode nodeName="NODE_02"/>
+		</link>
+		<link name="LINK_02">
+			<sourceNode nodeName="NODE_02"/>
+			<destinationNode nodeName="NODE_01"/>
+		</link>
+		<link name="LINK_03">
+			<sourceNode nodeName="NODE_01"/>
+			<destinationNode nodeName="NODE_03"/>
+		</link>
+		<link name="LINK_04">
+			<sourceNode nodeName="NODE_01"/>
+			<destinationNode nodeName="NODE_03"/>
+		</link>
+		
+		<lastUpdate>
+			<date>
+				<year>2014</year>
+				<month>05</month>
+				<day>12</day>
+				<hour>18</hour>
+				<min>30</min>
+				<sec>12</sec>
+				<utcZone>+01:00</utcZone>
+			</date>
+		</lastUpdate>
+		
+		
+	</nffg>
+	
+	<policy name="POLICY_01">
+		<property property="REACHABILITY"/>
+		<positive positive="TRUE"/>
+		<nffgRef nffgName="NFFG_01"/>
+		<sourceNode nodeName="NODE_01"/>
+		<destinationNode nodeName="NODE_03"/>
+		<result result="VIOLATED"/>
+		<lastVerification>
+			<date>
+				<year>2016</year>
+				<month>09</month>
+				<day>11</day>
+				<hour>16</hour>
+				<min>45</min>
+				<sec>10</sec>
+				<utcZone>+01:00</utcZone>
+			</date>
+		</lastVerification>
+	</policy>
+	
+	<policy name="POLICY_02">
+		<property property="TRAVERSAL"/>
+		<positive positive="FALSE"/>
+		<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_03"/>
+		<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_07"/>
+		<nffgRef nffgName="NFFG_02"/>
+		<sourceNode nodeName="NODE_02"/>
+		<destinationNode nodeName="NODE_01"/>
+		<result result="VIOLATED"/>
+		<lastVerification>
+			<date>
+				<year>2016</year>
+				<month>09</month>
+				<day>11</day>
+				<hour>16</hour>
+				<min>45</min>
+				<sec>10</sec>
+				<utcZone>+01:00</utcZone>
+			</date>
+		</lastVerification>
+	</policy>
+	
+	<policy name="POLICY_03">
+		<property property="REACHABILITY"/>
+		<positive positive="TRUE"/>
+		<nffgRef nffgName="NFFG_02"/>
+		<sourceNode nodeName="NODE_02"/>
+		<destinationNode nodeName="NODE_03"/>
+		<result result="SATISFIED"/>
+		<lastVerification>
+			<date>
+				<year>2016</year>
+				<month>07</month>
+				<day>27</day>
+				<hour>21</hour>
+				<min>40</min>
+				<sec>50</sec>
+				<utcZone>+01:00</utcZone>
+			</date>
+		</lastVerification>
+	</policy>
+	
+	<catalog>
+		<networkFunctionality id="FUNC_TYPE_01">
+			<name>FIREWALL</name>
+		</networkFunctionality>
+		<networkFunctionality id="FUNC_TYPE_02">
+			<name>DPI</name>
+		</networkFunctionality>
+		<networkFunctionality id="FUNC_TYPE_03">
+			<name>NAT</name>
+		</networkFunctionality>
+		<networkFunctionality id="FUNC_TYPE_04">
+			<name>ANTISPAM</name>
+		</networkFunctionality>
+		<networkFunctionality id="FUNC_TYPE_05">
+			<name>WEB-CACHE</name>
+		</networkFunctionality>
+		<networkFunctionality id="FUNC_TYPE_06">
+			<name>VPN GATEWAY</name>
+		</networkFunctionality>
+		<networkFunctionality id="FUNC_TYPE_07">
+			<name>WEB SERVER</name>
+		</networkFunctionality>
+		<networkFunctionality id="FUNC_TYPE_08">
+			<name>WEB CLIENT</name>
+		</networkFunctionality>
+		<networkFunctionality id="FUNC_TYPE_09">
+			<name>MAIL SERVER</name>
+		</networkFunctionality>
+		<networkFunctionality id="FUNC_TYPE_10">
+			<name>MAIL CLIENT</name>
+		</networkFunctionality>
+	</catalog>
+	
+</nffgInfo>

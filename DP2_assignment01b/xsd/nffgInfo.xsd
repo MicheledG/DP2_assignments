@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	
+	<xsd:element name="nffgInfoWrapper">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="catalog" type="catalogType"/>
+				<xsd:element name="nffgInfos">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="nffgInfo" type="nffgInfoType" maxOccurs="unbounded">
+								<xsd:key name="keyNffgNodeName">
+									<!-- Ensure uniqueness of nodes' name within the same nffg and their referenceabilty-->
+									<xsd:selector xpath="nffg/nodes/node"/>
+									<xsd:field xpath="@name"/>
+								</xsd:key>
+								<xsd:key name="keyNffgLinkName">
+									<!-- Ensure uniqueness of links' name within the same nffg and their referenceabilty-->
+									<xsd:selector xpath="nffg/links/link"/>
+									<xsd:field xpath="@name"/>
+								</xsd:key>
+								<xsd:keyref name="keyrefNffgSourceNodeNameInLink" refer="keyNffgNodeName">
+									<!-- reference unique source nodes' name within the same nffg -->
+									<xsd:selector xpath="nffg/links/link/sourceNode"/>
+									<xsd:field xpath="."/>
+								</xsd:keyref>
+								<xsd:keyref name="keyrefNffgDestinationNodeNameInLink" refer="keyNffgNodeName">
+									<!-- reference unique destination nodes' name within the same nffg -->
+									<xsd:selector xpath="nffg/links/link/destinationNode"/>
+									<xsd:field xpath="."/>
+								</xsd:keyref>
+								<xsd:keyref name="keyrefNffgSourceNodeNameInPolicy" refer="keyNffgNodeName">
+									<!-- reference unique source nodes' name within the same nffg -->
+									<xsd:selector xpath="policies/policy/sourceNode"/>
+									<xsd:field xpath="."/>
+								</xsd:keyref>
+								<xsd:keyref name="keyrefNffgDestinationNodeNameInPolicy" refer="keyNffgNodeName">
+									<!-- reference unique destination nodes' name within the same nffg -->
+									<xsd:selector xpath="policies/policy/destinationNode"/>
+									<xsd:field xpath="."/>
+								</xsd:keyref>
+								<xsd:keyref name="keyrefNffgLinkName" refer="keyNffgLinkName">
+									<!-- reference unique links' name within the same nffg -->
+									<xsd:selector xpath="nffg/nodes/node/link"/>
+									<xsd:field xpath="."/>
+								</xsd:keyref>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+		<xsd:key name="keyCatalogNetworkFunctionality">
+			<!-- Ensure uniqueness of network functionalities within the catalog and their referenceability-->
+			<xsd:selector xpath="catalog/networkFunctionality"/>
+			<xsd:field xpath="."/>
+		</xsd:key>
+		<xsd:keyref name="keyrefCatalogNetworkFunctionalityInNodes" refer="keyCatalogNetworkFunctionality">
+			<!-- reference unique network functionality of the catalog -->
+			<xsd:selector xpath="nffgInfos/nffgInfo/nffg/nodes/node/networkFunctionality"/>
+			<xsd:field xpath="."/>
+		</xsd:keyref>
+		<xsd:keyref name="keyrefCatalogNetworkFunctionalityInPolicies" refer="keyCatalogNetworkFunctionality">
+			<!-- reference unique network functionality of the catalog -->
+			<xsd:selector xpath="nffgInfos/nffgInfo/policies/policy/networkFunctionality"/>
+			<xsd:field xpath="."/>
+		</xsd:keyref>
+	</xsd:element>
+	
+	<xsd:complexType name="catalogType">
+		<xsd:sequence>
+			<xsd:element name="networkFunctionality" type="xsd:string" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	
+	<xsd:complexType name="nffgInfoType">
+		<xsd:sequence>
+			<xsd:element name="nffg" type="nffgType"/>
+			<xsd:element name="policies" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="policy" type="policyType" maxOccurs="unbounded"/>
+					</xsd:sequence>							
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="nffgType">
+		<xsd:sequence>
+			<xsd:element name="nodes">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="node" type="nodeType" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="links">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="link" type="linkType" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element> 
+			<xsd:element name="lastUpdate" type="xsd:dateTime"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="nodeType">
+		<xsd:sequence>
+			<xsd:element name="networkFunctionality" type="xsd:string"/>
+			<xsd:element name="link" type="xsd:string" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="linkType">
+		<xsd:sequence>
+			<xsd:element name="sourceNode" type="xsd:string"/>
+			<xsd:element name="destinationNode" type="xsd:string"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="policyType">
+		<xsd:sequence>
+			<xsd:element name="property">
+						<xsd:simpleType>
+			 				<xsd:restriction base="xsd:string">
+		 						<xsd:enumeration value="REACHABILITY"/>
+			 					<xsd:enumeration value="TRAVERSAL"/>
+			 				</xsd:restriction>
+			 			</xsd:simpleType>
+					</xsd:element>
+			<xsd:element name="positive">
+			    <xsd:simpleType>
+			 		<xsd:restriction base="xsd:string">
+			 			<xsd:enumeration value="TRUE"/>
+			 			<xsd:enumeration value="FALSE"/>
+			 		</xsd:restriction>
+			 	</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="networkFunctionality" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="nffg" type="xsd:string"/>
+			<xsd:element name="sourceNode" type="xsd:string"/>
+			<xsd:element name="destinationNode" type="xsd:string"/>
+			<xsd:element name="result">
+			    <xsd:simpleType>
+			 		<xsd:restriction base="xsd:string">
+			 			<xsd:enumeration value="SATISFIED"/>
+			 			<xsd:enumeration value="VIOLATED"/>
+			 		</xsd:restriction>
+			 	</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="lastVerification" type="xsd:dateTime"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string"/>
+	</xsd:complexType>
+	
+</xsd:schema>
