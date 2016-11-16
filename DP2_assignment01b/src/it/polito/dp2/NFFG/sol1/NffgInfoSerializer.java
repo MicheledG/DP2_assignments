@@ -106,7 +106,7 @@ public class NffgInfoSerializer {
 		
 		nffg.setName(nffgReader.getName());
 		/* TODO needs to translate the nffgReader update time with mine */
-		//nffg.setLastUpdate(nffgReader.getUpdateTime());
+		nffg.setLastUpdate(nffgReader.getUpdateTime());
 		nffg.setNodes(getNodesOfNffg(nffgReader));
 		nffg.setLinks(getLinksOfNffg(nffgReader));
 		
@@ -159,12 +159,22 @@ public class NffgInfoSerializer {
 				PolicyType policy = new PolicyType();
 				policy.setName(policyReader.getName());
 				policy.setNffg(policyReader.getNffg().getName());
-				policy.setResult(PolicyType.);
+				policy.setProperty(value);
+				policy.getNetworkFunctionality();
+				policy.setPositive(policyReader.isPositive());
+				policy.setSourceNode(value);
+				policy.setDestinationNode(value);
+				if(policyReader.getResult().getVerificationResult())
+					policy.setResult(ResultType.SATISFIED);
+				else
+					policy.setResult(ResultType.VIOLATED);
+				policy.setLastVerification(policyReader.getResult().getVerificationTime());
 				
+				policies.getPolicy().add(policy);
 			}
 		}
 		
-		return nffg;
+		return policies;
 	}
 	
 	/*translate FunctionalType to NetworkFunctionalityType*/
