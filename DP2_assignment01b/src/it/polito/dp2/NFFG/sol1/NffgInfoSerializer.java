@@ -156,21 +156,33 @@ public class NffgInfoSerializer {
 		for (PolicyReader policyReader : policyReaders) {
 			if(policyReader.getNffg().getName().equals(nffgReader.getName())){
 				/* the policy of this policyReader is related to the nffg of this nffgReader */
-				//needs reflections!!! to understand which type of policy interface we are using
+				ReachabilityPolicyReader reachPolicyReader = (ReachabilityPolicyReader) policyReader;
 				PolicyType policy = new PolicyType();
-				policy.setName(policyReader.getName());
-				policy.setNffg(policyReader.getNffg().getName());
-				policy.setProperty(value);
-				policy.getNetworkFunctionality();
-				policy.setPositive(policyReader.isPositive());
-				policy.setSourceNode(value);
-				policy.setDestinationNode(value);
-				if(policyReader.getResult().getVerificationResult())
+				
+				/* general part of the policy contained both into reachability both into traversal policy */
+				policy.setName(reachPolicyReader.getName());
+				policy.setNffg(reachPolicyReader.getNffg().getName());
+				policy.setPositive(reachPolicyReader.isPositive());
+				
+				if(reachPolicyReader.getResult().getVerificationResult())
 					policy.setResult(ResultType.SATISFIED);
 				else
 					policy.setResult(ResultType.VIOLATED);
 				policy.setLastVerification(policyReader.getResult().getVerificationTime());
 				
+				policy.setSourceNode(reachPolicyReader.getSourceNode().getName());
+				policy.setDestinationNode(reachPolicyReader.getDestinationNode().getName());
+				
+				/* more specific part depending on the instanceof policy reader */
+				if(reachPolicyReader instanceof TraversalPolicyReader){
+					policy.setProperty(PropertyType.TRAVERSAL);
+					// TODO: SET THE NETWORK FUNCTIONALITIES
+					policy.getNetworkFunctionality()
+				}
+				else
+					policy.setProperty(PropertyType.REACHABILITY);
+				
+					
 				policies.getPolicy().add(policy);
 			}
 		}
