@@ -156,6 +156,7 @@ public class NffgInfoSerializer {
 		for (PolicyReader policyReader : policyReaders) {
 			if(policyReader.getNffg().getName().equals(nffgReader.getName())){
 				/* the policy of this policyReader is related to the nffg of this nffgReader */
+				//needs reflections!!! to understand which type of policy interface we are using
 				PolicyType policy = new PolicyType();
 				policy.setName(policyReader.getName());
 				policy.setNffg(policyReader.getNffg().getName());
