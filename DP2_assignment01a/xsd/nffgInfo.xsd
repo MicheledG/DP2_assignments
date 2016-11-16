@@ -50,29 +50,33 @@
 				</xsd:element>
 			</xsd:sequence>
 		</xsd:complexType>
-		<xsd:key name="keyCatalogNetworkFunctionality">
-			<!-- Ensure uniqueness of network functionalities within the catalog and their referenceability-->
+		<xsd:unique name="uniqueCatalogNetworkFunctionality">
+			<!-- Ensure uniqueness of network functionalities within the catalog-->
 			<xsd:selector xpath="catalog/networkFunctionality"/>
 			<xsd:field xpath="."/>
-		</xsd:key>
-		<xsd:keyref name="keyrefCatalogNetworkFunctionalityInNodes" refer="keyCatalogNetworkFunctionality">
-			<!-- reference unique network functionality of the catalog -->
-			<xsd:selector xpath="nffgInfos/nffgInfo/nffg/nodes/node/networkFunctionality"/>
-			<xsd:field xpath="."/>
-		</xsd:keyref>
-		<xsd:keyref name="keyrefCatalogNetworkFunctionalityInPolicies" refer="keyCatalogNetworkFunctionality">
-			<!-- reference unique network functionality of the catalog -->
-			<xsd:selector xpath="nffgInfos/nffgInfo/policies/policy/networkFunctionality"/>
-			<xsd:field xpath="."/>
-		</xsd:keyref>
+		</xsd:unique>
 	</xsd:element>
 	
 	<xsd:complexType name="catalogType">
 		<xsd:sequence>
-			<xsd:element name="networkFunctionality" type="xsd:string" maxOccurs="unbounded"/>
+			<xsd:element name="networkFunctionality" type="networkFunctionalityType" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
+	<xsd:simpleType name="networkFunctionalityType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="CACHE"/>
+			<xsd:enumeration value="DPI"/>  
+  			<xsd:enumeration value="FW"/>
+  			<xsd:enumeration value="MAIL_CLIENT"/>
+			<xsd:enumeration value="MAIL_SERVER"/>  
+			<xsd:enumeration value="NAT"/>  
+			<xsd:enumeration value="SPAM"/>
+			<xsd:enumeration value="VPN"/>  
+			<xsd:enumeration value="WEB_CLIENT"/>  
+			<xsd:enumeration value="WEB_SERVER"/>  
+		</xsd:restriction>
+	</xsd:simpleType>
 	
 	<xsd:complexType name="nffgInfoType">
 		<xsd:sequence>
@@ -110,7 +114,7 @@
 	
 	<xsd:complexType name="nodeType">
 		<xsd:sequence>
-			<xsd:element name="networkFunctionality" type="xsd:string"/>
+			<xsd:element name="networkFunctionality" type="networkFunctionalityType"/>
 			<xsd:element name="link" type="xsd:string" maxOccurs="unbounded"/>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string"/>
@@ -142,7 +146,7 @@
 			 		</xsd:restriction>
 			 	</xsd:simpleType>
 			</xsd:element>
-			<xsd:element name="networkFunctionality" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="networkFunctionality" type="networkFunctionalityType" minOccurs="0" maxOccurs="unbounded"/>
 			<xsd:element name="nffg" type="xsd:string"/>
 			<xsd:element name="sourceNode" type="xsd:string"/>
 			<xsd:element name="destinationNode" type="xsd:string"/>
