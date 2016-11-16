@@ -243,7 +243,7 @@ public class NffgInfoSerializer {
 	
 	
 	private void marshallAll(){
-		
+		//TODO: write something here!
 	}
 	
 }
