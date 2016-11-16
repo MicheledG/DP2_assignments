@@ -93,7 +93,7 @@ public class NffgInfoSerializer {
 		NffgInfoType nffgInfo = new NffgInfoType();
 		
 		nffgInfo.setNffg(getNffg(nffgReader));
-		nffgInfo.setPolicies(getPoliciesOfNffgInfo());
+		nffgInfo.setPolicies(getPolicies(nffgReader, policies));
 		
 		return nffgInfo;
 	}
@@ -145,6 +145,26 @@ public class NffgInfoSerializer {
 		}
 		
 		return links;
+	}
+	
+	/* create a Policies object containing all the policies of a Nffg*/
+	private NffgInfoType.Policies getPolicies(NffgReader nffgReader, Set<PolicyReader> policyReaders){
+		
+		/* populate object Policies only with the policies related to the nffg of nffgReader */
+		NffgInfoType.Policies policies = new NffgInfoType.Policies();
+		
+		for (PolicyReader policyReader : policyReaders) {
+			if(policyReader.getNffg().getName().equals(nffgReader.getName())){
+				/* the policy of this policyReader is related to the nffg of this nffgReader */
+				PolicyType policy = new PolicyType();
+				policy.setName(policyReader.getName());
+				policy.setNffg(policyReader.getNffg().getName());
+				policy.setResult(PolicyType.);
+				
+			}
+		}
+		
+		return nffg;
 	}
 	
 	/*translate FunctionalType to NetworkFunctionalityType*/

@@ -70,7 +70,7 @@
 			<policies>
 				<policy name="POLICY_01">
 						<property>REACHABILITY</property>
-						<positive>TRUE</positive>
+						<positive>true</positive>
 						<nffg>NFFG_01</nffg>
 						<sourceNode>NODE_01</sourceNode>
 						<destinationNode>NODE_03</destinationNode>
@@ -125,7 +125,7 @@
 			<policies>
 				<policy name="POLICY_02">
 					<property>TRAVERSAL</property>
-					<positive>FALSE</positive>
+					<positive>false</positive>
 					<networkFunctionality>NAT</networkFunctionality>
 					<networkFunctionality>WEB_SERVER</networkFunctionality>
 					<nffg>NFFG_02</nffg>
@@ -136,7 +136,7 @@
 				</policy>
 				<policy name="POLICY_03">
 					<property>REACHABILITY</property>
-					<positive>TRUE</positive>
+					<positive>true</positive>
 					<nffg>NFFG_02</nffg>
 					<sourceNode>NODE_02</sourceNode>
 					<destinationNode>NODE_03</destinationNode>

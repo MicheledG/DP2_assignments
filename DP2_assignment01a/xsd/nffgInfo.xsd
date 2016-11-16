@@ -130,37 +130,30 @@
 	
 	<xsd:complexType name="policyType">
 		<xsd:sequence>
-			<xsd:element name="property">
-						<xsd:simpleType>
-			 				<xsd:restriction base="xsd:string">
-		 						<xsd:enumeration value="REACHABILITY"/>
-			 					<xsd:enumeration value="TRAVERSAL"/>
-			 				</xsd:restriction>
-			 			</xsd:simpleType>
-					</xsd:element>
-			<xsd:element name="positive">
-			    <xsd:simpleType>
-			 		<xsd:restriction base="xsd:string">
-			 			<xsd:enumeration value="TRUE"/>
-			 			<xsd:enumeration value="FALSE"/>
-			 		</xsd:restriction>
-			 	</xsd:simpleType>
-			</xsd:element>
+			<xsd:element name="property" type="propertyType"/>
+			<xsd:element name="positive" type="xsd:boolean"/>
 			<xsd:element name="networkFunctionality" type="networkFunctionalityType" minOccurs="0" maxOccurs="unbounded"/>
 			<xsd:element name="nffg" type="xsd:string"/>
 			<xsd:element name="sourceNode" type="xsd:string"/>
 			<xsd:element name="destinationNode" type="xsd:string"/>
-			<xsd:element name="result">
-			    <xsd:simpleType>
-			 		<xsd:restriction base="xsd:string">
-			 			<xsd:enumeration value="SATISFIED"/>
-			 			<xsd:enumeration value="VIOLATED"/>
-			 		</xsd:restriction>
-			 	</xsd:simpleType>
-			</xsd:element>
+			<xsd:element name="result" type="resultType"/>
 			<xsd:element name="lastVerification" type="xsd:dateTime"/>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string"/>
 	</xsd:complexType>
+	
+	<xsd:simpleType name="propertyType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="REACHABILITY"/>
+			<xsd:enumeration value="TRAVERSAL"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="resultType">
+ 		<xsd:restriction base="xsd:string">
+ 			<xsd:enumeration value="SATISFIED"/>
+ 			<xsd:enumeration value="VIOLATED"/> 
+ 		</xsd:restriction>
+ 	</xsd:simpleType>
 	
 </xsd:schema>
