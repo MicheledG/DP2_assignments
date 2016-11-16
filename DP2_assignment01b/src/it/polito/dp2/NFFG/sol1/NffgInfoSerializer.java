@@ -176,8 +176,10 @@ public class NffgInfoSerializer {
 				/* more specific part depending on the instanceof policy reader */
 				if(reachPolicyReader instanceof TraversalPolicyReader){
 					policy.setProperty(PropertyType.TRAVERSAL);
-					// TODO: SET THE NETWORK FUNCTIONALITIES
-					policy.getNetworkFunctionality()
+					TraversalPolicyReader traversalPolicyReader = (TraversalPolicyReader) reachPolicyReader;
+					for (FunctionalType functionalType: traversalPolicyReader.getTraversedFuctionalTypes()) {
+						policy.getNetworkFunctionality().add(translateFunctionalityToNetworkFunctionality(functionalType));
+					}
 				}
 				else
 					policy.setProperty(PropertyType.REACHABILITY);
