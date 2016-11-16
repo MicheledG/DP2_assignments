@@ -5,16 +5,16 @@
 
 	<nffg name="NFFG_01">
 		<node name="NODE_01">
-			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_08"/>
+			<networkFunctionality name="VPN"/>
 			<linkRef linkName="LINK_01"/>
 			<linkRef linkName="LINK_03"/>
 		</node>
 		<node name="NODE_02">
-			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_03"/>
+			<networkFunctionality name="FW"/>
 			<linkRef linkName="LINK_02"/>
 		</node>
 		<node name="NODE_03">
-			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_07"/>
+			<networkFunctionality name="SPAM"/>
 			<linkRef linkName="LINK_04"/>
 		</node>
 		<link name="LINK_01">
@@ -50,16 +50,16 @@
 	
 	<nffg name="NFFG_02">
 		<node name="NODE_01">
-			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_05"/>
+			<networkFunctionality name="MAIL_SERVER"/>
 			<linkRef linkName="LINK_02"/>
 			<linkRef linkName="LINK_03"/>
 		</node>
 		<node name="NODE_02">
-			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_04"/>
+			<networkFunctionality name="MAIL_CLIENT"/>
 			<linkRef linkName="LINK_02"/>
 		</node>
 		<node name="NODE_03">
-			<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_10"/>
+			<networkFunctionality name="WEB_SERVER"/>
 			<linkRef linkName="LINK_04"/>
 		</node>
 		<link name="LINK_01">
@@ -117,8 +117,8 @@
 	<policy name="POLICY_02">
 		<property property="TRAVERSAL"/>
 		<positive positive="FALSE"/>
-		<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_03"/>
-		<networkFunctionalityRef networkFunctionalityId="FUNC_TYPE_07"/>
+		<networkFunctionality name="FW"/>
+		<networkFunctionality name="MAIL_SERVER"/>
 		<nffgRef nffgName="NFFG_02"/>
 		<sourceNode nodeName="NODE_02"/>
 		<destinationNode nodeName="NODE_01"/>
@@ -157,36 +157,16 @@
 	</policy>
 	
 	<catalog>
-		<networkFunctionality id="FUNC_TYPE_01">
-			<name>FIREWALL</name>
-		</networkFunctionality>
-		<networkFunctionality id="FUNC_TYPE_02">
-			<name>DPI</name>
-		</networkFunctionality>
-		<networkFunctionality id="FUNC_TYPE_03">
-			<name>NAT</name>
-		</networkFunctionality>
-		<networkFunctionality id="FUNC_TYPE_04">
-			<name>ANTISPAM</name>
-		</networkFunctionality>
-		<networkFunctionality id="FUNC_TYPE_05">
-			<name>WEB-CACHE</name>
-		</networkFunctionality>
-		<networkFunctionality id="FUNC_TYPE_06">
-			<name>VPN GATEWAY</name>
-		</networkFunctionality>
-		<networkFunctionality id="FUNC_TYPE_07">
-			<name>WEB SERVER</name>
-		</networkFunctionality>
-		<networkFunctionality id="FUNC_TYPE_08">
-			<name>WEB CLIENT</name>
-		</networkFunctionality>
-		<networkFunctionality id="FUNC_TYPE_09">
-			<name>MAIL SERVER</name>
-		</networkFunctionality>
-		<networkFunctionality id="FUNC_TYPE_10">
-			<name>MAIL CLIENT</name>
-		</networkFunctionality>
+		<networkFunctionality name="CACHE"/>
+		<networkFunctionality name="DPI"/>
+		<networkFunctionality name="FW"/>
+		<networkFunctionality name="MAIL_CLIENT"/>
+		<networkFunctionality name="MAIL_SERVER"/>
+		<networkFunctionality name="NAT"/>
+		<networkFunctionality name="SPAM"/>
+		<networkFunctionality name="VPN"/>
+		<networkFunctionality name="WEB_CLIENT"/>
+		<networkFunctionality name="WEB_SERVER"/>
 	</catalog>
 	
 </nffgInfo>

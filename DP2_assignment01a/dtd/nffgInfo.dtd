@@ -3,12 +3,11 @@
 <!ELEMENT nffgInfo (nffg+, policy*, catalog)>
 
 <!ELEMENT catalog (networkFunctionality+)>
-<!ELEMENT networkFunctionality (name)>
+<!ELEMENT networkFunctionality EMPTY>
 <!ATTLIST networkFunctionality
-	id ID #REQUIRED>
-<!ELEMENT name (#PCDATA)>
+	name (CACHE|DPI|FW|MAIL_CLIENT|MAIL_SERVER|NAT|SPAM|VPN|WEB_CLIENT|WEB_SERVER) "WEB_SERVER">
 
-<!ELEMENT policy (property, positive, networkFunctionalityRef*, nffgRef, sourceNode, destinationNode, result, lastVerification)>
+<!ELEMENT policy (property, positive, networkFunctionality*, nffgRef, sourceNode, destinationNode, result, lastVerification)>
 <!ATTLIST policy
 	name ID #REQUIRED>
 
@@ -20,10 +19,6 @@
 <!ATTLIST positive
 	positive (TRUE|FALSE) "TRUE">
 	
-<!ELEMENT networkFunctionalityRef EMPTY>
-<!ATTLIST networkFunctionalityRef
-	networkFunctionalityId IDREF #REQUIRED>
-
 <!ELEMENT nffgRef EMPTY>
 <!ATTLIST nffgRef
 	nffgName IDREF #REQUIRED>
@@ -41,123 +36,7 @@
 	result (SATISFIED|VIOLATED) "VIOLATED">
 
 <!ELEMENT lastVerification (date)>
-<!ELEMENT policy (property, positive, networkFunctionalityRef*, nffgRef, sourceNode, destinationNode, result, lastVerification)>
-<!ATTLIST policy
-	name ID #REQUIRED>
-
-<!ELEMENT property EMPTY>
-<!ATTLIST property
-	property (REACHABILITY|TRAVERSAL) "REACHABILITY">
-
-<!ELEMENT positive EMPTY>
-<!ATTLIST positive
-	positive (TRUE|FALSE) "TRUE">
-	
-<!ELEMENT networkFunctionalityRef EMPTY>
-<!ATTLIST networkFunctionalityRef
-	networkFunctionalityId IDREF #REQUIRED>
-
-<!ELEMENT nffgRef EMPTY>
-<!ATTLIST nffgRef
-	nffgName IDREF #REQUIRED>
-	
-<!ELEMENT sourceNode EMPTY>
-<!ATTLIST sourceNode
-	nodeName NMTOKEN #REQUIRED>
-
-<!ELEMENT destinationNode EMPTY>
-<!ATTLIST destinationNode
-	nodeName NMTOKEN #REQUIRED>
-
-<!ELEMENT result EMPTY>
-<!ATTLIST result
-	result (SATISFIED|VIOLATED) "VIOLATED">
-
-<!ELEMENT lastVerification (date)>
-<!ELEMENT policy (property, positive, networkFunctionalityRef*, nffgRef, sourceNode, destinationNode, result, lastVerification)>
-<!ATTLIST policy
-	name ID #REQUIRED>
-
-<!ELEMENT property EMPTY>
-<!ATTLIST property
-	property (REACHABILITY|TRAVERSAL) "REACHABILITY">
-
-<!ELEMENT positive EMPTY>
-<!ATTLIST positive
-	positive (TRUE|FALSE) "TRUE">
-	
-<!ELEMENT networkFunctionalityRef EMPTY>
-<!ATTLIST networkFunctionalityRef
-	networkFunctionalityId IDREF #REQUIRED>
-
-<!ELEMENT nffgRef EMPTY>
-<!ATTLIST nffgRef
-	nffgName IDREF #REQUIRED>
-	
-<!ELEMENT sourceNode EMPTY>
-<!ATTLIST sourceNode
-	nodeName NMTOKEN #REQUIRED>
-
-<!ELEMENT destinationNode EMPTY>
-<!ATTLIST destinationNode
-	nodeName NMTOKEN #REQUIRED>
-
-<!ELEMENT result EMPTY>
-<!ATTLIST result
-	result (SATISFIED|VIOLATED) "VIOLATED">
-
-<!ELEMENT lastVerification (date)>
-<!ELEMENT policy (property, positive, networkFunctionalityRef*, nffgRef, sourceNode, destinationNode, result, lastVerification)>
-<!ATTLIST policy
-	name ID #REQUIRED>
-
-<!ELEMENT property EMPTY>
-<!ATTLIST property
-	property (REACHABILITY|TRAVERSAL) "REACHABILITY">
-
-<!ELEMENT positive EMPTY>
-<!ATTLIST positive
-	positive (TRUE|FALSE) "TRUE">
-	
-<!ELEMENT networkFunctionalityRef EMPTY>
-<!ATTLIST networkFunctionalityRef
-	networkFunctionalityId IDREF #REQUIRED>
-
-<!ELEMENT nffgRef EMPTY>
-<!ATTLIST nffgRef
-	nffgName IDREF #REQUIRED>
-	
-<!ELEMENT sourceNode EMPTY>
-<!ATTLIST sourceNode
-	nodeName NMTOKEN #REQUIRED>
-
-<!ELEMENT destinationNode EMPTY>
-<!ATTLIST destinationNode
-	nodeName NMTOKEN #REQUIRED>
-
-<!ELEMENT result EMPTY>
-<!ATTLIST result
-	result (SATISFIED|VIOLATED) "VIOLATED">
-
-<!ELEMENT lastVerification (date)>
-name="nffgInfo"<xsd:key name="keyCatalogNetworkFunctionality">
-					<!-- Ensure uniqueness of network functionalities within the catalog and their referenceability-->
-					<xsd:selector xpath="networkFunctionality"/>
-					<xsd:field xpath="."/>
-				</xsd:key><xsd:key name="keyCatalogNetworkFunctionality">
-					<!-- Ensure uniqueness of network functionalities within the catalog and their referenceability-->
-					<xsd:selector xpath="networkFunctionality"/>
-					<xsd:field xpath="."/>
-				</xsd:key><xsd:key name="keyCatalogNetworkFunctionality">
-					<!-- Ensure uniqueness of network functionalities within the catalog and their referenceability-->
-					<xsd:selector xpath="networkFunctionality"/>
-					<xsd:field xpath="."/>
-				</xsd:key><xsd:complexType name="catalogType">
-		<xsd:sequence>
-			<xsd:element name="networkFunctionality" type="xsd:string" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
-				<!ELEMENT date (year, month, day, hour, min, sec, utcZone)>
+<!ELEMENT date (year, month, day, hour, min, sec, utcZone)>
 <!ELEMENT year (#PCDATA)>
 <!ELEMENT month (#PCDATA)>
 <!ELEMENT day (#PCDATA)>
@@ -170,7 +49,7 @@ name="nffgInfo"<xsd:key name="keyCatalogNetworkFunctionality">
 <!ATTLIST nffg
 	name ID #REQUIRED>
 	
-<!ELEMENT node (networkFunctionalityRef, linkRef+)>
+<!ELEMENT node (networkFunctionality, linkRef+)>
 <!ATTLIST node
 	name NMTOKEN #REQUIRED>
 
