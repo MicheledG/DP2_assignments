@@ -3,16 +3,16 @@
 					xsi:noNamespaceSchemaLocation="nffgInfo.xsd">
 	
 	<catalog>
-		<networkFunctionality>FIREWALL</networkFunctionality>
+		<networkFunctionality>FW</networkFunctionality>
 		<networkFunctionality>DPI</networkFunctionality>
 		<networkFunctionality>NAT</networkFunctionality>
-		<networkFunctionality>ANTISPAM</networkFunctionality>
-		<networkFunctionality>WEB-CACHE</networkFunctionality>
-		<networkFunctionality>VPN GATEWAY</networkFunctionality>
-		<networkFunctionality>WEB SERVER</networkFunctionality>
-		<networkFunctionality>WEB CLIENT</networkFunctionality> 
-		<networkFunctionality>MAIL SERVER</networkFunctionality>
-		<networkFunctionality>MAIL CLIENT</networkFunctionality>
+		<networkFunctionality>SPAM</networkFunctionality>
+		<networkFunctionality>CACHE</networkFunctionality>
+		<networkFunctionality>VPN</networkFunctionality>
+		<networkFunctionality>WEB_SERVER</networkFunctionality>
+		<networkFunctionality>WEB_CLIENT</networkFunctionality> 
+		<networkFunctionality>MAIL_SERVER</networkFunctionality>
+		<networkFunctionality>MAIL_CLIENT</networkFunctionality>
 	</catalog>
 	
 	<nffgInfos>
@@ -23,7 +23,7 @@
 				
 				<nodes>
 					<node name="NODE_01"> 
-						<networkFunctionality>FIREWALL</networkFunctionality>
+						<networkFunctionality>FW</networkFunctionality>
 						<link>LINK_01</link>
 						<link>LINK_03</link>
 					</node>
@@ -32,11 +32,11 @@
 						<link>LINK_02</link>
 					</node>
 					<node name="NODE_03">
-						<networkFunctionality>WEB CLIENT</networkFunctionality>
+						<networkFunctionality>WEB_CLIENT</networkFunctionality>
 						<link>LINK_04</link>
 					</node>
 					<node name="NODE_04">
-						<networkFunctionality>WEB CLIENT</networkFunctionality>
+						<networkFunctionality>WEB_CLIENT</networkFunctionality>
 						<link>LINK_05</link>
 					</node>
 				</nodes>		
@@ -86,16 +86,16 @@
 				
 				<nodes>
 					<node name="NODE_01">
-						<networkFunctionality>WEB SERVER</networkFunctionality>
+						<networkFunctionality>WEB_SERVER</networkFunctionality>
 						<link>LINK_02</link>
 						<link>LINK_03</link>
 					</node>
 					<node name="NODE_02">
-						<networkFunctionality>MAIL CLIENT</networkFunctionality>
+						<networkFunctionality>MAIL_CLIENT</networkFunctionality>
 						<link>LINK_02</link>
 					</node>
 					<node name="NODE_03">
-						<networkFunctionality>ANTISPAM</networkFunctionality>
+						<networkFunctionality>SPAM</networkFunctionality>
 						<link>LINK_04</link>
 					</node>	
 				</nodes>
@@ -127,7 +127,7 @@
 					<property>TRAVERSAL</property>
 					<positive>FALSE</positive>
 					<networkFunctionality>NAT</networkFunctionality>
-					<networkFunctionality>WEB SERVER</networkFunctionality>
+					<networkFunctionality>WEB_SERVER</networkFunctionality>
 					<nffg>NFFG_02</nffg>
 					<sourceNode>NODE_03</sourceNode>
 					<destinationNode>NODE_01</destinationNode>

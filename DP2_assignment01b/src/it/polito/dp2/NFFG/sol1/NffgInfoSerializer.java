@@ -5,9 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Set;
+
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NodeType;
+
 import it.polito.dp2.NFFG.*;
-import it.polito.dp2.NFFG.sol1.jaxb.CatalogType;
-import it.polito.dp2.NFFG.sol1.jaxb.NffgInfoWrapper;
+import it.polito.dp2.NFFG.sol1.jaxb.*;
+import it.polito.dp2.NFFG.sol1.jaxb.NffgType.Nodes;
 
 
 public class NffgInfoSerializer {
@@ -57,15 +60,133 @@ public class NffgInfoSerializer {
 		nffgInfoWrapperToMarshall.setNffgInfos(getNffgInfos());
 	}
 
+	/* populate an object of class CatalogType with all the possible network functionality*/
 	private CatalogType getCatalog(){
-		/* TODO: modify the catalog and the functional type => is enum!!!
-		 * to modify the classes run clean task and the generate again everything!
-		 */
+		CatalogType catalog = new CatalogType();
+		for (NetworkFunctionalityType networkFunctionality : NetworkFunctionalityType.values()) {
+			catalog.getNetworkFunctionality().add(networkFunctionality);
+		}
+		
+		return catalog;
 	}
 	
+	/* return an NffgInfos object gathering all the NffgInfo created from the random xml document */
 	private NffgInfoWrapper.NffgInfos getNffgInfos(){
+		// Get the list of policies
+		Set<PolicyReader> policies = monitor.getPolicies();
 		
+		// Get the list of nffgs
+		Set<NffgReader> nffgs = monitor.getNffgs();
+		
+		NffgInfoWrapper.NffgInfos nffgInfos = new NffgInfoWrapper.NffgInfos();
+		for (NffgReader nffg : nffgs) {
+			nffgInfos.getNffgInfo().add(getNffgInfo(nffg, policies));
+		}
+		
+		return nffgInfos;
 	}
+	
+	/* create the NffgInfoType object related to an nffg */
+	private NffgInfoType getNffgInfo(NffgReader nffgReader, Set<PolicyReader> policies){
+		 
+		
+		NffgInfoType nffgInfo = new NffgInfoType();
+		
+		nffgInfo.setNffg(getNffg(nffgReader));
+		nffgInfo.setPolicies(getPoliciesOfNffgInfo());
+		
+		return nffgInfo;
+	}
+	
+	/* create an NffgType object from an NffgReader object */
+	private NffgType getNffg(NffgReader nffgReader){
+		
+		/* translate nffgReader into my nffgType */
+		NffgType nffg = new NffgType();
+		
+		nffg.setName(nffgReader.getName());
+		/* TODO needs to translate the nffgReader update time with mine */
+		//nffg.setLastUpdate(nffgReader.getUpdateTime());
+		nffg.setNodes(getNodesOfNffg(nffgReader));
+		nffg.setLinks(getLinksOfNffg(nffgReader));
+		
+		return nffg;
+	}
+	
+	/* create a Nodes object from NffgReader's objects node */
+	private NffgType.Nodes getNodesOfNffg(NffgReader nffgReader){
+		
+		NffgType.Nodes nodes = new NffgType.Nodes();
+		
+		for (NodeReader nodeReader: nffgReader.getNodes()) {
+			it.polito.dp2.NFFG.sol1.jaxb.NodeType node = new it.polito.dp2.NFFG.sol1.jaxb.NodeType();
+			node.setNetworkFunctionality(translateFunctionalityToNetworkFunctionality(nodeReader.getFuncType()));
+			node.setName(nodeReader.getName());
+			nodes.getNode().add(node);
+		}
+		
+		
+		return nodes;
+	}
+	
+	/* create a Links object from NffgReader's objects link */
+	private NffgType.Links getLinksOfNffg(NffgReader nffgReader){
+		
+		NffgType.Links links = new NffgType.Links();
+		
+		for (NodeReader nodeReader: nffgReader.getNodes()) {
+			for (LinkReader linkReader: nodeReader.getLinks()) {
+				it.polito.dp2.NFFG.sol1.jaxb.LinkType link = new it.polito.dp2.NFFG.sol1.jaxb.LinkType();
+				link.setName(linkReader.getName());
+				link.setSourceNode(linkReader.getSourceNode().getName());
+				link.setDestinationNode(linkReader.getDestinationNode().getName());
+				links.getLink().add(link);
+			}
+		}
+		
+		return links;
+	}
+	
+	/*translate FunctionalType to NetworkFunctionalityType*/
+	private NetworkFunctionalityType translateFunctionalityToNetworkFunctionality(FunctionalType functionalType){
+		NetworkFunctionalityType networkFunctionalityType = NetworkFunctionalityType.WEB_SERVER; //default value
+		
+		switch (functionalType) {
+		case CACHE:
+			networkFunctionalityType = NetworkFunctionalityType.CACHE;
+			break;
+		case DPI:
+			networkFunctionalityType = NetworkFunctionalityType.DPI;
+			break;
+		case FW:
+			networkFunctionalityType = NetworkFunctionalityType.FW;
+			break;
+		case MAIL_CLIENT:
+			networkFunctionalityType = NetworkFunctionalityType.MAIL_CLIENT;
+			break;
+		case MAIL_SERVER:
+			networkFunctionalityType = NetworkFunctionalityType.MAIL_SERVER;
+			break;
+		case NAT:
+			networkFunctionalityType = NetworkFunctionalityType.NAT;
+			break;
+		case SPAM:
+			networkFunctionalityType = NetworkFunctionalityType.SPAM;
+			break;
+		case VPN:
+			networkFunctionalityType = NetworkFunctionalityType.VPN;
+			break;
+		case WEB_CLIENT:
+			networkFunctionalityType = NetworkFunctionalityType.WEB_CLIENT;
+			break;
+		case WEB_SERVER:
+			networkFunctionalityType = NetworkFunctionalityType.WEB_SERVER;
+			break;
+		}
+		
+		return networkFunctionalityType;
+	}
+	
 	
 	private void marshallAll(){
 		
