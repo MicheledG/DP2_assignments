@@ -136,7 +136,7 @@
 			<xsd:element name="nffg" type="xsd:string"/>
 			<xsd:element name="sourceNode" type="xsd:string"/>
 			<xsd:element name="destinationNode" type="xsd:string"/>
-			<xsd:element name="result" type="resultType"/>
+			<xsd:element name="result" type="xsd:boolean"/>
 			<xsd:element name="lastVerification" type="xsd:dateTime"/>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string"/>
@@ -148,12 +148,5 @@
 			<xsd:enumeration value="TRAVERSAL"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
-	<xsd:simpleType name="resultType">
- 		<xsd:restriction base="xsd:string">
- 			<xsd:enumeration value="SATISFIED"/>
- 			<xsd:enumeration value="VIOLATED"/>
- 		</xsd:restriction>
- 	</xsd:simpleType>
 	
 </xsd:schema>

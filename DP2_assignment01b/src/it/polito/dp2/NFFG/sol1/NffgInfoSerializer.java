@@ -163,14 +163,8 @@ public class NffgInfoSerializer {
 				policy.setName(reachPolicyReader.getName());
 				policy.setNffg(reachPolicyReader.getNffg().getName());
 				policy.setPositive(reachPolicyReader.isPositive());
-				
-				if(reachPolicyReader.getResult().getVerificationResult())
-					policy.setResult(ResultType.SATISFIED);
-				else
-					policy.setResult(ResultType.VIOLATED);
-				
+				policy.setResult(reachPolicyReader.getResult().getVerificationResult());
 				policy.setLastVerification(translateCalendarToXMLGregorianCalendar(policyReader.getResult().getVerificationTime()));
-				
 				policy.setSourceNode(reachPolicyReader.getSourceNode().getName());
 				policy.setDestinationNode(reachPolicyReader.getDestinationNode().getName());
 				
