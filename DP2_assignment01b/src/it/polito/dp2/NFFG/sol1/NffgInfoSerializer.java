@@ -20,9 +20,8 @@ import it.polito.dp2.NFFG.sol1.jaxb.*;
 
 
 public class NffgInfoSerializer {
-	private NffgVerifier monitor;
-	//private DateFormat dateFormat;
-	//create the data structure where store the information of the random NFFG
+	private NffgVerifier nffgVerifier;
+	/* the root element where store the information of the random NFFGs */
 	private NffgInfoWrapper nffgInfoWrapperToMarshall;
 
 	
@@ -31,16 +30,14 @@ public class NffgInfoSerializer {
 	 * @throws NffgVerifierException 
 	 */
 	public NffgInfoSerializer() throws NffgVerifierException {
-		NffgVerifierFactory factory = NffgVerifierFactory.newInstance();
-		monitor = factory.newNffgVerifier();
-		//dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+		NffgVerifierFactory nffgVerifierFactory = NffgVerifierFactory.newInstance();
+		nffgVerifier = nffgVerifierFactory.newNffgVerifier();
 		nffgInfoWrapperToMarshall = new NffgInfoWrapper();
 	}
 	
-	public NffgInfoSerializer(NffgVerifier monitor) {
+	public NffgInfoSerializer(NffgVerifier nffgVerifier) {
 		super();
-		this.monitor = monitor;
-		//dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+		this.nffgVerifier = nffgVerifier;
 		nffgInfoWrapperToMarshall = new NffgInfoWrapper();
 	}
 
@@ -48,19 +45,25 @@ public class NffgInfoSerializer {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		NffgInfoSerializer wf;
+		
+		String fileName = args[0];
+		if(fileName == null){
+			System.err.println("Error: missing -Doutput argument.");
+			System.exit(-1);
+		}
+		
+		NffgInfoSerializer nffgInfoSerializer;
 		try {
-			wf = new NffgInfoSerializer();
-			wf.getAllRandomData();
-			wf.marshallAll();
+			nffgInfoSerializer = new NffgInfoSerializer();
+			nffgInfoSerializer.getAllRandomData();
+			nffgInfoSerializer.marshallToXmlFile(fileName);
 		} catch (NffgVerifierException e) {
-			System.err.println("Could not instantiate data generator.");
-			e.printStackTrace();
-			System.exit(1);
+			System.err.println("Error: could not instantiate data generator.");
+			System.exit(-1);
 		}
 	}
 
-
+	/* populate the root element */
 	public void getAllRandomData() {
 		nffgInfoWrapperToMarshall.setCatalog(getCatalog()); 
 		nffgInfoWrapperToMarshall.setNffgInfos(getNffgInfos());
@@ -79,10 +82,10 @@ public class NffgInfoSerializer {
 	/* return an NffgInfos object gathering all the NffgInfo created from the random xml document */
 	private NffgInfoWrapper.NffgInfos getNffgInfos(){
 		// Get the list of policies
-		Set<PolicyReader> policies = monitor.getPolicies();
+		Set<PolicyReader> policies = nffgVerifier.getPolicies();
 		
 		// Get the list of nffgs
-		Set<NffgReader> nffgs = monitor.getNffgs();
+		Set<NffgReader> nffgs = nffgVerifier.getNffgs();
 		
 		NffgInfoWrapper.NffgInfos nffgInfos = new NffgInfoWrapper.NffgInfos();
 		for (NffgReader nffg : nffgs) {
@@ -250,7 +253,7 @@ public class NffgInfoSerializer {
 	}
 	
 	
-	private void marshallAll(){
+	private void marshallToXmlFile(String fileName){
 		
 		JAXBContext jaxbContext = null;
 		javax.xml.bind.Marshaller marshaller = null;
@@ -261,28 +264,29 @@ public class NffgInfoSerializer {
 			marshaller = jaxbContext.createMarshaller();
 		}
 		catch(JAXBException e){
-			System.out.println("ERROR: unable to create marshaller. Exception follows.");
-            System.out.println(e);
+			System.err.println("ERROR: unable to create marshaller. Exception follows.");
+            System.err.println(e);
             System.exit(-1);
 		}
 		
 		try {
 			/* set validating marshaller */
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			//TODO: find a better way to specify the schema location
 			Schema schema = schemaFactory.newSchema(new File("xsd/nffgInfo.xsd"));
 			marshaller.setSchema(schema);
 			
 			/* marshall */
 			marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			marshaller.marshal(nffgInfoWrapperToMarshall, new File("xsd/randomNffgInfo.xml"));
+			marshaller.marshal(nffgInfoWrapperToMarshall, new File(fileName));
 		}
 		catch (JAXBException e) {
-			System.out.println("ERROR: unable to marshall. Exception follows.");
-            System.out.println(e);
+			System.err.println("ERROR: unable to marshall. Exception follows.");
+            System.err.println(e);
             System.exit(-1);
 		} catch (SAXException e) {
-			System.out.println("ERROR: unable to load the schema. Exception follows.");
-            System.out.println(e);
+			System.err.println("ERROR: unable to load the schema. Exception follows.");
+            System.err.println(e);
             System.exit(-1);
 		}
 		
