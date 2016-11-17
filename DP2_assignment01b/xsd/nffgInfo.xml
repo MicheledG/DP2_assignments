@@ -19,43 +19,43 @@
 	
 		<nffgInfo>
 			
-			<nffg name="NFFG_01">
+			<nffg name="NFFG01">
 				
 				<nodes>
-					<node name="NODE_01"> 
+					<node name="NODE01"> 
 						<networkFunctionality>FW</networkFunctionality>
 					</node>
-					<node name="NODE_02">
+					<node name="NODE02">
 						<networkFunctionality>NAT</networkFunctionality>
 					</node>
-					<node name="NODE_03">
+					<node name="NODE03">
 						<networkFunctionality>WEB_CLIENT</networkFunctionality>
 					</node>
-					<node name="NODE_04">
+					<node name="NODE04">
 						<networkFunctionality>WEB_CLIENT</networkFunctionality>
 					</node>
 				</nodes>		
 				
 				<links>
-					<link name="LINK_01">
-						<sourceNode>NODE_01</sourceNode>
-						<destinationNode>NODE_02</destinationNode>
+					<link name="LINK01">
+						<sourceNode>NODE01</sourceNode>
+						<destinationNode>NODE02</destinationNode>
 					</link>
-					<link name="LINK_02">
-						<sourceNode>NODE_03</sourceNode>
-						<destinationNode>NODE_01</destinationNode>
+					<link name="LINK02">
+						<sourceNode>NODE03</sourceNode>
+						<destinationNode>NODE01</destinationNode>
 					</link>
-					<link name="LINK_03">
-						<sourceNode>NODE_01</sourceNode>
-						<destinationNode>NODE_03</destinationNode>
+					<link name="LINK03">
+						<sourceNode>NODE01</sourceNode>
+						<destinationNode>NODE03</destinationNode>
 					</link>
-					<link name="LINK_04">
-						<sourceNode>NODE_03</sourceNode>
-						<destinationNode>NODE_01</destinationNode>
+					<link name="LINK04">
+						<sourceNode>NODE03</sourceNode>
+						<destinationNode>NODE01</destinationNode>
 					</link>
-					<link name="LINK_05">
-						<sourceNode>NODE_04</sourceNode>
-						<destinationNode>NODE_01</destinationNode>
+					<link name="LINK05">
+						<sourceNode>NODE04</sourceNode>
+						<destinationNode>NODE01</destinationNode>
 					</link>
 				</links>
 				
@@ -63,12 +63,12 @@
 			</nffg>
 			
 			<policies>
-				<policy name="POLICY_01">
+				<policy name="POLICY01">
 						<property>REACHABILITY</property>
 						<positive>true</positive>
-						<nffg>NFFG_01</nffg>
-						<sourceNode>NODE_01</sourceNode>
-						<destinationNode>NODE_03</destinationNode>
+						<nffg>NFFG01</nffg>
+						<sourceNode>NODE01</sourceNode>
+						<destinationNode>NODE03</destinationNode>
 						<result>false</result>
 						<lastVerification>2016-09-11T16:45:10+01:00</lastVerification>
 				</policy>
@@ -77,36 +77,36 @@
 		
 		<nffgInfo>
 			
-			<nffg name="NFFG_02">
+			<nffg name="NFFG02">
 				
 				<nodes>
-					<node name="NODE_01">
+					<node name="NODE01">
 						<networkFunctionality>WEB_SERVER</networkFunctionality>
 					</node>
-					<node name="NODE_02">
+					<node name="NODE02">
 						<networkFunctionality>MAIL_CLIENT</networkFunctionality>
 					</node>
-					<node name="NODE_03">
+					<node name="NODE03">
 						<networkFunctionality>SPAM</networkFunctionality>
 					</node>	
 				</nodes>
 				
 				<links>
-					<link name="LINK_01">
-						<sourceNode>NODE_03</sourceNode>
-						<destinationNode>NODE_02</destinationNode>
+					<link name="LINK01">
+						<sourceNode>NODE03</sourceNode>
+						<destinationNode>NODE02</destinationNode>
 					</link>
-					<link name="LINK_02">
-						<sourceNode>NODE_02</sourceNode>
-						<destinationNode>NODE_01</destinationNode>
+					<link name="LINK02">
+						<sourceNode>NODE02</sourceNode>
+						<destinationNode>NODE01</destinationNode>
 					</link>
-					<link name="LINK_03">
-						<sourceNode>NODE_01</sourceNode>
-						<destinationNode>NODE_03</destinationNode>
+					<link name="LINK03">
+						<sourceNode>NODE01</sourceNode>
+						<destinationNode>NODE03</destinationNode>
 					</link>
-					<link name="LINK_04">
-						<sourceNode>NODE_01</sourceNode>
-						<destinationNode>NODE_03</destinationNode>
+					<link name="LINK04">
+						<sourceNode>NODE01</sourceNode>
+						<destinationNode>NODE03</destinationNode>
 					</link>
 				</links>
 				
@@ -114,23 +114,23 @@
 			</nffg>
 			
 			<policies>
-				<policy name="POLICY_02">
+				<policy name="POLICY02">
 					<property>TRAVERSAL</property>
 					<positive>false</positive>
 					<networkFunctionality>NAT</networkFunctionality>
 					<networkFunctionality>WEB_SERVER</networkFunctionality>
-					<nffg>NFFG_02</nffg>
-					<sourceNode>NODE_03</sourceNode>
-					<destinationNode>NODE_01</destinationNode>
+					<nffg>NFFG02</nffg>
+					<sourceNode>NODE03</sourceNode>
+					<destinationNode>NODE01</destinationNode>
 					<result>false</result>
 					<lastVerification>2016-09-11T16:45:10+01:00</lastVerification>
 				</policy>
-				<policy name="POLICY_03">
+				<policy name="POLICY03">
 					<property>REACHABILITY</property>
 					<positive>true</positive>
-					<nffg>NFFG_02</nffg>
-					<sourceNode>NODE_02</sourceNode>
-					<destinationNode>NODE_03</destinationNode>
+					<nffg>NFFG02</nffg>
+					<sourceNode>NODE02</sourceNode>
+					<destinationNode>NODE03</destinationNode>
 					<result>false</result>
 					<lastVerification>2016-07-27T21:40:50+01:00</lastVerification>
 				</policy>

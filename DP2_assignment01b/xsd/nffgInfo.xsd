@@ -104,22 +104,22 @@
 			</xsd:element> 
 			<xsd:element name="lastUpdate" type="xsd:dateTime"/>
 		</xsd:sequence>
-		<xsd:attribute name="name" type="xsd:string"/>
+		<xsd:attribute name="name" type="nameType"/>
 	</xsd:complexType>
 	
 	<xsd:complexType name="nodeType">
 		<xsd:sequence>
 			<xsd:element name="networkFunctionality" type="networkFunctionalityType"/>
 		</xsd:sequence>
-		<xsd:attribute name="name" type="xsd:string"/>
+		<xsd:attribute name="name" type="nameType"/>
 	</xsd:complexType>
 	
 	<xsd:complexType name="linkType">
 		<xsd:sequence>
-			<xsd:element name="sourceNode" type="xsd:string"/>
-			<xsd:element name="destinationNode" type="xsd:string"/>
+			<xsd:element name="sourceNode" type="nameType"/>
+			<xsd:element name="destinationNode" type="nameType"/>
 		</xsd:sequence>
-		<xsd:attribute name="name" type="xsd:string"/>
+		<xsd:attribute name="name" type="nameType"/>
 	</xsd:complexType>
 	
 	<xsd:complexType name="policyType">
@@ -127,14 +127,20 @@
 			<xsd:element name="property" type="propertyType"/>
 			<xsd:element name="positive" type="xsd:boolean"/>
 			<xsd:element name="networkFunctionality" type="networkFunctionalityType" minOccurs="0" maxOccurs="unbounded"/>
-			<xsd:element name="nffg" type="xsd:string"/>
-			<xsd:element name="sourceNode" type="xsd:string"/>
-			<xsd:element name="destinationNode" type="xsd:string"/>
+			<xsd:element name="nffg" type="nameType"/>
+			<xsd:element name="sourceNode" type="nameType"/>
+			<xsd:element name="destinationNode" type="nameType"/>
 			<xsd:element name="result" type="xsd:boolean" minOccurs="0"/>
 			<xsd:element name="lastVerification" type="xsd:dateTime" minOccurs="0"/>
 		</xsd:sequence>
-		<xsd:attribute name="name" type="xsd:string"/>
+		<xsd:attribute name="name" type="nameType"/>
 	</xsd:complexType>
+	
+	<xsd:simpleType name="nameType">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-zA-Z]([a-zA-Z0-9])*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
 	
 	<xsd:simpleType name="propertyType">
 		<xsd:restriction base="xsd:string">

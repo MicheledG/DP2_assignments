@@ -50,7 +50,11 @@ public class NffgInfoSerializer {
 		if(fileName == null){
 			System.err.println("Error: missing -Doutput argument.");
 			System.exit(-1);
+			/* in reality it is always sat up
+			 * if the user do not specify a file name it use a default location in a temporary folder
+			 */
 		}
+		System.out.println("Expected output file: "+fileName);
 		
 		NffgInfoSerializer nffgInfoSerializer;
 		try {
