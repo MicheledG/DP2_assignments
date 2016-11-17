@@ -24,20 +24,15 @@
 				<nodes>
 					<node name="NODE_01"> 
 						<networkFunctionality>FW</networkFunctionality>
-						<link>LINK_01</link>
-						<link>LINK_03</link>
 					</node>
 					<node name="NODE_02">
 						<networkFunctionality>NAT</networkFunctionality>
-						<link>LINK_02</link>
 					</node>
 					<node name="NODE_03">
 						<networkFunctionality>WEB_CLIENT</networkFunctionality>
-						<link>LINK_04</link>
 					</node>
 					<node name="NODE_04">
 						<networkFunctionality>WEB_CLIENT</networkFunctionality>
-						<link>LINK_05</link>
 					</node>
 				</nodes>		
 				
@@ -87,16 +82,12 @@
 				<nodes>
 					<node name="NODE_01">
 						<networkFunctionality>WEB_SERVER</networkFunctionality>
-						<link>LINK_02</link>
-						<link>LINK_03</link>
 					</node>
 					<node name="NODE_02">
 						<networkFunctionality>MAIL_CLIENT</networkFunctionality>
-						<link>LINK_02</link>
 					</node>
 					<node name="NODE_03">
 						<networkFunctionality>SPAM</networkFunctionality>
-						<link>LINK_04</link>
 					</node>	
 				</nodes>
 				

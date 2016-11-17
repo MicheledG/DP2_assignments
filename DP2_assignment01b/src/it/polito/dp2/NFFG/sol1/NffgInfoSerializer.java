@@ -15,6 +15,8 @@ import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.xml.sax.SAXException;
+
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 import it.polito.dp2.NFFG.*;
@@ -275,7 +277,8 @@ public class NffgInfoSerializer {
 			//TODO
 			/* set validating marshaller */
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = schemaFactory.newSchema(new Source("xsd/nffgInfo.xsd"));
+			Schema schema = schemaFactory.newSchema(new File("xsd/nffgInfo.xsd"));
+			marshaller.setSchema(schema);
 			
 			/* marshall */
 			marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -285,9 +288,11 @@ public class NffgInfoSerializer {
 			System.out.println("ERROR: unable to marshall. Exception follows.");
             System.out.println(e);
             System.exit(-1);
+		} catch (SAXException e) {
+			System.out.println("ERROR: unable to load the schema. Exception follows.");
+            System.out.println(e);
+            System.exit(-1);
 		}
-		
-		
 		
 	}
 	

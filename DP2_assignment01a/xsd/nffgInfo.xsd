@@ -39,11 +39,6 @@
 									<xsd:selector xpath="policies/policy/destinationNode"/>
 									<xsd:field xpath="."/>
 								</xsd:keyref>
-								<xsd:keyref name="keyrefNffgLinkName" refer="keyNffgLinkName">
-									<!-- reference unique links' name within the same nffg -->
-									<xsd:selector xpath="nffg/nodes/node/link"/>
-									<xsd:field xpath="."/>
-								</xsd:keyref>
 							</xsd:element>
 						</xsd:sequence>
 					</xsd:complexType>
@@ -81,10 +76,10 @@
 	<xsd:complexType name="nffgInfoType">
 		<xsd:sequence>
 			<xsd:element name="nffg" type="nffgType"/>
-			<xsd:element name="policies" minOccurs="0">
+			<xsd:element name="policies">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="policy" type="policyType" maxOccurs="unbounded"/>
+						<xsd:element name="policy" type="policyType" minOccurs="1" maxOccurs="unbounded"/>
 					</xsd:sequence>							
 				</xsd:complexType>
 			</xsd:element>
@@ -115,7 +110,6 @@
 	<xsd:complexType name="nodeType">
 		<xsd:sequence>
 			<xsd:element name="networkFunctionality" type="networkFunctionalityType"/>
-			<xsd:element name="link" type="xsd:string" maxOccurs="unbounded"/>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string"/>
 	</xsd:complexType>
