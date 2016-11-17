@@ -163,8 +163,17 @@ public class NffgInfoSerializer {
 				policy.setName(reachPolicyReader.getName());
 				policy.setNffg(reachPolicyReader.getNffg().getName());
 				policy.setPositive(reachPolicyReader.isPositive());
-				policy.setResult(reachPolicyReader.getResult().getVerificationResult());
-				policy.setLastVerification(translateCalendarToXMLGregorianCalendar(policyReader.getResult().getVerificationTime()));
+				
+				VerificationResultReader result = reachPolicyReader.getResult();
+				if(result != null){
+					/* we have a result in the policy */
+					policy.setResult(result.getVerificationResult());
+					policy.setLastVerification(translateCalendarToXMLGregorianCalendar(result.getVerificationTime()));
+				}
+				else{
+					//TODO
+				}
+				
 				policy.setSourceNode(reachPolicyReader.getSourceNode().getName());
 				policy.setDestinationNode(reachPolicyReader.getDestinationNode().getName());
 				
@@ -189,7 +198,7 @@ public class NffgInfoSerializer {
 	
 	/*translate FunctionalType to NetworkFunctionalityType*/
 	private NetworkFunctionalityType translateFunctionalityToNetworkFunctionality(FunctionalType functionalType){
-		NetworkFunctionalityType networkFunctionalityType = NetworkFunctionalityType.WEB_SERVER; //default value
+		NetworkFunctionalityType networkFunctionalityType;
 		
 		switch (functionalType) {
 		case CACHE:
@@ -220,6 +229,9 @@ public class NffgInfoSerializer {
 			networkFunctionalityType = NetworkFunctionalityType.WEB_CLIENT;
 			break;
 		case WEB_SERVER:
+			networkFunctionalityType = NetworkFunctionalityType.WEB_SERVER;
+			break;
+		default:
 			networkFunctionalityType = NetworkFunctionalityType.WEB_SERVER;
 			break;
 		}
