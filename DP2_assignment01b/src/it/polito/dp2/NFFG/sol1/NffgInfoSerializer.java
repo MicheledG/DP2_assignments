@@ -1,12 +1,19 @@
 package it.polito.dp2.NFFG.sol1;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Set;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.transform.Source;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
@@ -249,7 +256,39 @@ public class NffgInfoSerializer {
 	
 	
 	private void marshallAll(){
-		//TODO: write something here!
+		
+		JAXBContext jaxbContext = null;
+		javax.xml.bind.Marshaller marshaller = null;
+		
+		try {
+			/* create JAXBContext */
+			jaxbContext = JAXBContext.newInstance("it.polito.dp2.NFFG.sol1.jaxb");
+			marshaller = jaxbContext.createMarshaller();
+		}
+		catch(JAXBException e){
+			System.out.println("ERROR: unable to create marshaller. Exception follows.");
+            System.out.println(e);
+            System.exit(-1);
+		}
+		
+		try {
+			//TODO
+			/* set validating marshaller */
+			SchemaFactory schemaFactory = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			Schema schema = schemaFactory.newSchema(new Source("xsd/nffgInfo.xsd"));
+			
+			/* marshall */
+			marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller.marshal(nffgInfoWrapperToMarshall, new File("xsd/randomNffgInfo.xml"));
+		}
+		catch (JAXBException e) {
+			System.out.println("ERROR: unable to marshall. Exception follows.");
+            System.out.println(e);
+            System.exit(-1);
+		}
+		
+		
+		
 	}
 	
 }
