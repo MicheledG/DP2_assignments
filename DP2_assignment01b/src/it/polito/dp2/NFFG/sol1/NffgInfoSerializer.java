@@ -1,17 +1,13 @@
 package it.polito.dp2.NFFG.sol1;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
@@ -25,7 +21,7 @@ import it.polito.dp2.NFFG.sol1.jaxb.*;
 
 public class NffgInfoSerializer {
 	private NffgVerifier monitor;
-	private DateFormat dateFormat;
+	//private DateFormat dateFormat;
 	//create the data structure where store the information of the random NFFG
 	private NffgInfoWrapper nffgInfoWrapperToMarshall;
 
@@ -37,14 +33,14 @@ public class NffgInfoSerializer {
 	public NffgInfoSerializer() throws NffgVerifierException {
 		NffgVerifierFactory factory = NffgVerifierFactory.newInstance();
 		monitor = factory.newNffgVerifier();
-		dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+		//dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 		nffgInfoWrapperToMarshall = new NffgInfoWrapper();
 	}
 	
 	public NffgInfoSerializer(NffgVerifier monitor) {
 		super();
 		this.monitor = monitor;
-		dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+		//dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 		nffgInfoWrapperToMarshall = new NffgInfoWrapper();
 	}
 
@@ -179,9 +175,6 @@ public class NffgInfoSerializer {
 					policy.setResult(result.getVerificationResult());
 					policy.setLastVerification(translateCalendarToXMLGregorianCalendar(result.getVerificationTime()));
 				}
-				else{
-					//TODO
-				}
 				
 				policy.setSourceNode(reachPolicyReader.getSourceNode().getName());
 				policy.setDestinationNode(reachPolicyReader.getDestinationNode().getName());
@@ -274,7 +267,6 @@ public class NffgInfoSerializer {
 		}
 		
 		try {
-			//TODO
 			/* set validating marshaller */
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = schemaFactory.newSchema(new File("xsd/nffgInfo.xsd"));
