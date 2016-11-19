@@ -30,7 +30,7 @@ public class NffgInfoSerializer {
 	 * @throws NffgVerifierException 
 	 */
 	public NffgInfoSerializer() throws NffgVerifierException {
-		NffgVerifierFactory nffgVerifierFactory = NffgVerifierFactory.newInstance();
+		it.polito.dp2.NFFG.NffgVerifierFactory nffgVerifierFactory = NffgVerifierFactory.newInstance();
 		nffgVerifier = nffgVerifierFactory.newNffgVerifier();
 		nffgInfoWrapperToMarshall = new NffgInfoWrapper();
 	}
