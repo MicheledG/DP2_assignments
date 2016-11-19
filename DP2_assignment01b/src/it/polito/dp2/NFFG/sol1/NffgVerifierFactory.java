@@ -7,8 +7,8 @@ public class NffgVerifierFactory extends it.polito.dp2.NFFG.NffgVerifierFactory 
 
 	@Override
 	public NffgVerifier newNffgVerifier() throws NffgVerifierException {
-		// TODO Auto-generated method stub
-		return null;
+		/* returns a NffgVerifierImpl object */
+		return new NffgVerifierImpl();
 	}
 
 }
