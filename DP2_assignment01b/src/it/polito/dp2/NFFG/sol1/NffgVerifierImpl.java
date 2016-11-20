@@ -99,13 +99,12 @@ public class NffgVerifierImpl implements NffgVerifier {
 		Set<PolicyReader> policyReaders = new HashSet<PolicyReader>();
 		for (NffgInfoType nffgInfoType : this.nffgInfoWrapper.getNffgInfos().getNffgInfo()) {
 			for (PolicyType policyType : nffgInfoType.getPolicies().getPolicy()) {
-				policyReaders.add(PolicyReaderImpl.translatePolicyTypeToPolicyReader(policyType));
+				policyReaders.add(PolicyReaderImpl.translatePolicyTypeToPolicyReader(nffgInfoType.getNffg(), policyType));
 			}
 		}
 		
 		return policyReaders;
-		
-		return null;
+	
 	}
 
 	@Override

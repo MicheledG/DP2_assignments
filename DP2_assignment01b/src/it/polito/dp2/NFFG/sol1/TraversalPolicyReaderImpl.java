@@ -1,55 +1,31 @@
 package it.polito.dp2.NFFG.sol1;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import it.polito.dp2.NFFG.FunctionalType;
-import it.polito.dp2.NFFG.NffgReader;
-import it.polito.dp2.NFFG.NodeReader;
 import it.polito.dp2.NFFG.TraversalPolicyReader;
-import it.polito.dp2.NFFG.VerificationResultReader;
+import it.polito.dp2.NFFG.sol1.jaxb.NetworkFunctionalityType;
+import it.polito.dp2.NFFG.sol1.jaxb.NffgType;
+import it.polito.dp2.NFFG.sol1.jaxb.PolicyType;
+import it.polito.dp2.NFFG.sol1.NodeReaderImpl;
 
-public class TraversalPolicyReaderImpl implements TraversalPolicyReader {
+public class TraversalPolicyReaderImpl extends ReachabilityPolicyReaderImpl implements TraversalPolicyReader {
 
-	@Override
-	public NodeReader getDestinationNode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public NodeReader getSourceNode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public NffgReader getNffg() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public VerificationResultReader getResult() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Boolean isPositive() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+	public TraversalPolicyReaderImpl(NffgType nffg, PolicyType policy) {
+		super(nffg, policy);
 	}
 
 	@Override
 	public Set<FunctionalType> getTraversedFuctionalTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Set<FunctionalType> functionalTypes = new HashSet<FunctionalType>();
+		
+		for (NetworkFunctionalityType networkFunctionalityType : policy.getNetworkFunctionality()) {
+			functionalTypes.add(NodeReaderImpl.translateNetworkFunctionalityTypeToFunctionalType(networkFunctionalityType));
+		}
+		
+		return functionalTypes;
 	}
 
 }

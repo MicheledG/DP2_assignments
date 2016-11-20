@@ -33,7 +33,7 @@ public class LinkReaderImpl implements LinkReader {
 		return nffgReader.getNode(link.getSourceNode());
 	}
 	
-	public static LinkReader tranlateLinkTypeToLinkReader(NffgType nffg, LinkType linkType){
+	public static LinkReader translateLinkTypeToLinkReader(NffgType nffg, LinkType linkType){
 		return new LinkReaderImpl(nffg, linkType);
 	}
 	

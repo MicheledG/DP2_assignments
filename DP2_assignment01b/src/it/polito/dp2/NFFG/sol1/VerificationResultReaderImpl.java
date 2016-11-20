@@ -4,31 +4,49 @@ import java.util.Calendar;
 
 import it.polito.dp2.NFFG.PolicyReader;
 import it.polito.dp2.NFFG.VerificationResultReader;
+import it.polito.dp2.NFFG.sol1.jaxb.NffgType;
+import it.polito.dp2.NFFG.sol1.jaxb.PolicyType;
 
 public class VerificationResultReaderImpl implements VerificationResultReader {
-
+	
+	NffgType nffg;
+	PolicyType policy;
+	
+	public VerificationResultReaderImpl(NffgType nffg, PolicyType policy) {
+		this.nffg = nffg;
+		this.policy = policy;
+	}
+	
 	@Override
 	public PolicyReader getPolicy() {
-		// TODO Auto-generated method stub
-		return null;
+		return PolicyReaderImpl.translatePolicyTypeToPolicyReader(nffg, policy);
 	}
 
 	@Override
 	public Boolean getVerificationResult() {
-		// TODO Auto-generated method stub
-		return null;
+		return policy.isResult();
 	}
 
 	@Override
 	public String getVerificationResultMsg() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		//TODO: add a msg element in the policy
+		String verificationMsg = new String("Policy verification result ");
+		if(getVerificationResult())
+			verificationMsg += "true";
+		else
+			verificationMsg += "not true";
+		
+		return verificationMsg;
 	}
 
 	@Override
 	public Calendar getVerificationTime() {
-		// TODO Auto-generated method stub
-		return null;
+		return NffgReaderImpl.translateXMLGregorianCalendarToCalendar(policy.getLastVerification());
 	}
-
+	
+	
+	public static VerificationResultReader translatePolicyResultToVerificationResultReader(NffgType nffg, PolicyType policy){
+		return new VerificationResultReaderImpl(nffg, policy);
+	}
 }

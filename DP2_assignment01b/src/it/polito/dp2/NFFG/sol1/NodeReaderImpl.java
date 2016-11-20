@@ -39,8 +39,8 @@ public class NodeReaderImpl implements NodeReader {
 	public Set<LinkReader> getLinks() {
 		
 		Set<LinkReader> links = new HashSet<LinkReader>();
-		for (LinkType link : nffg.getLinks().getLink()) {
-			links.add(LinkReaderImpl.tranlateLinkTypeToLinkReader(nffg, link));
+		for (LinkType link : getOutgoingNodeLinks(nffg.getLinks().getLink())) {
+			links.add(LinkReaderImpl.translateLinkTypeToLinkReader(nffg, link));
 		}
 		return links;
 	}
