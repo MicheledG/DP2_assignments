@@ -2,6 +2,7 @@ package it.polito.dp2.NFFG.sol1;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -69,32 +70,66 @@ public class NffgVerifierImpl implements NffgVerifier {
 	
 	@Override
 	public NffgReader getNffg(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		NffgReader nffgReader = null;
+		for (NffgInfoType nffgInfoType : this.nffgInfoWrapper.getNffgInfos().getNffgInfo()) {
+			if(nffgInfoType.getNffg().getName().equals(arg0)){
+				nffgReader = NffgReaderImpl.translateNffgTypeToNffgReader(nffgInfoType.getNffg());
+				break;
+			}
+		}
+		
+		return nffgReader;
 	}
 
 	@Override
 	public Set<NffgReader> getNffgs() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Set<NffgReader> nffgReaders = new HashSet<NffgReader>();
+		for (NffgInfoType nffgInfoType : this.nffgInfoWrapper.getNffgInfos().getNffgInfo()) {
+			nffgReaders.add(NffgReaderImpl.translateNffgTypeToNffgReader(nffgInfoType.getNffg()));
+		}
+		
+		return nffgReaders;
 	}
 
 	@Override
 	public Set<PolicyReader> getPolicies() {
-		// TODO Auto-generated method stub
+		
+		Set<PolicyReader> policyReaders = new HashSet<PolicyReader>();
+		for (NffgInfoType nffgInfoType : this.nffgInfoWrapper.getNffgInfos().getNffgInfo()) {
+			for (PolicyType policyType : nffgInfoType.getPolicies().getPolicy()) {
+				policyReaders.add(PolicyReaderImpl.translatePolicyTypeToPolicyReader(policyType));
+			}
+		}
+		
+		return policyReaders;
+		
 		return null;
 	}
 
 	@Override
 	public Set<PolicyReader> getPolicies(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Set<PolicyReader> policyReaders = getPolicies();
+		for (PolicyReader policyReader : policyReaders) {
+			if(!policyReader.getNffg().getName().equals(arg0))
+				policyReaders.remove(policyReader);
+		}
+		
+		return policyReaders;
 	}
 
 	@Override
 	public Set<PolicyReader> getPolicies(Calendar arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Set<PolicyReader> policyReaders = getPolicies();
+		for (PolicyReader policyReader : policyReaders) {
+			if(policyReader.getResult().getVerificationTime().before(arg0))
+				policyReaders.remove(policyReader);
+		}
+	
+		return policyReaders;	
 	}
 
 }
