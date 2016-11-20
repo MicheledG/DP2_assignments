@@ -1,12 +1,13 @@
 package it.polito.dp2.NFFG.sol1;
 
+import it.polito.dp2.NFFG.NamedEntityReader;
 import it.polito.dp2.NFFG.NffgReader;
 import it.polito.dp2.NFFG.PolicyReader;
 import it.polito.dp2.NFFG.VerificationResultReader;
 import it.polito.dp2.NFFG.sol1.jaxb.NffgType;
 import it.polito.dp2.NFFG.sol1.jaxb.PolicyType;
 
-public class PolicyReaderImpl implements PolicyReader {
+public class PolicyReaderImpl implements PolicyReader, NamedEntityReader {
 	
 	NffgType nffg;
 	PolicyType policy;

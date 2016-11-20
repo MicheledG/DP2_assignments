@@ -1,12 +1,13 @@
 package it.polito.dp2.NFFG.sol1;
 
 import it.polito.dp2.NFFG.LinkReader;
+import it.polito.dp2.NFFG.NamedEntityReader;
 import it.polito.dp2.NFFG.NffgReader;
 import it.polito.dp2.NFFG.NodeReader;
 import it.polito.dp2.NFFG.sol1.jaxb.LinkType;
 import it.polito.dp2.NFFG.sol1.jaxb.NffgType;
 
-public class LinkReaderImpl implements LinkReader {
+public class LinkReaderImpl implements LinkReader,NamedEntityReader {
 
 	NffgType nffg;
 	LinkType link;

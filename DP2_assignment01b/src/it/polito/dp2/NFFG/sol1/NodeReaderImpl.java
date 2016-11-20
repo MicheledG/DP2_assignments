@@ -7,13 +7,14 @@ import java.util.Set;
 
 import it.polito.dp2.NFFG.FunctionalType;
 import it.polito.dp2.NFFG.LinkReader;
+import it.polito.dp2.NFFG.NamedEntityReader;
 import it.polito.dp2.NFFG.NodeReader;
 import it.polito.dp2.NFFG.sol1.jaxb.LinkType;
 import it.polito.dp2.NFFG.sol1.jaxb.NetworkFunctionalityType;
 import it.polito.dp2.NFFG.sol1.jaxb.NffgType;
 import it.polito.dp2.NFFG.sol1.jaxb.NodeType;
 
-public class NodeReaderImpl implements NodeReader {
+public class NodeReaderImpl implements NodeReader, NamedEntityReader {
 	
 	NffgType nffg;
 	NodeType node;
