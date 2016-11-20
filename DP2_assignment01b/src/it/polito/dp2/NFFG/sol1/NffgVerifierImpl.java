@@ -29,7 +29,9 @@ public class NffgVerifierImpl implements NffgVerifier {
 		
 		try {
 			/* create JAXBContext */
+			System.out.println("Defining JAXBContext...");
 			jaxbContext = JAXBContext.newInstance("it.polito.dp2.NFFG.sol1.jaxb");
+			System.out.println("Creating Unmarshaller...");
 			unmarshaller = jaxbContext.createUnmarshaller();
 		}
 		catch(JAXBException e){
@@ -43,11 +45,14 @@ public class NffgVerifierImpl implements NffgVerifier {
 			/* set validating unmarshaller */
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			//TODO: find a better way to specify the schema location
+			System.out.println("Loading XML Schema...");
 			Schema schema = schemaFactory.newSchema(new File("xsd/nffgInfo.xsd"));
 			unmarshaller.setSchema(schema);
 			
 			/* unmarshall */
-			Object rootElement = unmarshaller.unmarshal(new File(System.getProperty("it.polito.dp2.NFFG.sol1.NffgInfo.file")));
+			String fileName = System.getProperty("it.polito.dp2.NFFG.sol1.NffgInfo.file");
+			System.out.println("Unmarshalling file:"+fileName+"...");
+			Object rootElement = unmarshaller.unmarshal(new File(fileName));
 			if(rootElement instanceof NffgInfoWrapper)
 				this.nffgInfoWrapper = (NffgInfoWrapper) rootElement;
 			else

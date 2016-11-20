@@ -29,15 +29,7 @@ public class VerificationResultReaderImpl implements VerificationResultReader {
 
 	@Override
 	public String getVerificationResultMsg() {
-		
-		//TODO: add a msg element in the policy
-		String verificationMsg = new String("Policy verification result ");
-		if(getVerificationResult())
-			verificationMsg += "true";
-		else
-			verificationMsg += "not true";
-		
-		return verificationMsg;
+		return policy.getDescription();
 	}
 
 	@Override

@@ -65,6 +65,7 @@ public class NffgInfoSerializer {
 			System.err.println("Error: could not instantiate data generator.");
 			System.exit(-1);
 		}
+		
 	}
 
 	/* populate the root element */
@@ -181,6 +182,7 @@ public class NffgInfoSerializer {
 					/* we have a result in the policy */
 					policy.setResult(result.getVerificationResult());
 					policy.setLastVerification(translateCalendarToXMLGregorianCalendar(result.getVerificationTime()));
+					policy.setDescription(result.getVerificationResultMsg());
 				}
 				
 				policy.setSourceNode(reachPolicyReader.getSourceNode().getName());

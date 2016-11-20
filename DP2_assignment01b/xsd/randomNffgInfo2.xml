@@ -1,0 +1,1579 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<nffgInfoWrapper>
+    <catalog>
+        <networkFunctionality>CACHE</networkFunctionality>
+        <networkFunctionality>DPI</networkFunctionality>
+        <networkFunctionality>FW</networkFunctionality>
+        <networkFunctionality>MAIL_CLIENT</networkFunctionality>
+        <networkFunctionality>MAIL_SERVER</networkFunctionality>
+        <networkFunctionality>NAT</networkFunctionality>
+        <networkFunctionality>SPAM</networkFunctionality>
+        <networkFunctionality>VPN</networkFunctionality>
+        <networkFunctionality>WEB_CLIENT</networkFunctionality>
+        <networkFunctionality>WEB_SERVER</networkFunctionality>
+    </catalog>
+    <nffgInfos>
+        <nffgInfo>
+            <nffg name="Nffg1">
+                <nodes>
+                    <node name="VPN1">
+                        <networkFunctionality>VPN</networkFunctionality>
+                    </node>
+                    <node name="WEBCLIENT3">
+                        <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="MAILSERVER6">
+                        <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    </node>
+                    <node name="MAILSERVER4">
+                        <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    </node>
+                    <node name="WEBCLIENT0">
+                        <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="DPI2">
+                        <networkFunctionality>DPI</networkFunctionality>
+                    </node>
+                    <node name="MAILSERVER1">
+                        <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    </node>
+                    <node name="MAILCLIENT4">
+                        <networkFunctionality>MAIL_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="VPN0">
+                        <networkFunctionality>VPN</networkFunctionality>
+                    </node>
+                    <node name="WEBCLIENT2">
+                        <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="WEBSERVER0">
+                        <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    </node>
+                    <node name="MAILSERVER2">
+                        <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    </node>
+                    <node name="MAILSERVER3">
+                        <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    </node>
+                    <node name="WEBSERVER5">
+                        <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    </node>
+                    <node name="WEBCLIENT1">
+                        <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    </node>
+                </nodes>
+                <links>
+                    <link name="Link10">
+                        <sourceNode>WEBSERVER0</sourceNode>
+                        <destinationNode>DPI2</destinationNode>
+                    </link>
+                    <link name="Link16">
+                        <sourceNode>MAILSERVER3</sourceNode>
+                        <destinationNode>VPN0</destinationNode>
+                    </link>
+                    <link name="Link23">
+                        <sourceNode>VPN0</sourceNode>
+                        <destinationNode>MAILSERVER6</destinationNode>
+                    </link>
+                    <link name="Link17">
+                        <sourceNode>VPN0</sourceNode>
+                        <destinationNode>MAILSERVER3</destinationNode>
+                    </link>
+                    <link name="Link9">
+                        <sourceNode>VPN0</sourceNode>
+                        <destinationNode>MAILCLIENT4</destinationNode>
+                    </link>
+                    <link name="Link19">
+                        <sourceNode>VPN0</sourceNode>
+                        <destinationNode>MAILSERVER4</destinationNode>
+                    </link>
+                    <link name="Link5">
+                        <sourceNode>VPN1</sourceNode>
+                        <destinationNode>WEBCLIENT2</destinationNode>
+                    </link>
+                    <link name="Link7">
+                        <sourceNode>VPN1</sourceNode>
+                        <destinationNode>WEBCLIENT3</destinationNode>
+                    </link>
+                    <link name="Link3">
+                        <sourceNode>VPN1</sourceNode>
+                        <destinationNode>WEBCLIENT1</destinationNode>
+                    </link>
+                    <link name="Link13">
+                        <sourceNode>VPN1</sourceNode>
+                        <destinationNode>MAILSERVER1</destinationNode>
+                    </link>
+                    <link name="Link15">
+                        <sourceNode>VPN1</sourceNode>
+                        <destinationNode>MAILSERVER2</destinationNode>
+                    </link>
+                    <link name="Link1">
+                        <sourceNode>VPN1</sourceNode>
+                        <destinationNode>WEBCLIENT0</destinationNode>
+                    </link>
+                    <link name="Link21">
+                        <sourceNode>VPN1</sourceNode>
+                        <destinationNode>WEBSERVER5</destinationNode>
+                    </link>
+                    <link name="Link6">
+                        <sourceNode>WEBCLIENT3</sourceNode>
+                        <destinationNode>VPN1</destinationNode>
+                    </link>
+                    <link name="Link0">
+                        <sourceNode>WEBCLIENT0</sourceNode>
+                        <destinationNode>VPN1</destinationNode>
+                    </link>
+                    <link name="Link12">
+                        <sourceNode>MAILSERVER1</sourceNode>
+                        <destinationNode>VPN1</destinationNode>
+                    </link>
+                    <link name="Link22">
+                        <sourceNode>MAILSERVER6</sourceNode>
+                        <destinationNode>VPN0</destinationNode>
+                    </link>
+                    <link name="Link20">
+                        <sourceNode>WEBSERVER5</sourceNode>
+                        <destinationNode>VPN1</destinationNode>
+                    </link>
+                    <link name="Link18">
+                        <sourceNode>MAILSERVER4</sourceNode>
+                        <destinationNode>VPN0</destinationNode>
+                    </link>
+                    <link name="Link2">
+                        <sourceNode>WEBCLIENT1</sourceNode>
+                        <destinationNode>VPN1</destinationNode>
+                    </link>
+                    <link name="Link4">
+                        <sourceNode>WEBCLIENT2</sourceNode>
+                        <destinationNode>VPN1</destinationNode>
+                    </link>
+                    <link name="Link14">
+                        <sourceNode>MAILSERVER2</sourceNode>
+                        <destinationNode>VPN1</destinationNode>
+                    </link>
+                    <link name="Link11">
+                        <sourceNode>DPI2</sourceNode>
+                        <destinationNode>WEBSERVER0</destinationNode>
+                    </link>
+                    <link name="Link8">
+                        <sourceNode>MAILCLIENT4</sourceNode>
+                        <destinationNode>VPN0</destinationNode>
+                    </link>
+                </links>
+                <lastUpdate>2016-09-25T07:57:20.000+02:00</lastUpdate>
+            </nffg>
+            <policies>
+                <policy name="Policy55">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>VPN</networkFunctionality>
+                    <networkFunctionality>MAIL_CLIENT</networkFunctionality>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>WEBCLIENT3</sourceNode>
+                    <destinationNode>MAILSERVER6</destinationNode>
+                </policy>
+                <policy name="Policy65">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>MAILSERVER1</sourceNode>
+                    <destinationNode>MAILCLIENT4</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-25T01:18:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy53">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>CACHE</networkFunctionality>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                </policy>
+                <policy name="Policy57">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>MAILCLIENT4</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-24T23:53:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy50">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    <networkFunctionality>FW</networkFunctionality>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>MAILSERVER4</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-24T23:53:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy54">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>WEBCLIENT2</sourceNode>
+                    <destinationNode>MAILSERVER6</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-24T23:53:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy60">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>MAILCLIENT4</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-25T03:16:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy59">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>MAILCLIENT4</sourceNode>
+                    <destinationNode>MAILSERVER1</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-24T23:53:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy48">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>MAILSERVER3</destinationNode>
+                </policy>
+                <policy name="Policy66">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>WEBSERVER0</sourceNode>
+                    <destinationNode>MAILCLIENT4</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-25T04:21:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy47">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>CACHE</networkFunctionality>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>WEBCLIENT0</sourceNode>
+                    <destinationNode>MAILSERVER1</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-24T23:53:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy51">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>NAT</networkFunctionality>
+                    <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    <networkFunctionality>DPI</networkFunctionality>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>MAILSERVER3</destinationNode>
+                </policy>
+                <policy name="Policy62">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>MAILSERVER1</sourceNode>
+                    <destinationNode>WEBCLIENT3</destinationNode>
+                </policy>
+                <policy name="Policy67">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>MAILSERVER2</sourceNode>
+                    <destinationNode>MAILCLIENT4</destinationNode>
+                </policy>
+                <policy name="Policy58">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>MAILCLIENT4</sourceNode>
+                    <destinationNode>WEBSERVER5</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-24T23:53:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy64">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>MAILSERVER3</sourceNode>
+                    <destinationNode>WEBCLIENT1</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-25T01:23:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy68">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>WEBSERVER0</sourceNode>
+                    <destinationNode>MAILCLIENT4</destinationNode>
+                </policy>
+                <policy name="Policy61">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>MAILCLIENT4</sourceNode>
+                    <destinationNode>MAILSERVER2</destinationNode>
+                </policy>
+                <policy name="Policy56">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>WEBCLIENT3</sourceNode>
+                    <destinationNode>MAILSERVER1</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-24T23:53:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy52">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>CACHE</networkFunctionality>
+                    <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    <networkFunctionality>DPI</networkFunctionality>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                </policy>
+                <policy name="Policy49">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>MAILSERVER2</destinationNode>
+                </policy>
+                <policy name="Policy63">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg1</nffg>
+                    <sourceNode>MAILSERVER2</sourceNode>
+                    <destinationNode>WEBCLIENT1</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-24T23:53:20.000+02:00</lastVerification>
+                </policy>
+            </policies>
+        </nffgInfo>
+        <nffgInfo>
+            <nffg name="Nffg0">
+                <nodes>
+                    <node name="WEBCLIENT0">
+                        <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="FW4">
+                        <networkFunctionality>FW</networkFunctionality>
+                    </node>
+                    <node name="VPN8">
+                        <networkFunctionality>VPN</networkFunctionality>
+                    </node>
+                    <node name="WEBSERVER5">
+                        <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    </node>
+                    <node name="WEBCLIENT1">
+                        <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="DPI0">
+                        <networkFunctionality>DPI</networkFunctionality>
+                    </node>
+                    <node name="MAILCLIENT3">
+                        <networkFunctionality>MAIL_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="WEBSERVER6">
+                        <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    </node>
+                    <node name="MAILSERVER3">
+                        <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    </node>
+                    <node name="SPAM6">
+                        <networkFunctionality>SPAM</networkFunctionality>
+                    </node>
+                    <node name="MAILCLIENT6">
+                        <networkFunctionality>MAIL_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="MAILSERVER4">
+                        <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    </node>
+                    <node name="CACHE2">
+                        <networkFunctionality>CACHE</networkFunctionality>
+                    </node>
+                    <node name="WEBCLIENT4">
+                        <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="MAILSERVER2">
+                        <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    </node>
+                    <node name="MAILSERVER1">
+                        <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    </node>
+                    <node name="DPI5">
+                        <networkFunctionality>DPI</networkFunctionality>
+                    </node>
+                    <node name="VPN3">
+                        <networkFunctionality>VPN</networkFunctionality>
+                    </node>
+                    <node name="WEBCLIENT2">
+                        <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="WEBSERVER0">
+                        <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    </node>
+                    <node name="WEBCLIENT5">
+                        <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="VPN1">
+                        <networkFunctionality>VPN</networkFunctionality>
+                    </node>
+                    <node name="WEBSERVER7">
+                        <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    </node>
+                    <node name="VPN7">
+                        <networkFunctionality>VPN</networkFunctionality>
+                    </node>
+                </nodes>
+                <links>
+                    <link name="Link8">
+                        <sourceNode>WEBCLIENT4</sourceNode>
+                        <destinationNode>DPI5</destinationNode>
+                    </link>
+                    <link name="Link31">
+                        <sourceNode>CACHE2</sourceNode>
+                        <destinationNode>WEBCLIENT1</destinationNode>
+                    </link>
+                    <link name="Link15">
+                        <sourceNode>CACHE2</sourceNode>
+                        <destinationNode>WEBSERVER0</destinationNode>
+                    </link>
+                    <link name="Link35">
+                        <sourceNode>CACHE2</sourceNode>
+                        <destinationNode>FW4</destinationNode>
+                    </link>
+                    <link name="Link20">
+                        <sourceNode>MAILSERVER3</sourceNode>
+                        <destinationNode>VPN1</destinationNode>
+                    </link>
+                    <link name="Link18">
+                        <sourceNode>MAILSERVER2</sourceNode>
+                        <destinationNode>VPN3</destinationNode>
+                    </link>
+                    <link name="Link12">
+                        <sourceNode>MAILCLIENT6</sourceNode>
+                        <destinationNode>VPN8</destinationNode>
+                    </link>
+                    <link name="Link26">
+                        <sourceNode>WEBSERVER6</sourceNode>
+                        <destinationNode>DPI5</destinationNode>
+                    </link>
+                    <link name="Link39">
+                        <sourceNode>WEBSERVER6</sourceNode>
+                        <destinationNode>VPN1</destinationNode>
+                    </link>
+                    <link name="Link6">
+                        <sourceNode>MAILCLIENT3</sourceNode>
+                        <destinationNode>VPN1</destinationNode>
+                    </link>
+                    <link name="Link42">
+                        <sourceNode>WEBCLIENT0</sourceNode>
+                        <destinationNode>FW4</destinationNode>
+                    </link>
+                    <link name="Link0">
+                        <sourceNode>WEBCLIENT0</sourceNode>
+                        <destinationNode>DPI5</destinationNode>
+                    </link>
+                    <link name="Link25">
+                        <sourceNode>FW4</sourceNode>
+                        <destinationNode>WEBSERVER5</destinationNode>
+                    </link>
+                    <link name="Link38">
+                        <sourceNode>FW4</sourceNode>
+                        <destinationNode>VPN7</destinationNode>
+                    </link>
+                    <link name="Link22">
+                        <sourceNode>MAILSERVER4</sourceNode>
+                        <destinationNode>DPI0</destinationNode>
+                    </link>
+                    <link name="Link36">
+                        <sourceNode>MAILSERVER4</sourceNode>
+                        <destinationNode>SPAM6</destinationNode>
+                    </link>
+                    <link name="Link14">
+                        <sourceNode>WEBSERVER0</sourceNode>
+                        <destinationNode>CACHE2</destinationNode>
+                    </link>
+                    <link name="Link23">
+                        <sourceNode>DPI0</sourceNode>
+                        <destinationNode>MAILSERVER4</destinationNode>
+                    </link>
+                    <link name="Link29">
+                        <sourceNode>DPI0</sourceNode>
+                        <destinationNode>WEBSERVER7</destinationNode>
+                    </link>
+                    <link name="Link34">
+                        <sourceNode>DPI0</sourceNode>
+                        <destinationNode>WEBCLIENT4</destinationNode>
+                    </link>
+                    <link name="Link3">
+                        <sourceNode>SPAM6</sourceNode>
+                        <destinationNode>WEBCLIENT1</destinationNode>
+                    </link>
+                    <link name="Link24">
+                        <sourceNode>WEBSERVER5</sourceNode>
+                        <destinationNode>FW4</destinationNode>
+                    </link>
+                    <link name="Link7">
+                        <sourceNode>VPN1</sourceNode>
+                        <destinationNode>MAILCLIENT3</destinationNode>
+                    </link>
+                    <link name="Link21">
+                        <sourceNode>VPN1</sourceNode>
+                        <destinationNode>MAILSERVER3</destinationNode>
+                    </link>
+                    <link name="Link44">
+                        <sourceNode>VPN1</sourceNode>
+                        <destinationNode>WEBSERVER0</destinationNode>
+                    </link>
+                    <link name="Link17">
+                        <sourceNode>VPN1</sourceNode>
+                        <destinationNode>MAILSERVER1</destinationNode>
+                    </link>
+                    <link name="Link10">
+                        <sourceNode>WEBCLIENT5</sourceNode>
+                        <destinationNode>DPI5</destinationNode>
+                    </link>
+                    <link name="Link30">
+                        <sourceNode>WEBCLIENT1</sourceNode>
+                        <destinationNode>DPI5</destinationNode>
+                    </link>
+                    <link name="Link2">
+                        <sourceNode>WEBCLIENT1</sourceNode>
+                        <destinationNode>SPAM6</destinationNode>
+                    </link>
+                    <link name="Link4">
+                        <sourceNode>WEBCLIENT2</sourceNode>
+                        <destinationNode>DPI5</destinationNode>
+                    </link>
+                    <link name="Link28">
+                        <sourceNode>WEBSERVER7</sourceNode>
+                        <destinationNode>DPI0</destinationNode>
+                    </link>
+                    <link name="Link41">
+                        <sourceNode>WEBSERVER7</sourceNode>
+                        <destinationNode>DPI5</destinationNode>
+                    </link>
+                    <link name="Link19">
+                        <sourceNode>VPN3</sourceNode>
+                        <destinationNode>MAILSERVER2</destinationNode>
+                    </link>
+                    <link name="Link37">
+                        <sourceNode>VPN3</sourceNode>
+                        <destinationNode>MAILCLIENT3</destinationNode>
+                    </link>
+                    <link name="Link33">
+                        <sourceNode>VPN7</sourceNode>
+                        <destinationNode>WEBSERVER7</destinationNode>
+                    </link>
+                    <link name="Link16">
+                        <sourceNode>MAILSERVER1</sourceNode>
+                        <destinationNode>VPN1</destinationNode>
+                    </link>
+                    <link name="Link11">
+                        <sourceNode>DPI5</sourceNode>
+                        <destinationNode>WEBCLIENT5</destinationNode>
+                    </link>
+                    <link name="Link1">
+                        <sourceNode>DPI5</sourceNode>
+                        <destinationNode>WEBCLIENT0</destinationNode>
+                    </link>
+                    <link name="Link5">
+                        <sourceNode>DPI5</sourceNode>
+                        <destinationNode>WEBCLIENT2</destinationNode>
+                    </link>
+                    <link name="Link27">
+                        <sourceNode>DPI5</sourceNode>
+                        <destinationNode>WEBSERVER6</destinationNode>
+                    </link>
+                    <link name="Link40">
+                        <sourceNode>DPI5</sourceNode>
+                        <destinationNode>WEBCLIENT1</destinationNode>
+                    </link>
+                    <link name="Link9">
+                        <sourceNode>DPI5</sourceNode>
+                        <destinationNode>WEBCLIENT4</destinationNode>
+                    </link>
+                    <link name="Link32">
+                        <sourceNode>VPN8</sourceNode>
+                        <destinationNode>VPN1</destinationNode>
+                    </link>
+                    <link name="Link43">
+                        <sourceNode>VPN8</sourceNode>
+                        <destinationNode>WEBCLIENT2</destinationNode>
+                    </link>
+                    <link name="Link13">
+                        <sourceNode>VPN8</sourceNode>
+                        <destinationNode>MAILCLIENT6</destinationNode>
+                    </link>
+                </links>
+                <lastUpdate>2016-09-28T22:51:20.000+02:00</lastUpdate>
+            </nffg>
+            <policies>
+                <policy name="Policy31">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILCLIENT6</sourceNode>
+                    <destinationNode>MAILSERVER3</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T10:47:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy41">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILSERVER4</sourceNode>
+                    <destinationNode>WEBCLIENT0</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T11:42:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy16">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    <networkFunctionality>SPAM</networkFunctionality>
+                    <networkFunctionality>MAIL_CLIENT</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILCLIENT3</sourceNode>
+                    <destinationNode>WEBSERVER5</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-28T22:33:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy14">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>CACHE</networkFunctionality>
+                    <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    <networkFunctionality>MAIL_CLIENT</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT2</sourceNode>
+                    <destinationNode>MAILSERVER1</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T07:05:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy3">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>SPAM</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT0</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T18:22:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy21">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>VPN</networkFunctionality>
+                    <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT4</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                </policy>
+                <policy name="Policy20">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT4</sourceNode>
+                    <destinationNode>MAILSERVER4</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-28T20:39:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy25">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT5</sourceNode>
+                    <destinationNode>MAILSERVER3</destinationNode>
+                </policy>
+                <policy name="Policy40">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>VPN</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILSERVER3</sourceNode>
+                    <destinationNode>WEBCLIENT0</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T06:26:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy26">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT5</sourceNode>
+                    <destinationNode>MAILSERVER3</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T07:05:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy5">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>WEBSERVER6</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T18:17:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy19">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>CACHE</networkFunctionality>
+                    <networkFunctionality>VPN</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT4</sourceNode>
+                    <destinationNode>MAILSERVER3</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T08:25:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy8">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT2</sourceNode>
+                    <destinationNode>MAILSERVER3</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T05:05:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy11">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT2</sourceNode>
+                    <destinationNode>MAILSERVER3</destinationNode>
+                </policy>
+                <policy name="Policy33">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBSERVER7</sourceNode>
+                    <destinationNode>MAILCLIENT3</destinationNode>
+                </policy>
+                <policy name="Policy17">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>SPAM</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT4</sourceNode>
+                    <destinationNode>MAILSERVER2</destinationNode>
+                </policy>
+                <policy name="Policy4">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>MAILSERVER2</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-28T19:04:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy27">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>CACHE</networkFunctionality>
+                    <networkFunctionality>NAT</networkFunctionality>
+                    <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT5</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                </policy>
+                <policy name="Policy43">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILSERVER3</sourceNode>
+                    <destinationNode>WEBCLIENT0</destinationNode>
+                </policy>
+                <policy name="Policy1">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT0</sourceNode>
+                    <destinationNode>MAILSERVER4</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-28T05:09:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy28">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILCLIENT6</sourceNode>
+                    <destinationNode>WEBSERVER6</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T08:01:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy22">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>VPN</networkFunctionality>
+                    <networkFunctionality>CACHE</networkFunctionality>
+                    <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT5</sourceNode>
+                    <destinationNode>MAILSERVER3</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-28T10:34:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy2">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>VPN</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT0</sourceNode>
+                    <destinationNode>MAILSERVER3</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-28T12:07:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy38">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILSERVER1</sourceNode>
+                    <destinationNode>MAILCLIENT6</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T13:40:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy6">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>WEBSERVER5</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-28T09:22:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy18">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>MAIL_CLIENT</networkFunctionality>
+                    <networkFunctionality>FW</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT4</sourceNode>
+                    <destinationNode>WEBSERVER6</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T12:25:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy9">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT2</sourceNode>
+                    <destinationNode>WEBSERVER5</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T17:59:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy37">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBSERVER5</sourceNode>
+                    <destinationNode>WEBCLIENT1</destinationNode>
+                </policy>
+                <policy name="Policy32">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILSERVER3</sourceNode>
+                    <destinationNode>MAILCLIENT6</destinationNode>
+                </policy>
+                <policy name="Policy29">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILCLIENT6</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T15:14:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy12">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT2</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T18:22:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy34">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>CACHE</networkFunctionality>
+                    <networkFunctionality>VPN</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILSERVER3</sourceNode>
+                    <destinationNode>WEBCLIENT4</destinationNode>
+                </policy>
+                <policy name="Policy46">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBSERVER0</sourceNode>
+                    <destinationNode>MAILCLIENT6</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T10:01:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy10">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>VPN</networkFunctionality>
+                    <networkFunctionality>DPI</networkFunctionality>
+                    <networkFunctionality>FW</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT2</sourceNode>
+                    <destinationNode>MAILSERVER4</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-28T10:04:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy0">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT0</sourceNode>
+                    <destinationNode>MAILSERVER3</destinationNode>
+                </policy>
+                <policy name="Policy36">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>SPAM</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILSERVER2</sourceNode>
+                    <destinationNode>WEBCLIENT4</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-28T03:08:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy30">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILCLIENT6</sourceNode>
+                    <destinationNode>MAILSERVER1</destinationNode>
+                </policy>
+                <policy name="Policy44">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>CACHE</networkFunctionality>
+                    <networkFunctionality>NAT</networkFunctionality>
+                    <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBSERVER0</sourceNode>
+                    <destinationNode>WEBCLIENT5</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T20:01:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy35">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>MAIL_CLIENT</networkFunctionality>
+                    <networkFunctionality>FW</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBSERVER6</sourceNode>
+                    <destinationNode>WEBCLIENT4</destinationNode>
+                </policy>
+                <policy name="Policy13">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT2</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                </policy>
+                <policy name="Policy23">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT5</sourceNode>
+                    <destinationNode>MAILSERVER2</destinationNode>
+                </policy>
+                <policy name="Policy39">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILSERVER2</sourceNode>
+                    <destinationNode>WEBCLIENT1</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T12:04:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy7">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>MAILSERVER2</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-28T11:19:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy24">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>WEBCLIENT5</sourceNode>
+                    <destinationNode>MAILSERVER3</destinationNode>
+                </policy>
+                <policy name="Policy45">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILSERVER3</sourceNode>
+                    <destinationNode>WEBCLIENT5</destinationNode>
+                </policy>
+                <policy name="Policy15">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILCLIENT3</sourceNode>
+                    <destinationNode>WEBSERVER7</destinationNode>
+                </policy>
+                <policy name="Policy42">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg0</nffg>
+                    <sourceNode>MAILSERVER2</sourceNode>
+                    <destinationNode>WEBCLIENT5</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-28T16:20:20.000+02:00</lastVerification>
+                </policy>
+            </policies>
+        </nffgInfo>
+        <nffgInfo>
+            <nffg name="Nffg2">
+                <nodes>
+                    <node name="MAILCLIENT2">
+                        <networkFunctionality>MAIL_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="SPAM5">
+                        <networkFunctionality>SPAM</networkFunctionality>
+                    </node>
+                    <node name="MAILSERVER5">
+                        <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    </node>
+                    <node name="FW0">
+                        <networkFunctionality>FW</networkFunctionality>
+                    </node>
+                    <node name="VPN3">
+                        <networkFunctionality>VPN</networkFunctionality>
+                    </node>
+                    <node name="WEBCLIENT1">
+                        <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="MAILCLIENT3">
+                        <networkFunctionality>MAIL_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="WEBCLIENT0">
+                        <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    </node>
+                    <node name="FW1">
+                        <networkFunctionality>FW</networkFunctionality>
+                    </node>
+                    <node name="WEBSERVER0">
+                        <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    </node>
+                    <node name="WEBSERVER1">
+                        <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    </node>
+                    <node name="DPI4">
+                        <networkFunctionality>DPI</networkFunctionality>
+                    </node>
+                    <node name="CACHE2">
+                        <networkFunctionality>CACHE</networkFunctionality>
+                    </node>
+                    <node name="MAILSERVER6">
+                        <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    </node>
+                    <node name="WEBSERVER4">
+                        <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    </node>
+                    <node name="WEBSERVER2">
+                        <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    </node>
+                    <node name="WEBSERVER3">
+                        <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    </node>
+                </nodes>
+                <links>
+                    <link name="Link60">
+                        <sourceNode>MAILCLIENT2</sourceNode>
+                        <destinationNode>VPN3</destinationNode>
+                    </link>
+                    <link name="Link4">
+                        <sourceNode>MAILCLIENT2</sourceNode>
+                        <destinationNode>SPAM5</destinationNode>
+                    </link>
+                    <link name="Link42">
+                        <sourceNode>WEBCLIENT1</sourceNode>
+                        <destinationNode>VPN3</destinationNode>
+                    </link>
+                    <link name="Link37">
+                        <sourceNode>WEBCLIENT1</sourceNode>
+                        <destinationNode>DPI4</destinationNode>
+                    </link>
+                    <link name="Link2">
+                        <sourceNode>WEBCLIENT1</sourceNode>
+                        <destinationNode>FW0</destinationNode>
+                    </link>
+                    <link name="Link35">
+                        <sourceNode>WEBSERVER4</sourceNode>
+                        <destinationNode>VPN3</destinationNode>
+                    </link>
+                    <link name="Link16">
+                        <sourceNode>WEBSERVER4</sourceNode>
+                        <destinationNode>DPI4</destinationNode>
+                    </link>
+                    <link name="Link53">
+                        <sourceNode>WEBSERVER4</sourceNode>
+                        <destinationNode>FW1</destinationNode>
+                    </link>
+                    <link name="Link47">
+                        <sourceNode>WEBSERVER4</sourceNode>
+                        <destinationNode>SPAM5</destinationNode>
+                    </link>
+                    <link name="Link39">
+                        <sourceNode>DPI4</sourceNode>
+                        <destinationNode>WEBSERVER0</destinationNode>
+                    </link>
+                    <link name="Link15">
+                        <sourceNode>DPI4</sourceNode>
+                        <destinationNode>WEBSERVER3</destinationNode>
+                    </link>
+                    <link name="Link38">
+                        <sourceNode>DPI4</sourceNode>
+                        <destinationNode>WEBCLIENT0</destinationNode>
+                    </link>
+                    <link name="Link52">
+                        <sourceNode>DPI4</sourceNode>
+                        <destinationNode>FW0</destinationNode>
+                    </link>
+                    <link name="Link17">
+                        <sourceNode>DPI4</sourceNode>
+                        <destinationNode>WEBSERVER4</destinationNode>
+                    </link>
+                    <link name="Link49">
+                        <sourceNode>DPI4</sourceNode>
+                        <destinationNode>WEBCLIENT1</destinationNode>
+                    </link>
+                    <link name="Link32">
+                        <sourceNode>WEBSERVER3</sourceNode>
+                        <destinationNode>SPAM5</destinationNode>
+                    </link>
+                    <link name="Link14">
+                        <sourceNode>WEBSERVER3</sourceNode>
+                        <destinationNode>DPI4</destinationNode>
+                    </link>
+                    <link name="Link54">
+                        <sourceNode>SPAM5</sourceNode>
+                        <destinationNode>FW0</destinationNode>
+                    </link>
+                    <link name="Link5">
+                        <sourceNode>SPAM5</sourceNode>
+                        <destinationNode>MAILCLIENT2</destinationNode>
+                    </link>
+                    <link name="Link41">
+                        <sourceNode>SPAM5</sourceNode>
+                        <destinationNode>WEBCLIENT0</destinationNode>
+                    </link>
+                    <link name="Link23">
+                        <sourceNode>SPAM5</sourceNode>
+                        <destinationNode>WEBSERVER1</destinationNode>
+                    </link>
+                    <link name="Link33">
+                        <sourceNode>SPAM5</sourceNode>
+                        <destinationNode>FW1</destinationNode>
+                    </link>
+                    <link name="Link21">
+                        <sourceNode>SPAM5</sourceNode>
+                        <destinationNode>MAILSERVER6</destinationNode>
+                    </link>
+                    <link name="Link30">
+                        <sourceNode>CACHE2</sourceNode>
+                        <destinationNode>MAILSERVER5</destinationNode>
+                    </link>
+                    <link name="Link59">
+                        <sourceNode>CACHE2</sourceNode>
+                        <destinationNode>MAILCLIENT3</destinationNode>
+                    </link>
+                    <link name="Link11">
+                        <sourceNode>CACHE2</sourceNode>
+                        <destinationNode>WEBSERVER1</destinationNode>
+                    </link>
+                    <link name="Link36">
+                        <sourceNode>CACHE2</sourceNode>
+                        <destinationNode>WEBSERVER4</destinationNode>
+                    </link>
+                    <link name="Link28">
+                        <sourceNode>CACHE2</sourceNode>
+                        <destinationNode>DPI4</destinationNode>
+                    </link>
+                    <link name="Link50">
+                        <sourceNode>CACHE2</sourceNode>
+                        <destinationNode>WEBCLIENT1</destinationNode>
+                    </link>
+                    <link name="Link29">
+                        <sourceNode>CACHE2</sourceNode>
+                        <destinationNode>WEBCLIENT0</destinationNode>
+                    </link>
+                    <link name="Link12">
+                        <sourceNode>WEBSERVER2</sourceNode>
+                        <destinationNode>VPN3</destinationNode>
+                    </link>
+                    <link name="Link45">
+                        <sourceNode>WEBSERVER2</sourceNode>
+                        <destinationNode>DPI4</destinationNode>
+                    </link>
+                    <link name="Link34">
+                        <sourceNode>WEBCLIENT0</sourceNode>
+                        <destinationNode>CACHE2</destinationNode>
+                    </link>
+                    <link name="Link0">
+                        <sourceNode>WEBCLIENT0</sourceNode>
+                        <destinationNode>VPN3</destinationNode>
+                    </link>
+                    <link name="Link19">
+                        <sourceNode>FW0</sourceNode>
+                        <destinationNode>MAILSERVER5</destinationNode>
+                    </link>
+                    <link name="Link7">
+                        <sourceNode>FW0</sourceNode>
+                        <destinationNode>MAILCLIENT3</destinationNode>
+                    </link>
+                    <link name="Link51">
+                        <sourceNode>FW0</sourceNode>
+                        <destinationNode>VPN3</destinationNode>
+                    </link>
+                    <link name="Link3">
+                        <sourceNode>FW0</sourceNode>
+                        <destinationNode>WEBCLIENT1</destinationNode>
+                    </link>
+                    <link name="Link1">
+                        <sourceNode>VPN3</sourceNode>
+                        <destinationNode>WEBCLIENT0</destinationNode>
+                    </link>
+                    <link name="Link55">
+                        <sourceNode>VPN3</sourceNode>
+                        <destinationNode>WEBSERVER4</destinationNode>
+                    </link>
+                    <link name="Link46">
+                        <sourceNode>VPN3</sourceNode>
+                        <destinationNode>MAILCLIENT2</destinationNode>
+                    </link>
+                    <link name="Link9">
+                        <sourceNode>VPN3</sourceNode>
+                        <destinationNode>WEBSERVER0</destinationNode>
+                    </link>
+                    <link name="Link40">
+                        <sourceNode>VPN3</sourceNode>
+                        <destinationNode>FW1</destinationNode>
+                    </link>
+                    <link name="Link13">
+                        <sourceNode>VPN3</sourceNode>
+                        <destinationNode>WEBSERVER2</destinationNode>
+                    </link>
+                    <link name="Link26">
+                        <sourceNode>VPN3</sourceNode>
+                        <destinationNode>WEBCLIENT1</destinationNode>
+                    </link>
+                    <link name="Link48">
+                        <sourceNode>MAILSERVER6</sourceNode>
+                        <destinationNode>DPI4</destinationNode>
+                    </link>
+                    <link name="Link20">
+                        <sourceNode>MAILSERVER6</sourceNode>
+                        <destinationNode>SPAM5</destinationNode>
+                    </link>
+                    <link name="Link31">
+                        <sourceNode>MAILCLIENT3</sourceNode>
+                        <destinationNode>CACHE2</destinationNode>
+                    </link>
+                    <link name="Link6">
+                        <sourceNode>MAILCLIENT3</sourceNode>
+                        <destinationNode>FW0</destinationNode>
+                    </link>
+                    <link name="Link8">
+                        <sourceNode>WEBSERVER0</sourceNode>
+                        <destinationNode>VPN3</destinationNode>
+                    </link>
+                    <link name="Link18">
+                        <sourceNode>MAILSERVER5</sourceNode>
+                        <destinationNode>FW0</destinationNode>
+                    </link>
+                    <link name="Link56">
+                        <sourceNode>FW1</sourceNode>
+                        <destinationNode>WEBCLIENT0</destinationNode>
+                    </link>
+                    <link name="Link24">
+                        <sourceNode>FW1</sourceNode>
+                        <destinationNode>MAILCLIENT3</destinationNode>
+                    </link>
+                    <link name="Link25">
+                        <sourceNode>FW1</sourceNode>
+                        <destinationNode>WEBSERVER1</destinationNode>
+                    </link>
+                    <link name="Link27">
+                        <sourceNode>FW1</sourceNode>
+                        <destinationNode>FW0</destinationNode>
+                    </link>
+                    <link name="Link57">
+                        <sourceNode>FW1</sourceNode>
+                        <destinationNode>WEBSERVER4</destinationNode>
+                    </link>
+                    <link name="Link43">
+                        <sourceNode>FW1</sourceNode>
+                        <destinationNode>CACHE2</destinationNode>
+                    </link>
+                    <link name="Link44">
+                        <sourceNode>FW1</sourceNode>
+                        <destinationNode>MAILSERVER6</destinationNode>
+                    </link>
+                    <link name="Link10">
+                        <sourceNode>WEBSERVER1</sourceNode>
+                        <destinationNode>CACHE2</destinationNode>
+                    </link>
+                    <link name="Link22">
+                        <sourceNode>WEBSERVER1</sourceNode>
+                        <destinationNode>VPN3</destinationNode>
+                    </link>
+                    <link name="Link58">
+                        <sourceNode>WEBSERVER1</sourceNode>
+                        <destinationNode>FW1</destinationNode>
+                    </link>
+                </links>
+                <lastUpdate>2016-09-26T02:48:20.000+02:00</lastUpdate>
+            </nffg>
+            <policies>
+                <policy name="Policy92">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBSERVER2</sourceNode>
+                    <destinationNode>WEBCLIENT1</destinationNode>
+                </policy>
+                <policy name="Policy82">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>MAILCLIENT3</sourceNode>
+                    <destinationNode>MAILSERVER5</destinationNode>
+                </policy>
+                <policy name="Policy81">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>MAILCLIENT2</sourceNode>
+                    <destinationNode>WEBSERVER1</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-25T22:41:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy76">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>SPAM</networkFunctionality>
+                    <networkFunctionality>DPI</networkFunctionality>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>MAILCLIENT2</sourceNode>
+                    <destinationNode>MAILSERVER5</destinationNode>
+                </policy>
+                <policy name="Policy87">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>CACHE</networkFunctionality>
+                    <networkFunctionality>DPI</networkFunctionality>
+                    <networkFunctionality>FW</networkFunctionality>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBSERVER4</sourceNode>
+                    <destinationNode>MAILCLIENT2</destinationNode>
+                </policy>
+                <policy name="Policy73">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>WEBSERVER1</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-25T21:55:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy83">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    <networkFunctionality>FW</networkFunctionality>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>MAILCLIENT3</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                </policy>
+                <policy name="Policy70">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>VPN</networkFunctionality>
+                    <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBCLIENT0</sourceNode>
+                    <destinationNode>WEBSERVER2</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-25T08:43:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy77">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>CACHE</networkFunctionality>
+                    <networkFunctionality>DPI</networkFunctionality>
+                    <networkFunctionality>FW</networkFunctionality>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>MAILCLIENT2</sourceNode>
+                    <destinationNode>WEBSERVER4</destinationNode>
+                </policy>
+                <policy name="Policy74">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                </policy>
+                <policy name="Policy88">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>SPAM</networkFunctionality>
+                    <networkFunctionality>DPI</networkFunctionality>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>MAILSERVER5</sourceNode>
+                    <destinationNode>MAILCLIENT2</destinationNode>
+                </policy>
+                <policy name="Policy89">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>VPN</networkFunctionality>
+                    <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBSERVER2</sourceNode>
+                    <destinationNode>WEBCLIENT0</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-26T00:54:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy80">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>MAILCLIENT2</sourceNode>
+                    <destinationNode>WEBSERVER2</destinationNode>
+                </policy>
+                <policy name="Policy86">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBSERVER2</sourceNode>
+                    <destinationNode>MAILCLIENT2</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-26T02:00:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy69">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBCLIENT0</sourceNode>
+                    <destinationNode>MAILSERVER6</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-25T18:50:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy90">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBSERVER1</sourceNode>
+                    <destinationNode>MAILCLIENT2</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-25T13:26:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy79">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>SPAM</networkFunctionality>
+                    <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    <networkFunctionality>FW</networkFunctionality>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>MAILCLIENT2</sourceNode>
+                    <destinationNode>WEBSERVER1</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-25T14:12:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy72">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>CACHE</networkFunctionality>
+                    <networkFunctionality>WEB_SERVER</networkFunctionality>
+                    <networkFunctionality>MAIL_CLIENT</networkFunctionality>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>WEBSERVER1</destinationNode>
+                </policy>
+                <policy name="Policy85">
+                    <property>TRAVERSAL</property>
+                    <positive>true</positive>
+                    <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    <networkFunctionality>FW</networkFunctionality>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>MAILCLIENT3</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                </policy>
+                <policy name="Policy78">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>MAILCLIENT2</sourceNode>
+                    <destinationNode>WEBSERVER2</destinationNode>
+                </policy>
+                <policy name="Policy75">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>WEBSERVER0</destinationNode>
+                </policy>
+                <policy name="Policy84">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>MAILCLIENT3</sourceNode>
+                    <destinationNode>WEBSERVER1</destinationNode>
+                    <result>false</result>
+                    <lastVerification>2016-09-25T11:19:20.000+02:00</lastVerification>
+                </policy>
+                <policy name="Policy91">
+                    <property>TRAVERSAL</property>
+                    <positive>false</positive>
+                    <networkFunctionality>MAIL_SERVER</networkFunctionality>
+                    <networkFunctionality>WEB_CLIENT</networkFunctionality>
+                    <networkFunctionality>FW</networkFunctionality>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBSERVER0</sourceNode>
+                    <destinationNode>MAILCLIENT3</destinationNode>
+                </policy>
+                <policy name="Policy93">
+                    <property>REACHABILITY</property>
+                    <positive>false</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>MAILSERVER5</sourceNode>
+                    <destinationNode>MAILCLIENT3</destinationNode>
+                </policy>
+                <policy name="Policy71">
+                    <property>REACHABILITY</property>
+                    <positive>true</positive>
+                    <nffg>Nffg2</nffg>
+                    <sourceNode>WEBCLIENT1</sourceNode>
+                    <destinationNode>WEBSERVER2</destinationNode>
+                    <result>true</result>
+                    <lastVerification>2016-09-25T17:47:20.000+02:00</lastVerification>
+                </policy>
+            </policies>
+        </nffgInfo>
+    </nffgInfos>
+</nffgInfoWrapper>

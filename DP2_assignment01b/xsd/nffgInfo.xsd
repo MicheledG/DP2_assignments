@@ -132,6 +132,7 @@
 			<xsd:element name="destinationNode" type="nameType"/>
 			<xsd:element name="result" type="xsd:boolean" minOccurs="0"/>
 			<xsd:element name="lastVerification" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="description" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="nameType"/>
 	</xsd:complexType>

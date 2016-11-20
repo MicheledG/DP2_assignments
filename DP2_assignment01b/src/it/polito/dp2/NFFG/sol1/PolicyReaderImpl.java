@@ -28,7 +28,10 @@ public class PolicyReaderImpl implements PolicyReader {
 
 	@Override
 	public VerificationResultReader getResult() {
-		return VerificationResultReaderImpl.translatePolicyResultToVerificationResultReader(nffg, policy);
+		if(policy.isResult() == null)
+			return null;
+		else 
+			return VerificationResultReaderImpl.translatePolicyResultToVerificationResultReader(nffg, policy);
 	}
 
 	@Override
