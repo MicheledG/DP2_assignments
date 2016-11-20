@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -48,8 +47,7 @@ public class NffgVerifierImpl implements NffgVerifier {
 			unmarshaller.setSchema(schema);
 			
 			/* unmarshall */
-			//TODO: unmarshalls from a file?
-			Object rootElement = unmarshaller.unmarshal(new File(XML_FILE_LOCATION));
+			Object rootElement = unmarshaller.unmarshal(new File(System.getProperty("it.polito.dp2.NFFG.sol1.NffgInfo.file")));
 			if(rootElement instanceof NffgInfoWrapper)
 				this.nffgInfoWrapper = (NffgInfoWrapper) rootElement;
 			else

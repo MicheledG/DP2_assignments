@@ -1,13 +1,10 @@
 package it.polito.dp2.NFFG.sol1;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 import it.polito.dp2.NFFG.NffgReader;
 import it.polito.dp2.NFFG.NodeReader;

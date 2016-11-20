@@ -37,7 +37,21 @@ public class PolicyReaderImpl implements PolicyReader {
 	}
 	
 	public static PolicyReader translatePolicyTypeToPolicyReader(NffgType nffg, PolicyType policy){
-		return new PolicyReaderImpl(nffg, policy);
+		
+		PolicyReader policyReader;
+		switch (policy.getProperty()) {
+		case REACHABILITY:
+			policyReader = new ReachabilityPolicyReaderImpl(nffg, policy);
+			break;
+		case TRAVERSAL:
+			policyReader = new TraversalPolicyReaderImpl(nffg, policy);
+			break;
+		default:
+			policyReader = new PolicyReaderImpl(nffg, policy);
+			break;
+		}
+		
+		return policyReader;
 	}
 	
 }
