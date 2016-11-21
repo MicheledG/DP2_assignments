@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/hk2-api-2.5.0-b05.jar"/>
+	<classpathentry kind="lib" path="lib/hk2-locator-2.5.0-b05.jar"/>
+	<classpathentry kind="lib" path="lib/hk2-utils-2.5.0-b05.jar"/>
+	<classpathentry kind="lib" path="lib/javax.annotation-api-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/javax.inject-2.5.0-b05.jar"/>
+	<classpathentry kind="lib" path="lib/javax.ws.rs-api-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-api-2.2.7.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-client.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-common.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-guava-2.7.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-media-jaxb.jar"/>
+	<classpathentry kind="lib" path="lib/json-simple-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.5.jar"/>
+	<classpathentry kind="lib" path="lib/lab2.jar"/>
+	<classpathentry kind="lib" path="lib/NFFG.jar"/>
+	<classpathentry kind="lib" path="lib/NFFGRandom.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
