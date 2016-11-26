@@ -38,14 +38,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Labels }
-     * 
-     */
-    public Labels createLabels() {
-        return new Labels();
-    }
-
-    /**
      * Create an instance of {@link it.polito.dp2.NFFG.sol2.Node }
      * 
      */
@@ -59,6 +51,14 @@ public class ObjectFactory {
      */
     public Property createProperty() {
         return new Property();
+    }
+
+    /**
+     * Create an instance of {@link Labels }
+     * 
+     */
+    public Labels createLabels() {
+        return new Labels();
     }
 
     /**
