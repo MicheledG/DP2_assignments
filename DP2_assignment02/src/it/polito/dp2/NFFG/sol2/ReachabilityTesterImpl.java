@@ -8,7 +8,7 @@ import it.polito.dp2.NFFG.lab2.UnknownNameException;
 
 public class ReachabilityTesterImpl implements ReachabilityTester {
 	
-	//TODO: HOW WE HAVE TO RETRIEVE RANDOM DATA?
+	//TODO: HOW HAVE WE TO RETRIEVE RANDOM DATA?
 	NffgVerifier nffgVerifier;
 	
 	public ReachabilityTesterImpl() {
