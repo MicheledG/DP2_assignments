@@ -6,16 +6,12 @@
 	<nffg name="NFFG_01">
 		<node name="NODE_01">
 			<networkFunctionality name="VPN"/>
-			<linkRef linkName="LINK_01"/>
-			<linkRef linkName="LINK_03"/>
 		</node>
 		<node name="NODE_02">
 			<networkFunctionality name="FW"/>
-			<linkRef linkName="LINK_02"/>
 		</node>
 		<node name="NODE_03">
 			<networkFunctionality name="SPAM"/>
-			<linkRef linkName="LINK_04"/>
 		</node>
 		<link name="LINK_01">
 			<sourceNode nodeName="NODE_01"/>
@@ -51,16 +47,12 @@
 	<nffg name="NFFG_02">
 		<node name="NODE_01">
 			<networkFunctionality name="MAIL_SERVER"/>
-			<linkRef linkName="LINK_02"/>
-			<linkRef linkName="LINK_03"/>
 		</node>
 		<node name="NODE_02">
 			<networkFunctionality name="MAIL_CLIENT"/>
-			<linkRef linkName="LINK_02"/>
 		</node>
 		<node name="NODE_03">
 			<networkFunctionality name="WEB_SERVER"/>
-			<linkRef linkName="LINK_04"/>
 		</node>
 		<link name="LINK_01">
 			<sourceNode nodeName="NODE_03"/>

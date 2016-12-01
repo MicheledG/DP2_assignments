@@ -1,23 +1,21 @@
-1) nffgInfo.dtd documentation:
-
-Relevant elements:
-- catalog: it has the list of the network functionalities of the service provider, each of them has a global unique name 
-with a global scope (ID).
-- nffg: it has a global unique name, with a global scope (ID), and it is made up of a list of nodes and links.
-- node: it has a name with no unique constraint (NMTOKEN) and refers to links by their names.
-Correctness checks are to be done at application level.
-- link: it has a name with no unique constraint (NMTOKEN) and refers to nodes by their names.
-Correctness checks are to be done at application level.
-- policies: it has a global unique name, with a global scope (ID).
-
 2) nffgInfo.xsd documentation:
 
 Relevant elements:
-- nffgInfo: it is made up of an nffg element and the list of policies referenced to that nffg. 
-nffgInfo elements enables to check if the nodes specified in the policies are really present into the nffg
-thanks to the keyNffgNodeName - keyrefNffgDestination/SourceNodeName pair.
-- node: there is validity check on the node name uniqueness within the same nffg thanks to keyNffgNodeName element.
-Moreover there is validity check on the link name referenced within the node to ensure that only the links of that nffg are used.
-- link: there is validity check on the link name uniqueness within the same nffg thanks to keyNffgLinkName element.
-Moreover there is validity check on the source/destination node name referenced to ensure that only
-the nodes of that nffg are used.
+- nffgInfoWrapper: root element;
+- catalog: 	it has the list of the network functionalities of the service provider, each of them has a value ENUMERATED;
+- nffgInfos: it contains a list of nffgInfo;
+- nffgInfo: it contains a pair nffg-policies, element policies contains only policies referred to the paired nffg;
+- nffg:	it has a global unique name and it is made up of the elements: nodes,links and lastUpdate;
+- policies: it is a list of elements policy;
+- nodes: it is a list of element node;
+- links: it is a list of element link;
+
+Observations:
+
+- A validity check is present on the node name uniqueness within the same nffg thanks to keyNffgNodeName element;
+- A validity check is present on the link name uniqueness within the same nffg thanks to keyNffgLinkName element;
+- A validity check is present on effective correspondence between a node, specified by a link, and a node of the link's nffg.
+  The check is possible thanks to the presence of the element nffgInfo and the pair keyNffgNodeName - keyrefNffgSource(Destination)NodeNameInLink;
+- A validity check is present on effective correspondence between a node, specified by a policy, and a node of the nffg towards which the policy has to be verified.
+  The check is possible thanks to the presence of the element nffgInfo and the pair keyNffgNodeName - keyrefNffgSource(Destination)NodeNameInPolicy;
+

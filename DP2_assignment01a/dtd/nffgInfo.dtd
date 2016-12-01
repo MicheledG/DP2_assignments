@@ -49,13 +49,9 @@
 <!ATTLIST nffg
 	name ID #REQUIRED>
 	
-<!ELEMENT node (networkFunctionality, linkRef+)>
+<!ELEMENT node (networkFunctionality)>
 <!ATTLIST node
 	name NMTOKEN #REQUIRED>
-
-<!ELEMENT linkRef EMPTY>
-<!ATTLIST linkRef
-	linkName NMTOKEN #REQUIRED>
 
 <!ELEMENT link (sourceNode, destinationNode)>
 <!ATTLIST link

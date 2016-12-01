@@ -1,23 +1,11 @@
 1) nffgInfo.dtd documentation:
 
 Relevant elements:
-- catalog: it has the list of the network functionalities of the service provider, each of them has a global unique name 
-with a global scope (ID).
-- nffg: it has a global unique name, with a global scope (ID), and it is made up of a list of nodes and links.
-- node: it has a name with no unique constraint (NMTOKEN) and refers to links by their names.
-Correctness checks are to be done at application level.
-- link: it has a name with no unique constraint (NMTOKEN) and refers to nodes by their names.
-Correctness checks are to be done at application level.
-- policies: it has a global unique name, with a global scope (ID).
-
-2) nffgInfo.xsd documentation:
-
-Relevant elements:
-- nffgInfo: it is made up of an nffg element and the list of policies referenced to that nffg. 
-nffgInfo elements enables to check if the nodes specified in the policies are really present into the nffg
-thanks to the keyNffgNodeName - keyrefNffgDestination/SourceNodeName pair.
-- node: there is validity check on the node name uniqueness within the same nffg thanks to keyNffgNodeName element.
-Moreover there is validity check on the link name referenced within the node to ensure that only the links of that nffg are used.
-- link: there is validity check on the link name uniqueness within the same nffg thanks to keyNffgLinkName element.
-Moreover there is validity check on the source/destination node name referenced to ensure that only
-the nodes of that nffg are used.
+- nffgInfo: root element;
+- catalog: 	it has the list of the network functionalities of the service provider, each of them has a global unique name 
+			with a global scope (dtd type = ID);
+- nffg:	it has a global unique name, with a global scope (dtd type = ID), and it is made up of a list of nodes and links;
+- node:	it has a name with no unique constraint (dtd type = NMTOKEN);
+- link: it has a name with no unique constraint (dtd type = NMTOKEN) and refers to nodes by their names, 
+		correctness checks to verify legal node names are to be done at application level;
+- policies: it has a global unique name, with a global scope (dtd type = ID).
