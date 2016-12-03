@@ -8,8 +8,7 @@ public class ReachabilityTesterFactoryExt extends ReachabilityTesterFactory {
 
 	@Override
 	public ReachabilityTester newReachabilityTester() throws ReachabilityTesterException {
-		// TODO Auto-generated method stub
-		return null;
+		return new ReachabilityTesterImpl();
 	}
 
 }
