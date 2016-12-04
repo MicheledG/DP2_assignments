@@ -1,11 +1,11 @@
 package it.polito.dp2.NFFG.sol2;
 
 import java.net.URI;
-import java.util.ArrayList;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Response;
 
 import it.polito.dp2.NFFG.*;
 import it.polito.dp2.NFFG.Random.NffgVerifierFactoryImpl;
@@ -22,6 +22,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	URI baseURL = null;
 	NffgVerifier nffgVerifier;
 	String uploadedNffgName = null;
+	Nodes uploadedNodes = null;
 	
 	public ReachabilityTesterImpl() {
 		try {
@@ -56,7 +57,15 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 			//TODO: debug
 			System.out.println("Uploading node "+nodeReader.getName()+"...");
 			loadNode(nodeReader);
-			/* Load all the relationships of the node */
+		}
+		
+		/* download the list of all the uploaded nodes */
+		//TODO: debug
+		System.out.println("Resolving node id...");
+		this.uploadedNodes = downloadNodes();
+		
+		/* Load all the relationships of the node */
+		for (NodeReader nodeReader : nffgReader.getNodes()) {
 			for (LinkReader linkReader : nodeReader.getLinks()) {
 				//TODO: debug
 				System.out.println("Uploading relationship "+linkReader.getName()+"...");
@@ -84,12 +93,16 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	private void deleteNFFG() throws ServiceException {
 		Client client = ClientBuilder.newClient();
 		try{
-			client.target(this.baseURL+"resource/nodes").request("application/xml").delete();
+			Response response = client.target(this.baseURL+"resource/nodes").request("application/xml").delete();
+			System.out.print("Response status code: ");
+			System.out.print(response.getStatus());
+			System.out.println();
 		}
 		catch (RuntimeException e) {
 			throw new ServiceException(e);	
 		}
 		this.uploadedNffgName = null;
+		this.uploadedNodes = null;
 	}
 	
 	/* Load a node */
@@ -99,7 +112,10 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		/* load the node through API*/
 		Client client = ClientBuilder.newClient();
 		try{
-			client.target(this.baseURL+"resource/node").request("application/xml").post(Entity.xml(node));
+			Response response = client.target(this.baseURL+"resource/node").request("application/xml").post(Entity.xml(node));
+			System.out.print("Response status code: ");
+			System.out.print(response.getStatus());
+			System.out.println();
 		}
 		catch (RuntimeException e) {
 			throw new ServiceException(e);	
@@ -108,7 +124,6 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	
 	private Node newNode(NodeReader nodeReader){
 		Node node = new Node();
-		node.setId(nodeReader.getName());
 		Property name = new Property();
 		name.setName("name");
 		name.setValue(nodeReader.getName());
@@ -123,21 +138,55 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		/* load the relationship through API*/
 		Client client = ClientBuilder.newClient();
 		try{
-			String nodeId = relationship.srcNode;
-			client.target(this.baseURL+"/resource/node/"+nodeId+"/relationship").request("application/xml").post(Entity.xml(relationship));
+			String nodeId = relationship.getSrcNode();
+			Response response = client.target(this.baseURL+"resource/node/"+nodeId+"/relationship").request("application/xml").post(Entity.xml(relationship));
+			System.out.print("Response status code: ");
+			System.out.print(response.getStatus());
+			System.out.println();
 		}
 		catch (RuntimeException e) {
 			throw new ServiceException(e);	
 		}
 	}
 	
-	private Relationship newRelationship(LinkReader linkReader){
+	private Relationship newRelationship(LinkReader linkReader) throws ServiceException{
 		Relationship relationship = new Relationship();
 		relationship.setId(linkReader.getName());
 		relationship.setType("Link");
-		relationship.setSrcNode(linkReader.getSourceNode().getName());
-		relationship.setDstNode(linkReader.getDestinationNode().getName());
+		relationship.setSrcNode(findNodeIdFromNodeName(linkReader.getSourceNode().getName()));
+		relationship.setDstNode(findNodeIdFromNodeName(linkReader.getDestinationNode().getName()));
 		return relationship;
+	}
+	
+	/* download the list of all the uploaded nodes */
+	private Nodes downloadNodes() throws ServiceException{
+		Nodes nodes = null;
+		/* download the nodes through API*/
+		Client client = ClientBuilder.newClient();
+		try{
+			Response response = client.target(this.baseURL+"resource/nodes").request("application/xml").get();
+			System.out.print("Response status code: ");
+			System.out.print(response.getStatus());
+			System.out.println();
+			nodes = response.readEntity(Nodes.class);
+		}
+		catch (RuntimeException e) {
+			throw new ServiceException(e);	
+		}
+		
+		return nodes;
+	}
+	
+	/* find the node id of a node */
+	private String findNodeIdFromNodeName(String nodeName) throws ServiceException{
+		for (Nodes.Node node : this.uploadedNodes.getNode()) {
+			for (Property property : node.getProperty()) {
+				if(property.getName().equals("name") && property.getValue().equals(nodeName))
+					return node.getId();
+			}
+		}
+		/* node not found... */
+		throw new ServiceException("Node ID not found for the node:" + nodeName);
 	}
 	
 	//TODO:debug
