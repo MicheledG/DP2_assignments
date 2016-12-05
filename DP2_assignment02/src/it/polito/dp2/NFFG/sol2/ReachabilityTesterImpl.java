@@ -33,6 +33,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 			System.err.println("Exception instantiating a new NffgVerifier");
 			e.printStackTrace();
 		}
+		//TODO: check url in the generate-artifacts target
 		String baseURL = System.getProperty("it.polito.dp2.NFFG.lab2.URL");
 		if(baseURL == null)
 			this.baseURL = URI.create("http://localhost:8080/Neo4JXML/rest/");
@@ -201,21 +202,21 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		}
 		
 		try {
-			System.out.println("Looking for an eventual nffg already updated...");
+			System.out.println("Looking for an eventual nffg already uploaded...");
 			String nffgName = reachabilityTester.getCurrentGraphName();
 			if(nffgName == null)
-				System.out.println("No updated nffg");
+				System.out.println("No uploaded nffg");
 			else
-				System.out.println("Nffg updated: "+nffgName);
+				System.out.println("Nffg uploaded: "+nffgName);
 			for(Integer i = 0; i < 10; i++ ){
 				nffgName = "Nffg" + i.toString();
-				System.out.println("Deleting previous updated nffg and uploading "+nffgName+"...");
+				System.out.println("Deleting previous uploaded nffg and uploading "+nffgName+"...");
 				reachabilityTester.loadNFFG(nffgName);
 				nffgName = reachabilityTester.getCurrentGraphName();
 				if(nffgName == null)
-					System.out.println("No updated nffg");
+					System.out.println("No uploaded nffg");
 				else
-					System.out.println("Nffg updated: "+nffgName);
+					System.out.println("Nffg uploaded: "+nffgName);
 			}
 			
 		} catch (UnknownNameException | ServiceException e) {
