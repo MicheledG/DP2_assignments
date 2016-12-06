@@ -8,7 +8,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 import it.polito.dp2.NFFG.*;
-import it.polito.dp2.NFFG.Random.NffgVerifierFactoryImpl;
 import it.polito.dp2.NFFG.lab2.NoGraphException;
 import it.polito.dp2.NFFG.lab2.ReachabilityTester;
 import it.polito.dp2.NFFG.lab2.ReachabilityTesterException;
@@ -27,7 +26,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	public ReachabilityTesterImpl() {
 		try {
 			/*exploits random data generator*/
-			NffgVerifierFactory nffgVerifierFactory = NffgVerifierFactoryImpl.newInstance();
+			NffgVerifierFactory nffgVerifierFactory = NffgVerifierFactory.newInstance();
 			this.nffgVerifier = nffgVerifierFactory.newNffgVerifier();
 		} catch (NffgVerifierException | FactoryConfigurationError e) {
 			System.err.println("Exception instantiating a new NffgVerifier");
@@ -36,7 +35,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		//TODO: check url in the generate-artifacts target
 		String baseURL = System.getProperty("it.polito.dp2.NFFG.lab2.URL");
 		if(baseURL == null)
-			this.baseURL = URI.create("http://localhost:8080/Neo4JXML/rest/");
+			this.baseURL = URI.create("http://localhost:8080/Neo4JXML/rest");
 		else
 			this.baseURL = URI.create(baseURL);
 	}
@@ -96,7 +95,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	private boolean queryPathsSrcNodeDstNode(String srcNodeId, String dstNodeId) throws ServiceException {
 		Client client = ClientBuilder.newClient();
 		try{
-			Response response = client.target(this.baseURL+"resource/node/"+srcNodeId+"/paths")
+			Response response = client.target(this.baseURL+"/resource/node/"+srcNodeId+"/paths")
 					.queryParam("dst", dstNodeId).request("application/xml").get();
 			handleResponseStatusCode(response);
 			Paths paths = response.readEntity(Paths.class);
@@ -122,7 +121,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	private void deleteNFFG() throws ServiceException {
 		Client client = ClientBuilder.newClient();
 		try{
-			Response response = client.target(this.baseURL+"resource/nodes").request("application/xml").delete();
+			Response response = client.target(this.baseURL+"/resource/nodes").request("application/xml").delete();
 			handleResponseStatusCode(response);
 		}
 		catch (RuntimeException e) {
@@ -139,7 +138,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		/* load the node through API*/
 		Client client = ClientBuilder.newClient();
 		try{
-			Response response = client.target(this.baseURL+"resource/node").request("application/xml").post(Entity.xml(node));
+			Response response = client.target(this.baseURL+"/resource/node").request("application/xml").post(Entity.xml(node));
 			handleResponseStatusCode(response);
 		}
 		catch (RuntimeException e) {
@@ -166,7 +165,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 			Client client = ClientBuilder.newClient();
 		
 			String nodeId = relationship.getSrcNode();
-			Response response = client.target(this.baseURL+"resource/node/"+nodeId+"/relationship").request("application/xml").post(Entity.xml(relationship));
+			Response response = client.target(this.baseURL+"/resource/node/"+nodeId+"/relationship").request("application/xml").post(Entity.xml(relationship));
 			handleResponseStatusCode(response);
 		}
 		catch (RuntimeException | UnknownNameException e) {
@@ -189,7 +188,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		/* download the nodes through API*/
 		Client client = ClientBuilder.newClient();
 		try{
-			Response response = client.target(this.baseURL+"resource/nodes").request("application/xml").get();
+			Response response = client.target(this.baseURL+"/resource/nodes").request("application/xml").get();
 			handleResponseStatusCode(response);
 			nodes = response.readEntity(Nodes.class);
 		}
@@ -226,7 +225,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	
 	//TODO:debug
 	public static void main(String[] args){
-		ReachabilityTesterFactory reachabilityTesterFactory = ReachabilityTesterFactoryExt.newInstance();
+		ReachabilityTesterFactory reachabilityTesterFactory = ReachabilityTesterFactory.newInstance();
 		ReachabilityTester reachabilityTester = null;
 		try {
 			reachabilityTester = reachabilityTesterFactory.newReachabilityTester();
