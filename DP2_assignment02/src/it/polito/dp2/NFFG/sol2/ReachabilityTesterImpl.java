@@ -19,10 +19,10 @@ import it.polito.dp2.NFFG.lab2.UnknownNameException;
 public class ReachabilityTesterImpl implements ReachabilityTester {
 	
 	
-	URI baseURL = null;
-	NffgVerifier nffgVerifier;
-	String uploadedNffgName = null;
-	Nodes uploadedNodes = null;
+	private URI baseURL = null;
+	private NffgVerifier nffgVerifier;
+	private String uploadedNffgName = null;
+	private Nodes uploadedNodes = null;
 	
 	public ReachabilityTesterImpl() {
 		try {
@@ -81,10 +81,38 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	@Override
 	public boolean testReachability(String srcName, String destName)
 			throws UnknownNameException, ServiceException, NoGraphException {
-		// TODO Auto-generated method stub
-		return false;
+		/* check if a graph is already uploaded */
+		if(getCurrentGraphName() == null)
+			throw new NoGraphException();
+		
+		/* check if the srcName and dstName nodes are present into the graph uploaded */
+		String srcNodeId = findNodeIdFromNodeName(srcName);
+		String dstNodeId = findNodeIdFromNodeName(destName);
+		
+		/* query for the paths between srcNode and dstNode */
+		return queryPathsSrcNodeDstNode(srcNodeId,dstNodeId);
 	}
-
+	
+	private boolean queryPathsSrcNodeDstNode(String srcNodeId, String dstNodeId) throws ServiceException {
+		Client client = ClientBuilder.newClient();
+		try{
+			Response response = client.target(this.baseURL+"resource/node/"+srcNodeId+"/paths")
+					.queryParam("dst", dstNodeId).request("application/xml").get();
+			handleResponseStatusCode(response);
+			Paths paths = response.readEntity(Paths.class);
+			if(paths.getPath().size() == 0)
+				return false;
+			else if (paths.getPath().size() > 0)
+				return true;
+			else 
+				throw new ServiceException("Unexpected paths response");
+		}
+		catch (RuntimeException e) {
+			throw new ServiceException(e);	
+		}
+	}
+	
+	
 	@Override
 	public String getCurrentGraphName() {
 		return this.uploadedNffgName;
@@ -95,9 +123,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		Client client = ClientBuilder.newClient();
 		try{
 			Response response = client.target(this.baseURL+"resource/nodes").request("application/xml").delete();
-			System.out.print("Response status code: ");
-			System.out.print(response.getStatus());
-			System.out.println();
+			handleResponseStatusCode(response);
 		}
 		catch (RuntimeException e) {
 			throw new ServiceException(e);	
@@ -114,9 +140,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		Client client = ClientBuilder.newClient();
 		try{
 			Response response = client.target(this.baseURL+"resource/node").request("application/xml").post(Entity.xml(node));
-			System.out.print("Response status code: ");
-			System.out.print(response.getStatus());
-			System.out.println();
+			handleResponseStatusCode(response);
 		}
 		catch (RuntimeException e) {
 			throw new ServiceException(e);	
@@ -134,23 +158,23 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	
 	/* Load a relationship */
 	private void loadRelationship(LinkReader linkReader) throws ServiceException{
-		/* create a relationship object to be loaded*/
-		Relationship relationship = newRelationship(linkReader);
-		/* load the relationship through API*/
-		Client client = ClientBuilder.newClient();
+		
 		try{
+			/* create a relationship object to be loaded*/
+			Relationship relationship = newRelationship(linkReader);
+			/* load the relationship through API*/
+			Client client = ClientBuilder.newClient();
+		
 			String nodeId = relationship.getSrcNode();
 			Response response = client.target(this.baseURL+"resource/node/"+nodeId+"/relationship").request("application/xml").post(Entity.xml(relationship));
-			System.out.print("Response status code: ");
-			System.out.print(response.getStatus());
-			System.out.println();
+			handleResponseStatusCode(response);
 		}
-		catch (RuntimeException e) {
+		catch (RuntimeException | UnknownNameException e) {
 			throw new ServiceException(e);	
 		}
 	}
 	
-	private Relationship newRelationship(LinkReader linkReader) throws ServiceException{
+	private Relationship newRelationship(LinkReader linkReader) throws UnknownNameException{
 		Relationship relationship = new Relationship();
 		relationship.setId(linkReader.getName());
 		relationship.setType("Link");
@@ -166,9 +190,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		Client client = ClientBuilder.newClient();
 		try{
 			Response response = client.target(this.baseURL+"resource/nodes").request("application/xml").get();
-			System.out.print("Response status code: ");
-			System.out.print(response.getStatus());
-			System.out.println();
+			handleResponseStatusCode(response);
 			nodes = response.readEntity(Nodes.class);
 		}
 		catch (RuntimeException e) {
@@ -179,7 +201,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	}
 	
 	/* find the node id of a node */
-	private String findNodeIdFromNodeName(String nodeName) throws ServiceException{
+	private String findNodeIdFromNodeName(String nodeName) throws UnknownNameException{
 		for (Nodes.Node node : this.uploadedNodes.getNode()) {
 			for (Property property : node.getProperty()) {
 				if(property.getName().equals("name") && property.getValue().equals(nodeName))
@@ -187,7 +209,19 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 			}
 		}
 		/* node not found... */
-		throw new ServiceException("Node ID not found for the node:" + nodeName);
+		throw new UnknownNameException("Node ID not found for the node:" + nodeName);
+	}
+	
+	/* handle response status code */
+	private void handleResponseStatusCode(Response response){
+		System.out.print("Response status code: ");
+		System.out.print(response.getStatus());
+		System.out.println();
+	}
+	
+	//TODO:debug
+	public NffgReader getNffgReader(String name){
+		return this.nffgVerifier.getNffg(name);
 	}
 	
 	//TODO:debug
@@ -200,6 +234,8 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		ReachabilityTesterImpl reach = (ReachabilityTesterImpl) reachabilityTester;
 		
 		try {
 			System.out.println("Looking for an eventual nffg already uploaded...");
@@ -217,9 +253,21 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 					System.out.println("No uploaded nffg");
 				else
 					System.out.println("Nffg uploaded: "+nffgName);
+				/* test that all the links are found */
+				System.out.println("Testing existing links...");
+				for (NodeReader nodeReader : reach.getNffgReader(reach.getCurrentGraphName()).getNodes()) {
+					for (LinkReader linkReader : nodeReader.getLinks()) {
+						System.out.print("Relationship between " + linkReader.getSourceNode().getName() +
+								" and " + linkReader.getDestinationNode().getName() + ": ");
+						if(reach.testReachability(linkReader.getSourceNode().getName(), linkReader.getDestinationNode().getName()))
+							System.out.println("existing");
+						else
+							System.out.println("missing");
+					}
+				}
 			}
 			
-		} catch (UnknownNameException | ServiceException e) {
+		} catch (UnknownNameException | ServiceException | NoGraphException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

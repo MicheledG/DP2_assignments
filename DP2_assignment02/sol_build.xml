@@ -44,8 +44,8 @@
 	   	<echo message="Compiling the descriptions..." />
 	   	<wjc description="${neo4j.wadl}" package="it.polito.dp2.NFFG.sol2"
 	       autoSchemaPackage="false" target="${gen.dir}">
-	     <produces dir="${gen.dir}/it/polito/dp2/NFFG/sol2" includes="*.java"/>
-	     <depends dir="${root.location}" includes="build.xml"/>
+	     	<produces dir="${gen.dir}/it/polito/dp2/NFFG/sol2" includes="*.java"/>
+	   		<depends dir="${root.location}" includes="build.xml"/>
 	    </wjc>
 	</target>
 
