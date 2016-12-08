@@ -1,6 +1,8 @@
 package it.polito.dp2.NFFG.sol2;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -21,18 +23,19 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	private URI baseURL = null;
 	private NffgVerifier nffgVerifier;
 	private String uploadedNffgName = null;
-	private Nodes uploadedNodes = null;
+	private Map<String, String> mapNodeNodeId;
 	
 	public ReachabilityTesterImpl() {
 		try {
 			/*exploits random data generator*/
 			NffgVerifierFactory nffgVerifierFactory = NffgVerifierFactory.newInstance();
 			this.nffgVerifier = nffgVerifierFactory.newNffgVerifier();
+			mapNodeNodeId = new HashMap<String, String>();
 		} catch (NffgVerifierException | FactoryConfigurationError e) {
 			System.err.println("Exception instantiating a new NffgVerifier");
 			e.printStackTrace();
 		}
-		//TODO: check url in the generate-artifacts target
+		/* check base url from the system property */
 		String baseURL = System.getProperty("it.polito.dp2.NFFG.lab2.URL");
 		if(baseURL == null)
 			this.baseURL = URI.create("http://localhost:8080/Neo4JXML/rest");
@@ -46,28 +49,19 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		NffgReader nffgReader = nffgVerifier.getNffg(name);
 		if(nffgReader == null)
 			throw new UnknownNameException();
-		/* Delete all the eventual nodes on the Neo4JXML DB */
-		//TODO: debug
-		System.out.println("Deleting...");
+		/* Delete all the eventual nodes on the Neo4J DB */
+		System.out.println("Deleting nodes on Neo4J DB...");
 		deleteNFFG();
 		/* Load all the nodes of the Nffg */
-		//TODO: debug
-		System.out.println("Uploading...");
+		System.out.println("Uploading nodes on Neo4J DB...");
 		for (NodeReader nodeReader: nffgReader.getNodes()) {
-			//TODO: debug
 			System.out.println("Uploading node "+nodeReader.getName()+"...");
 			loadNode(nodeReader);
 		}
-		
-		/* download the list of all the uploaded nodes */
-		//TODO: debug
-		System.out.println("Resolving node id...");
-		this.uploadedNodes = downloadNodes();
-		
+				
 		/* Load all the relationships of the node */
 		for (NodeReader nodeReader : nffgReader.getNodes()) {
 			for (LinkReader linkReader : nodeReader.getLinks()) {
-				//TODO: debug
 				System.out.println("Uploading relationship "+linkReader.getName()+"...");
 				loadRelationship(linkReader);
 			}
@@ -92,26 +86,6 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		return queryPathsSrcNodeDstNode(srcNodeId,dstNodeId);
 	}
 	
-	private boolean queryPathsSrcNodeDstNode(String srcNodeId, String dstNodeId) throws ServiceException {
-		Client client = ClientBuilder.newClient();
-		try{
-			Response response = client.target(this.baseURL+"/resource/node/"+srcNodeId+"/paths")
-					.queryParam("dst", dstNodeId).request("application/xml").get();
-			handleResponseStatusCode(response);
-			Paths paths = response.readEntity(Paths.class);
-			if(paths.getPath().size() == 0)
-				return false;
-			else if (paths.getPath().size() > 0)
-				return true;
-			else 
-				throw new ServiceException("Unexpected paths response");
-		}
-		catch (RuntimeException e) {
-			throw new ServiceException(e);	
-		}
-	}
-	
-	
 	@Override
 	public String getCurrentGraphName() {
 		return this.uploadedNffgName;
@@ -128,24 +102,28 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 			throw new ServiceException(e);	
 		}
 		this.uploadedNffgName = null;
-		this.uploadedNodes = null;
+		this.mapNodeNodeId.clear();
 	}
 	
-	/* Load a node */
+	/* Load a node and retrieve its id*/
 	private void loadNode(NodeReader nodeReader) throws ServiceException{
 		/* create a node object to be loaded*/
-		Node node = newNode(nodeReader);
+		Node nodeToLoad = newNode(nodeReader);
 		/* load the node through API*/
 		Client client = ClientBuilder.newClient();
 		try{
-			Response response = client.target(this.baseURL+"/resource/node").request("application/xml").post(Entity.xml(node));
+			Response response = client.target(this.baseURL+"/resource/node").request("application/xml").post(Entity.xml(nodeToLoad));
 			handleResponseStatusCode(response);
+			Node nodeLoaded = response.readEntity(Node.class);
+			/* store pair nodeName - nodeId into the map */
+			this.mapNodeNodeId.put(nodeReader.getName(), nodeLoaded.getId());
 		}
 		catch (RuntimeException e) {
 			throw new ServiceException(e);	
-		}
+		}	
 	}
 	
+	/* create a Node object to upload on Neo4J DB starting from a nodeReader */
 	private Node newNode(NodeReader nodeReader){
 		Node node = new Node();
 		Property name = new Property();
@@ -173,6 +151,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		}
 	}
 	
+	/* create a Relationship object to upload on Neo4J DB starting from a linkReader */
 	private Relationship newRelationship(LinkReader linkReader) throws UnknownNameException{
 		Relationship relationship = new Relationship();
 		relationship.setId(linkReader.getName());
@@ -182,8 +161,9 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		return relationship;
 	}
 	
-	/* download the list of all the uploaded nodes */
-	private Nodes downloadNodes() throws ServiceException{
+	/* download the list of all the uploaded nodes and store pair node name - node id into the map, DEPRECATED!*/
+	private Map<String, String> downloadNodes() throws ServiceException{
+		Map<String, String> map = new HashMap<String, String>();
 		Nodes nodes = null;
 		/* download the nodes through API*/
 		Client client = ClientBuilder.newClient();
@@ -196,19 +176,43 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 			throw new ServiceException(e);	
 		}
 		
-		return nodes;
+		for (Nodes.Node node : nodes.getNode()) {
+			String nodeName = node.getProperty().get(0).getValue();
+			String nodeId = node.getId();
+			map.put(nodeName, nodeId);
+		}
+		
+		return map;
 	}
 	
 	/* find the node id of a node */
-	private String findNodeIdFromNodeName(String nodeName) throws UnknownNameException{
-		for (Nodes.Node node : this.uploadedNodes.getNode()) {
-			for (Property property : node.getProperty()) {
-				if(property.getName().equals("name") && property.getValue().equals(nodeName))
-					return node.getId();
-			}
-		}
+	private String findNodeIdFromNodeName(String nodeName) throws UnknownNameException{		
 		/* node not found... */
-		throw new UnknownNameException("Node ID not found for the node:" + nodeName);
+		if(!this.mapNodeNodeId.containsKey(nodeName))
+			throw new UnknownNameException("Node ID not found for the node:" + nodeName);
+		else
+			return this.mapNodeNodeId.get(nodeName);
+		
+	}
+	
+	/* return true if there is at least one path between the srcNode and the dstNode else return false */
+	private boolean queryPathsSrcNodeDstNode(String srcNodeId, String dstNodeId) throws ServiceException {
+		Client client = ClientBuilder.newClient();
+		try{
+			Response response = client.target(this.baseURL+"/resource/node/"+srcNodeId+"/paths")
+					.queryParam("dst", dstNodeId).request("application/xml").get();
+			handleResponseStatusCode(response);
+			Paths paths = response.readEntity(Paths.class);
+			if(paths.getPath().size() == 0)
+				return false;
+			else if (paths.getPath().size() > 0)
+				return true;
+			else 
+				throw new ServiceException("Unexpected paths response");
+		}
+		catch (RuntimeException e) {
+			throw new ServiceException(e);	
+		}
 	}
 	
 	/* handle response status code */
