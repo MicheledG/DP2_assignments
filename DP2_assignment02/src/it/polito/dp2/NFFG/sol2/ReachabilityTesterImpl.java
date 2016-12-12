@@ -24,13 +24,15 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	private NffgVerifier nffgVerifier;
 	private String uploadedNffgName = null;
 	private Map<String, String> mapNodeNodeId;
+	private ObjectFactory objectFactory;
 	
 	public ReachabilityTesterImpl() {
 		try {
 			/*exploits random data generator*/
 			NffgVerifierFactory nffgVerifierFactory = NffgVerifierFactory.newInstance();
 			this.nffgVerifier = nffgVerifierFactory.newNffgVerifier();
-			mapNodeNodeId = new HashMap<String, String>();
+			this.mapNodeNodeId = new HashMap<String, String>();
+			this.objectFactory = new ObjectFactory();
 		} catch (NffgVerifierException | FactoryConfigurationError e) {
 			System.err.println("Exception instantiating a new NffgVerifier");
 			e.printStackTrace();
@@ -125,8 +127,8 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	
 	/* create a Node object to upload on Neo4J DB starting from a nodeReader */
 	private Node newNode(NodeReader nodeReader){
-		Node node = new Node();
-		Property name = new Property();
+		Node node = this.objectFactory.createNode();
+		Property name = this.objectFactory.createProperty();
 		name.setName("name");
 		name.setValue(nodeReader.getName());
 		node.getProperty().add(name);
@@ -153,7 +155,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	
 	/* create a Relationship object to upload on Neo4J DB starting from a linkReader */
 	private Relationship newRelationship(LinkReader linkReader) throws UnknownNameException{
-		Relationship relationship = new Relationship();
+		Relationship relationship = this.objectFactory.createRelationship();
 		relationship.setId(linkReader.getName());
 		relationship.setType("Link");
 		relationship.setSrcNode(findNodeIdFromNodeName(linkReader.getSourceNode().getName()));
