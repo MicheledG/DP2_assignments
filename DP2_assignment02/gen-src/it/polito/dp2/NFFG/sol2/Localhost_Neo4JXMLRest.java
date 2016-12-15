@@ -18,7 +18,7 @@ import com.sun.jersey.api.uri.UriTemplate;
 
 @Generated(value = {
     "wadl|http://localhost:8080/Neo4JXML/rest/application.wadl"
-}, comments = "wadl2java, http://wadl.java.net", date = "2016-12-12T15:09:51.493+01:00")
+}, comments = "wadl2java, http://wadl.java.net", date = "2016-12-15T16:36:21.411+01:00")
 public class Localhost_Neo4JXMLRest {
 
     /**
@@ -122,12 +122,8 @@ public class Localhost_Neo4JXMLRest {
             return new Localhost_Neo4JXMLRest.Resource.NodeNodeid(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues), nodeid);
         }
 
-        public Localhost_Neo4JXMLRest.Resource.Nodes nodes() {
-            return new Localhost_Neo4JXMLRest.Resource.Nodes(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues));
-        }
-
-        public Localhost_Neo4JXMLRest.Resource.NodeNodeidLabel nodeNodeidLabel(String nodeid) {
-            return new Localhost_Neo4JXMLRest.Resource.NodeNodeidLabel(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues), nodeid);
+        public Localhost_Neo4JXMLRest.Resource.NodeNodeidLabelLabelid nodeNodeidLabelLabelid(String nodeid, String labelid) {
+            return new Localhost_Neo4JXMLRest.Resource.NodeNodeidLabelLabelid(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues), nodeid, labelid);
         }
 
         public Localhost_Neo4JXMLRest.Resource.RelationshipRelationshipid relationshipRelationshipid(String relationshipid) {
@@ -138,24 +134,28 @@ public class Localhost_Neo4JXMLRest {
             return new Localhost_Neo4JXMLRest.Resource.NodeNodeidPaths(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues), nodeid);
         }
 
-        public Localhost_Neo4JXMLRest.Resource.NodeNodeidLabelLabelid nodeNodeidLabelLabelid(String nodeid, String labelid) {
-            return new Localhost_Neo4JXMLRest.Resource.NodeNodeidLabelLabelid(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues), nodeid, labelid);
+        public Localhost_Neo4JXMLRest.Resource.NodeNodeId nodeNodeId(String nodeid) {
+            return new Localhost_Neo4JXMLRest.Resource.NodeNodeId(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues), nodeid);
+        }
+
+        public Localhost_Neo4JXMLRest.Resource.NodeNodeidLabel nodeNodeidLabel(String nodeid) {
+            return new Localhost_Neo4JXMLRest.Resource.NodeNodeidLabel(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues), nodeid);
         }
 
         public Localhost_Neo4JXMLRest.Resource.Node node() {
             return new Localhost_Neo4JXMLRest.Resource.Node(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues));
         }
 
-        public Localhost_Neo4JXMLRest.Resource.NodeNodeidRelationship nodeNodeidRelationship(String nodeid) {
-            return new Localhost_Neo4JXMLRest.Resource.NodeNodeidRelationship(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues), nodeid);
-        }
-
         public Localhost_Neo4JXMLRest.Resource.Relationship relationship() {
             return new Localhost_Neo4JXMLRest.Resource.Relationship(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues));
         }
 
-        public Localhost_Neo4JXMLRest.Resource.NodeNodeId nodeNodeId(String nodeid) {
-            return new Localhost_Neo4JXMLRest.Resource.NodeNodeId(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues), nodeid);
+        public Localhost_Neo4JXMLRest.Resource.Nodes nodes() {
+            return new Localhost_Neo4JXMLRest.Resource.Nodes(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues));
+        }
+
+        public Localhost_Neo4JXMLRest.Resource.NodeNodeidRelationship nodeNodeidRelationship(String nodeid) {
+            return new Localhost_Neo4JXMLRest.Resource.NodeNodeidRelationship(_client, _uriBuilder.buildFromMap(_templateAndMatrixParameterValues), nodeid);
         }
 
         public static class Node {
@@ -179,6 +179,38 @@ public class Localhost_Neo4JXMLRest {
                 _uriBuilder = UriBuilder.fromUri(baseUri);
                 _uriBuilder = _uriBuilder.path("/node");
                 _templateAndMatrixParameterValues = new HashMap<String, Object>();
+            }
+
+            public<T >T optionsAsXml(GenericType<T> returnType) {
+                UriBuilder localUriBuilder = _uriBuilder.clone();
+                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
+                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
+                resourceBuilder = resourceBuilder.accept("application/xml");
+                ClientResponse response;
+                response = resourceBuilder.method("OPTIONS", ClientResponse.class);
+                if (response.getStatus()>= 400) {
+                    throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
+                }
+                return response.getEntity(returnType);
+            }
+
+            public<T >T optionsAsXml(Class<T> returnType) {
+                UriBuilder localUriBuilder = _uriBuilder.clone();
+                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
+                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
+                resourceBuilder = resourceBuilder.accept("application/xml");
+                ClientResponse response;
+                response = resourceBuilder.method("OPTIONS", ClientResponse.class);
+                if (!ClientResponse.class.isAssignableFrom(returnType)) {
+                    if (response.getStatus()>= 400) {
+                        throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
+                    }
+                }
+                if (!ClientResponse.class.isAssignableFrom(returnType)) {
+                    return response.getEntity(returnType);
+                } else {
+                    return returnType.cast(response);
+                }
             }
 
             public it.polito.dp2.NFFG.sol2.Node postXmlAsNode(it.polito.dp2.NFFG.sol2.Node input) {
@@ -217,38 +249,6 @@ public class Localhost_Neo4JXMLRest {
                 resourceBuilder = resourceBuilder.type("application/xml");
                 ClientResponse response;
                 response = resourceBuilder.method("POST", ClientResponse.class, input);
-                if (!ClientResponse.class.isAssignableFrom(returnType)) {
-                    if (response.getStatus()>= 400) {
-                        throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
-                    }
-                }
-                if (!ClientResponse.class.isAssignableFrom(returnType)) {
-                    return response.getEntity(returnType);
-                } else {
-                    return returnType.cast(response);
-                }
-            }
-
-            public<T >T optionsAsXml(GenericType<T> returnType) {
-                UriBuilder localUriBuilder = _uriBuilder.clone();
-                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
-                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
-                resourceBuilder = resourceBuilder.accept("application/xml");
-                ClientResponse response;
-                response = resourceBuilder.method("OPTIONS", ClientResponse.class);
-                if (response.getStatus()>= 400) {
-                    throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
-                }
-                return response.getEntity(returnType);
-            }
-
-            public<T >T optionsAsXml(Class<T> returnType) {
-                UriBuilder localUriBuilder = _uriBuilder.clone();
-                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
-                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
-                resourceBuilder = resourceBuilder.accept("application/xml");
-                ClientResponse response;
-                response = resourceBuilder.method("OPTIONS", ClientResponse.class);
                 if (!ClientResponse.class.isAssignableFrom(returnType)) {
                     if (response.getStatus()>= 400) {
                         throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
@@ -568,28 +568,26 @@ public class Localhost_Neo4JXMLRest {
                 return new Localhost_Neo4JXMLRest.Resource.NodeNodeidLabel(_client, copyUriBuilder, copyMap);
             }
 
-            public<T >T postXml(Object input, GenericType<T> returnType) {
+            public<T >T optionsAsXml(GenericType<T> returnType) {
                 UriBuilder localUriBuilder = _uriBuilder.clone();
                 WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
                 com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
                 resourceBuilder = resourceBuilder.accept("application/xml");
-                resourceBuilder = resourceBuilder.type("application/xml");
                 ClientResponse response;
-                response = resourceBuilder.method("POST", ClientResponse.class, input);
+                response = resourceBuilder.method("OPTIONS", ClientResponse.class);
                 if (response.getStatus()>= 400) {
                     throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
                 }
                 return response.getEntity(returnType);
             }
 
-            public<T >T postXml(Object input, Class<T> returnType) {
+            public<T >T optionsAsXml(Class<T> returnType) {
                 UriBuilder localUriBuilder = _uriBuilder.clone();
                 WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
                 com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
                 resourceBuilder = resourceBuilder.accept("application/xml");
-                resourceBuilder = resourceBuilder.type("application/xml");
                 ClientResponse response;
-                response = resourceBuilder.method("POST", ClientResponse.class, input);
+                response = resourceBuilder.method("OPTIONS", ClientResponse.class);
                 if (!ClientResponse.class.isAssignableFrom(returnType)) {
                     if (response.getStatus()>= 400) {
                         throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
@@ -647,26 +645,28 @@ public class Localhost_Neo4JXMLRest {
                 }
             }
 
-            public<T >T optionsAsXml(GenericType<T> returnType) {
+            public<T >T postXml(Object input, GenericType<T> returnType) {
                 UriBuilder localUriBuilder = _uriBuilder.clone();
                 WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
                 com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
                 resourceBuilder = resourceBuilder.accept("application/xml");
+                resourceBuilder = resourceBuilder.type("application/xml");
                 ClientResponse response;
-                response = resourceBuilder.method("OPTIONS", ClientResponse.class);
+                response = resourceBuilder.method("POST", ClientResponse.class, input);
                 if (response.getStatus()>= 400) {
                     throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
                 }
                 return response.getEntity(returnType);
             }
 
-            public<T >T optionsAsXml(Class<T> returnType) {
+            public<T >T postXml(Object input, Class<T> returnType) {
                 UriBuilder localUriBuilder = _uriBuilder.clone();
                 WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
                 com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
                 resourceBuilder = resourceBuilder.accept("application/xml");
+                resourceBuilder = resourceBuilder.type("application/xml");
                 ClientResponse response;
-                response = resourceBuilder.method("OPTIONS", ClientResponse.class);
+                response = resourceBuilder.method("POST", ClientResponse.class, input);
                 if (!ClientResponse.class.isAssignableFrom(returnType)) {
                     if (response.getStatus()>= 400) {
                         throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
@@ -766,38 +766,6 @@ public class Localhost_Neo4JXMLRest {
                 return new Localhost_Neo4JXMLRest.Resource.NodeNodeidLabelLabelid(_client, copyUriBuilder, copyMap);
             }
 
-            public<T >T deleteAsXml(GenericType<T> returnType) {
-                UriBuilder localUriBuilder = _uriBuilder.clone();
-                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
-                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
-                resourceBuilder = resourceBuilder.accept("application/xml");
-                ClientResponse response;
-                response = resourceBuilder.method("DELETE", ClientResponse.class);
-                if (response.getStatus()>= 400) {
-                    throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
-                }
-                return response.getEntity(returnType);
-            }
-
-            public<T >T deleteAsXml(Class<T> returnType) {
-                UriBuilder localUriBuilder = _uriBuilder.clone();
-                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
-                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
-                resourceBuilder = resourceBuilder.accept("application/xml");
-                ClientResponse response;
-                response = resourceBuilder.method("DELETE", ClientResponse.class);
-                if (!ClientResponse.class.isAssignableFrom(returnType)) {
-                    if (response.getStatus()>= 400) {
-                        throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
-                    }
-                }
-                if (!ClientResponse.class.isAssignableFrom(returnType)) {
-                    return response.getEntity(returnType);
-                } else {
-                    return returnType.cast(response);
-                }
-            }
-
             public<T >T optionsAsXml(GenericType<T> returnType) {
                 UriBuilder localUriBuilder = _uriBuilder.clone();
                 WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
@@ -818,6 +786,38 @@ public class Localhost_Neo4JXMLRest {
                 resourceBuilder = resourceBuilder.accept("application/xml");
                 ClientResponse response;
                 response = resourceBuilder.method("OPTIONS", ClientResponse.class);
+                if (!ClientResponse.class.isAssignableFrom(returnType)) {
+                    if (response.getStatus()>= 400) {
+                        throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
+                    }
+                }
+                if (!ClientResponse.class.isAssignableFrom(returnType)) {
+                    return response.getEntity(returnType);
+                } else {
+                    return returnType.cast(response);
+                }
+            }
+
+            public<T >T deleteAsXml(GenericType<T> returnType) {
+                UriBuilder localUriBuilder = _uriBuilder.clone();
+                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
+                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
+                resourceBuilder = resourceBuilder.accept("application/xml");
+                ClientResponse response;
+                response = resourceBuilder.method("DELETE", ClientResponse.class);
+                if (response.getStatus()>= 400) {
+                    throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
+                }
+                return response.getEntity(returnType);
+            }
+
+            public<T >T deleteAsXml(Class<T> returnType) {
+                UriBuilder localUriBuilder = _uriBuilder.clone();
+                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
+                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
+                resourceBuilder = resourceBuilder.accept("application/xml");
+                ClientResponse response;
+                response = resourceBuilder.method("DELETE", ClientResponse.class);
                 if (!ClientResponse.class.isAssignableFrom(returnType)) {
                     if (response.getStatus()>= 400) {
                         throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
@@ -894,6 +894,38 @@ public class Localhost_Neo4JXMLRest {
                 UriBuilder copyUriBuilder = _uriBuilder.clone();
                 copyMap.put("nodeid", nodeid);
                 return new Localhost_Neo4JXMLRest.Resource.NodeNodeidPaths(_client, copyUriBuilder, copyMap);
+            }
+
+            public<T >T optionsAsXml(GenericType<T> returnType) {
+                UriBuilder localUriBuilder = _uriBuilder.clone();
+                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
+                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
+                resourceBuilder = resourceBuilder.accept("application/xml");
+                ClientResponse response;
+                response = resourceBuilder.method("OPTIONS", ClientResponse.class);
+                if (response.getStatus()>= 400) {
+                    throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
+                }
+                return response.getEntity(returnType);
+            }
+
+            public<T >T optionsAsXml(Class<T> returnType) {
+                UriBuilder localUriBuilder = _uriBuilder.clone();
+                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
+                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
+                resourceBuilder = resourceBuilder.accept("application/xml");
+                ClientResponse response;
+                response = resourceBuilder.method("OPTIONS", ClientResponse.class);
+                if (!ClientResponse.class.isAssignableFrom(returnType)) {
+                    if (response.getStatus()>= 400) {
+                        throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
+                    }
+                }
+                if (!ClientResponse.class.isAssignableFrom(returnType)) {
+                    return response.getEntity(returnType);
+                } else {
+                    return returnType.cast(response);
+                }
             }
 
             public Paths getAsPaths() {
@@ -995,38 +1027,6 @@ public class Localhost_Neo4JXMLRest {
                 resourceBuilder = resourceBuilder.accept("application/xml");
                 ClientResponse response;
                 response = resourceBuilder.method("GET", ClientResponse.class);
-                if (!ClientResponse.class.isAssignableFrom(returnType)) {
-                    if (response.getStatus()>= 400) {
-                        throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
-                    }
-                }
-                if (!ClientResponse.class.isAssignableFrom(returnType)) {
-                    return response.getEntity(returnType);
-                } else {
-                    return returnType.cast(response);
-                }
-            }
-
-            public<T >T optionsAsXml(GenericType<T> returnType) {
-                UriBuilder localUriBuilder = _uriBuilder.clone();
-                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
-                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
-                resourceBuilder = resourceBuilder.accept("application/xml");
-                ClientResponse response;
-                response = resourceBuilder.method("OPTIONS", ClientResponse.class);
-                if (response.getStatus()>= 400) {
-                    throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
-                }
-                return response.getEntity(returnType);
-            }
-
-            public<T >T optionsAsXml(Class<T> returnType) {
-                UriBuilder localUriBuilder = _uriBuilder.clone();
-                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
-                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
-                resourceBuilder = resourceBuilder.accept("application/xml");
-                ClientResponse response;
-                response = resourceBuilder.method("OPTIONS", ClientResponse.class);
                 if (!ClientResponse.class.isAssignableFrom(returnType)) {
                     if (response.getStatus()>= 400) {
                         throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
@@ -1178,38 +1178,6 @@ public class Localhost_Neo4JXMLRest {
                 _templateAndMatrixParameterValues = new HashMap<String, Object>();
             }
 
-            public<T >T deleteAsXml(GenericType<T> returnType) {
-                UriBuilder localUriBuilder = _uriBuilder.clone();
-                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
-                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
-                resourceBuilder = resourceBuilder.accept("application/xml");
-                ClientResponse response;
-                response = resourceBuilder.method("DELETE", ClientResponse.class);
-                if (response.getStatus()>= 400) {
-                    throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
-                }
-                return response.getEntity(returnType);
-            }
-
-            public<T >T deleteAsXml(Class<T> returnType) {
-                UriBuilder localUriBuilder = _uriBuilder.clone();
-                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
-                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
-                resourceBuilder = resourceBuilder.accept("application/xml");
-                ClientResponse response;
-                response = resourceBuilder.method("DELETE", ClientResponse.class);
-                if (!ClientResponse.class.isAssignableFrom(returnType)) {
-                    if (response.getStatus()>= 400) {
-                        throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
-                    }
-                }
-                if (!ClientResponse.class.isAssignableFrom(returnType)) {
-                    return response.getEntity(returnType);
-                } else {
-                    return returnType.cast(response);
-                }
-            }
-
             public it.polito.dp2.NFFG.sol2.Nodes getAsNodes() {
                 UriBuilder localUriBuilder = _uriBuilder.clone();
                 WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
@@ -1243,6 +1211,38 @@ public class Localhost_Neo4JXMLRest {
                 resourceBuilder = resourceBuilder.accept("application/xml");
                 ClientResponse response;
                 response = resourceBuilder.method("GET", ClientResponse.class);
+                if (!ClientResponse.class.isAssignableFrom(returnType)) {
+                    if (response.getStatus()>= 400) {
+                        throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
+                    }
+                }
+                if (!ClientResponse.class.isAssignableFrom(returnType)) {
+                    return response.getEntity(returnType);
+                } else {
+                    return returnType.cast(response);
+                }
+            }
+
+            public<T >T deleteAsXml(GenericType<T> returnType) {
+                UriBuilder localUriBuilder = _uriBuilder.clone();
+                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
+                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
+                resourceBuilder = resourceBuilder.accept("application/xml");
+                ClientResponse response;
+                response = resourceBuilder.method("DELETE", ClientResponse.class);
+                if (response.getStatus()>= 400) {
+                    throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
+                }
+                return response.getEntity(returnType);
+            }
+
+            public<T >T deleteAsXml(Class<T> returnType) {
+                UriBuilder localUriBuilder = _uriBuilder.clone();
+                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
+                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
+                resourceBuilder = resourceBuilder.accept("application/xml");
+                ClientResponse response;
+                response = resourceBuilder.method("DELETE", ClientResponse.class);
                 if (!ClientResponse.class.isAssignableFrom(returnType)) {
                     if (response.getStatus()>= 400) {
                         throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
@@ -1378,39 +1378,26 @@ public class Localhost_Neo4JXMLRest {
                 return new Localhost_Neo4JXMLRest.Resource.RelationshipRelationshipid(_client, copyUriBuilder, copyMap);
             }
 
-            public it.polito.dp2.NFFG.sol2.Relationship getAsRelationship() {
+            public<T >T deleteAsXml(GenericType<T> returnType) {
                 UriBuilder localUriBuilder = _uriBuilder.clone();
                 WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
                 com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
                 resourceBuilder = resourceBuilder.accept("application/xml");
                 ClientResponse response;
-                response = resourceBuilder.method("GET", ClientResponse.class);
-                if (response.getStatus()>= 400) {
-                    throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
-                }
-                return response.getEntity(it.polito.dp2.NFFG.sol2.Relationship.class);
-            }
-
-            public<T >T getAsXml(GenericType<T> returnType) {
-                UriBuilder localUriBuilder = _uriBuilder.clone();
-                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
-                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
-                resourceBuilder = resourceBuilder.accept("application/xml");
-                ClientResponse response;
-                response = resourceBuilder.method("GET", ClientResponse.class);
+                response = resourceBuilder.method("DELETE", ClientResponse.class);
                 if (response.getStatus()>= 400) {
                     throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
                 }
                 return response.getEntity(returnType);
             }
 
-            public<T >T getAsXml(Class<T> returnType) {
+            public<T >T deleteAsXml(Class<T> returnType) {
                 UriBuilder localUriBuilder = _uriBuilder.clone();
                 WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
                 com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
                 resourceBuilder = resourceBuilder.accept("application/xml");
                 ClientResponse response;
-                response = resourceBuilder.method("GET", ClientResponse.class);
+                response = resourceBuilder.method("DELETE", ClientResponse.class);
                 if (!ClientResponse.class.isAssignableFrom(returnType)) {
                     if (response.getStatus()>= 400) {
                         throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
@@ -1455,26 +1442,39 @@ public class Localhost_Neo4JXMLRest {
                 }
             }
 
-            public<T >T deleteAsXml(GenericType<T> returnType) {
+            public it.polito.dp2.NFFG.sol2.Relationship getAsRelationship() {
                 UriBuilder localUriBuilder = _uriBuilder.clone();
                 WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
                 com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
                 resourceBuilder = resourceBuilder.accept("application/xml");
                 ClientResponse response;
-                response = resourceBuilder.method("DELETE", ClientResponse.class);
+                response = resourceBuilder.method("GET", ClientResponse.class);
+                if (response.getStatus()>= 400) {
+                    throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
+                }
+                return response.getEntity(it.polito.dp2.NFFG.sol2.Relationship.class);
+            }
+
+            public<T >T getAsXml(GenericType<T> returnType) {
+                UriBuilder localUriBuilder = _uriBuilder.clone();
+                WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
+                com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
+                resourceBuilder = resourceBuilder.accept("application/xml");
+                ClientResponse response;
+                response = resourceBuilder.method("GET", ClientResponse.class);
                 if (response.getStatus()>= 400) {
                     throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());
                 }
                 return response.getEntity(returnType);
             }
 
-            public<T >T deleteAsXml(Class<T> returnType) {
+            public<T >T getAsXml(Class<T> returnType) {
                 UriBuilder localUriBuilder = _uriBuilder.clone();
                 WebResource resource = _client.resource(localUriBuilder.buildFromMap(_templateAndMatrixParameterValues));
                 com.sun.jersey.api.client.WebResource.Builder resourceBuilder = resource.getRequestBuilder();
                 resourceBuilder = resourceBuilder.accept("application/xml");
                 ClientResponse response;
-                response = resourceBuilder.method("DELETE", ClientResponse.class);
+                response = resourceBuilder.method("GET", ClientResponse.class);
                 if (!ClientResponse.class.isAssignableFrom(returnType)) {
                     if (response.getStatus()>= 400) {
                         throw new Localhost_Neo4JXMLRest.WebApplicationExceptionMessage(Response.status(response.getClientResponseStatus()).build());

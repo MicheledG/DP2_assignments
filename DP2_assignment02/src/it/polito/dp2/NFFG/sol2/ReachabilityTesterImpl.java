@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -97,14 +99,14 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	private void deleteNFFG() throws ServiceException {
 		Client client = ClientBuilder.newClient();
 		try{
-			Response response = client.target(this.baseURL+"/resource/nodes").request("application/xml").delete();
-			handleResponseStatusCode(response);
+			String response = client.target(this.baseURL+"/resource/nodes").request("application/xml").delete(String.class);
+			this.uploadedNffgName = null;
+			this.mapNodeNodeId.clear();
 		}
 		catch (RuntimeException e) {
+			/* catch all the possible exception indeed the only throwable exception is ServiceException */
 			throw new ServiceException(e);	
-		}
-		this.uploadedNffgName = null;
-		this.mapNodeNodeId.clear();
+		}	
 	}
 	
 	/* Load a node and retrieve its id*/
@@ -114,9 +116,7 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		/* load the node through API*/
 		Client client = ClientBuilder.newClient();
 		try{
-			Response response = client.target(this.baseURL+"/resource/node").request("application/xml").post(Entity.xml(nodeToLoad));
-			handleResponseStatusCode(response);
-			Node nodeLoaded = response.readEntity(Node.class);
+			Node nodeLoaded = client.target(this.baseURL+"/resource/node").request("application/xml").post(Entity.xml(nodeToLoad), Node.class);
 			/* store pair nodeName - nodeId into the map */
 			this.mapNodeNodeId.put(nodeReader.getName(), nodeLoaded.getId());
 		}
@@ -145,8 +145,8 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 			Client client = ClientBuilder.newClient();
 		
 			String nodeId = relationship.getSrcNode();
-			Response response = client.target(this.baseURL+"/resource/node/"+nodeId+"/relationship").request("application/xml").post(Entity.xml(relationship));
-			handleResponseStatusCode(response);
+			String response = client.target(this.baseURL+"/resource/node/"+nodeId+"/relationship").request("application/xml")
+					.post(Entity.xml(relationship), String.class);
 		}
 		catch (RuntimeException | UnknownNameException e) {
 			throw new ServiceException(e);	
@@ -163,30 +163,6 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		return relationship;
 	}
 	
-	/* download the list of all the uploaded nodes and store pair node name - node id into the map, DEPRECATED!*/
-	private Map<String, String> downloadNodes() throws ServiceException{
-		Map<String, String> map = new HashMap<String, String>();
-		Nodes nodes = null;
-		/* download the nodes through API*/
-		Client client = ClientBuilder.newClient();
-		try{
-			Response response = client.target(this.baseURL+"/resource/nodes").request("application/xml").get();
-			handleResponseStatusCode(response);
-			nodes = response.readEntity(Nodes.class);
-		}
-		catch (RuntimeException e) {
-			throw new ServiceException(e);	
-		}
-		
-		for (Nodes.Node node : nodes.getNode()) {
-			String nodeName = node.getProperty().get(0).getValue();
-			String nodeId = node.getId();
-			map.put(nodeName, nodeId);
-		}
-		
-		return map;
-	}
-	
 	/* find the node id of a node */
 	private String findNodeIdFromNodeName(String nodeName) throws UnknownNameException{		
 		/* node not found... */
@@ -201,10 +177,8 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 	private boolean queryPathsSrcNodeDstNode(String srcNodeId, String dstNodeId) throws ServiceException {
 		Client client = ClientBuilder.newClient();
 		try{
-			Response response = client.target(this.baseURL+"/resource/node/"+srcNodeId+"/paths")
-					.queryParam("dst", dstNodeId).request("application/xml").get();
-			handleResponseStatusCode(response);
-			Paths paths = response.readEntity(Paths.class);
+			Paths paths = client.target(this.baseURL+"/resource/node/"+srcNodeId+"/paths")
+					.queryParam("dst", dstNodeId).request("application/xml").get(Paths.class);	
 			if(paths.getPath().size() == 0)
 				return false;
 			else if (paths.getPath().size() > 0)
@@ -215,13 +189,6 @@ public class ReachabilityTesterImpl implements ReachabilityTester {
 		catch (RuntimeException e) {
 			throw new ServiceException(e);	
 		}
-	}
-	
-	/* handle response status code */
-	private void handleResponseStatusCode(Response response){
-		System.out.print("Response status code: ");
-		System.out.print(response.getStatus());
-		System.out.println();
 	}
 	
 	//TODO:debug
