@@ -22,7 +22,6 @@
 	<xsd:complexType name="nffgType">
 		<xsd:sequence>
 			<xsd:element name="nodes" type="nodesType"/>
-			<xsd:element name="links" type="linkType"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -32,14 +31,31 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
+	<xsd:complexType name="nodeType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<!--TODO: NETWORK FUNCTIONALITY? -->
+			<xsd:element name="links" type="linkType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:complexType name="linksType">
 		<xsd:sequence>
 			<xsd:element name="link" type="linkType" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:complexType name="nodeType">
-		<!-- TODO -->
+	<xsd:complexType name="linkType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="sourceNodeRel" type="relationshipType"/>
+			<xsd:element name="destinationNodeRel" type="relationshipType"/>
+		</xsd:sequence>
 	</xsd:complexType>
+	
+	<xsd:complexType name="relationshipType">
+		<xsd:attribute name="href" type="xsd:anyURI"/>
+	</xsd:complexType>
+	
 	
 </xsd:schema>
