@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/nffgVerifier" xmlns:tns="http://www.example.org/nffgVerifier" elementFormDefault="qualified">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	
-	<!-- first root resource -->
-	<xsd:element name="nffgs" type="nffgsType"/>
-	
-	<!-- second root resource -->
-	<xsd:element name="policies" type="policiesType"/>
-	
-	<xsd:complexType name="nffgsType">
+	<xsd:complexType name="nffgType">
 		<xsd:sequence>
-			<xsd:element name="nffg" type="nffgType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="nodes" type="nodesType"/>
+			<xsd:element name="links" type="linksType"/>
+			<xsd:element name="lastUpdate" type="xsd:dateTime"/>
 		</xsd:sequence>
+		<xsd:attribute name="name" type="nameType"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="nodesType">
+		<xsd:sequence>
+			<xsd:element name="node" type="nodeType" minOccurs="1" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="nodeType">
+		<xsd:sequence>
+			<xsd:element name="networkFunctionality" type="networkFunctionalityType"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="nameType"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="linksType">
+		<xsd:sequence>
+			<xsd:element name="link" type="linkType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+			
+	<xsd:complexType name="linkType">
+		<xsd:sequence>
+			<xsd:element name="sourceNode" type="nameType"/>
+			<xsd:element name="destinationNode" type="nameType"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="nameType"/>
 	</xsd:complexType>
 	
 	<xsd:complexType name="policiesType">
@@ -19,43 +43,47 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:complexType name="nffgType">
+	<xsd:complexType name="policyType">
 		<xsd:sequence>
-			<xsd:element name="nodes" type="nodesType"/>
+			<xsd:element name="property" type="propertyType"/>
+			<xsd:element name="positive" type="xsd:boolean"/>
+			<xsd:element name="networkFunctionality" type="networkFunctionalityType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="nffg" type="nameType"/>
+			<xsd:element name="sourceNode" type="nameType"/>
+			<xsd:element name="destinationNode" type="nameType"/>
+			<xsd:element name="result" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="lastVerification" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="description" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
+		<xsd:attribute name="name" type="nameType"/>
 	</xsd:complexType>
 	
-	<xsd:complexType name="nodesType">
-		<xsd:sequence>
-			<xsd:element name="node" type="nodeType" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
+	<xsd:simpleType name="nameType">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-zA-Z]([a-zA-Z0-9])*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
 	
-	<xsd:complexType name="nodeType">
-		<xsd:sequence>
-			<xsd:element name="name" type="xsd:string"/>
-			<!--TODO: NETWORK FUNCTIONALITY? -->
-			<xsd:element name="links" type="linkType"/>
-		</xsd:sequence>
-	</xsd:complexType>
+	<xsd:simpleType name="propertyType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="REACHABILITY"/>
+			<xsd:enumeration value="TRAVERSAL"/>
+		</xsd:restriction>
+	</xsd:simpleType>
 	
-	<xsd:complexType name="linksType">
-		<xsd:sequence>
-			<xsd:element name="link" type="linkType" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="linkType">
-		<xsd:sequence>
-			<xsd:element name="name" type="xsd:string"/>
-			<xsd:element name="sourceNodeRel" type="relationshipType"/>
-			<xsd:element name="destinationNodeRel" type="relationshipType"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="relationshipType">
-		<xsd:attribute name="href" type="xsd:anyURI"/>
-	</xsd:complexType>
-	
+	<xsd:simpleType name="networkFunctionalityType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="CACHE"/>
+			<xsd:enumeration value="DPI"/>  
+  			<xsd:enumeration value="FW"/>
+  			<xsd:enumeration value="MAIL_CLIENT"/>
+			<xsd:enumeration value="MAIL_SERVER"/>  
+			<xsd:enumeration value="NAT"/>  
+			<xsd:enumeration value="SPAM"/>
+			<xsd:enumeration value="VPN"/>  
+			<xsd:enumeration value="WEB_CLIENT"/>  
+			<xsd:enumeration value="WEB_SERVER"/>  
+		</xsd:restriction>
+	</xsd:simpleType>
 	
 </xsd:schema>
