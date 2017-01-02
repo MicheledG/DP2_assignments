@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	
+	<xsd:complexType name="nffgsType">
+		<xsd:sequence>
+			<xsd:element name="nffg" type="nffgType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:complexType name="nffgType">
 		<xsd:sequence>
-			<xsd:element name="nodes" type="nodesType"/>
-			<xsd:element name="links" type="linksType"/>
+			<xsd:element name="nodes">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="node" type="nodeType" minOccurs="0" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="links">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="link" type="linkType" minOccurs="0" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
 			<xsd:element name="lastUpdate" type="xsd:dateTime"/>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="nameType"/>
-	</xsd:complexType>
-	
-	<xsd:complexType name="nodesType">
-		<xsd:sequence>
-			<xsd:element name="node" type="nodeType" minOccurs="1" maxOccurs="unbounded"/>
-		</xsd:sequence>
 	</xsd:complexType>
 	
 	<xsd:complexType name="nodeType">
@@ -21,12 +33,6 @@
 			<xsd:element name="networkFunctionality" type="networkFunctionalityType"/>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="nameType"/>
-	</xsd:complexType>
-	
-	<xsd:complexType name="linksType">
-		<xsd:sequence>
-			<xsd:element name="link" type="linkType" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
 	</xsd:complexType>
 			
 	<xsd:complexType name="linkType">
