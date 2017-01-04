@@ -5,26 +5,6 @@
 		Script for NffgService REST Web Service
 	</description>
 	
-	<property name="serviceName" value="NffgService" />
-	
-	<property name="basedir" location="." />
-	<property name="root.location" location="{basedir}" />
-	<property name="src.dir" location="${root.location}/src" />
-	<property name="path.prefix" value="it/polito/dp2/rest" />
-	<property name="build.dir" location="${root.location}/build" />
-	<property name="lib.dir" location="${root.location}/lib" />
-	<property name="resources.dir" location="${root.location}/${serviceName}/WebContent" />
-	<property name="web.lib.dir" location="${resources.dir}/WEB-INF/lib" />
-	<property name="gen.dir" location="${root.location}/generated" />
-	<property name="gen-tomcat-service.dir" location="${root.location}/target"/>
-	<property name="gen-war.dir" location="${root.location}/war" />
-	<property name="debug" value="true" />
-	<property name="debuglevel" value="source,lines,vars" />
-	<property name="target" value="1.8" />
-	<property name="source" value="1.8" />
-	
-	<import file="tomcat-build.xml"/>
-	
 	<path id="classpath">
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar" />
@@ -42,7 +22,7 @@
 		<mkdir dir="${gen-war.dir}"/>
 	</target>  
 	
-	<target name="build.service" depends="init">
+	<target name="build-service" depends="init">
 		<javac debug="on" 
 	       fork="true"
 	       destdir="${build.dir}" 
@@ -56,26 +36,6 @@
 				<path refid="classpath" />
 			</classpath>
 		</javac>
-	</target>
-	
-	<target name="package.service" depends="build.service">
-		<!-- copy web module resource files to temporary destination folder -->
-    	<copy toDir="${gen-tomcat-service.dir}" overwrite="true">
-        	<fileset dir="${resources.dir}">
-			</fileset>
-      	</copy>
-		<!-- copy class files to WEB-INF/classes directory -->
-    	<copy toDir="${gen-tomcat-service.dir}/WEB-INF/classes" overwrite="true">
-        	<fileset dir="${build.dir}"/>
-      	</copy>
-		<!-- copy lib files to WEB-INF/lib directory -->
-    	<copy toDir="${gen-tomcat-service.dir}/WEB-INF/lib" overwrite="true">
-        	<fileset dir="${lib.dir}">
-        		<include name="*.jar"/>
-			</fileset>
-      	</copy> 
-		<!-- make war archive -->
-		<jar destfile="${gen-war.dir}/${serviceName}.war" basedir="${gen-tomcat-service.dir}"/>
 	</target>
 
 	
