@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="nffg-service" basedir=".">
+	<description>
+		Script for building NffgService REST Web Service
+	</description>
+	
+	<property name="schema.dir" value="${basedir}/xsd" />
+	<property name="NEO4JURL" value="http://localhost:${tomcatPort}/Neo4JXML/rest" />
+	<property name="WADL" value="${NEO4JURL}/application.wadl"/>
+	
+	<import file="build.xml"/>
+		
+	<path id="nffgService.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>  	
+		
+	<!-- define wjc task (WADL to Java) -->
+	<taskdef name="wjc" classname="org.jvnet.ws.wadl2java.WJCTask">
+   		<classpath>
+   			<fileset dir="${lib.dir}" includes="*.jar" />
+   		</classpath>
+	</taskdef>
+	
+	<!-- target for cleaning all stuff -->
+	<target name="clean-all" depends="clean-artifacts, clean-bindings">
+	</target>
+	
+	<!-- target for cleaning neo4jxml artifacts -->
+	<target name="clean-artifacts">
+		<delete dir="${sol3.dir}/service/neo4jxml" />
+	</target>
+	
+	<!-- define the NEO4JXML artifacts generation target -->
+	<target name="generate-artifacts" depends="clean-artifacts">
+	   	<echo message="Compiling the descriptions..." />
+		<echo message="${WADL}" />
+	   	<wjc description="${WADL}" package="it.polito.dp2.NFFG.sol3.service.neo4jxml"
+	       autoSchemaPackage="false" target="${src.dir}">
+	     	<produces dir="${sol3.dir}/service/neo4jxml" includes="*.java"/>
+	    </wjc>
+	</target>
+ 	
+	<!-- target for cleaning neo4jxml artifacts -->
+	<target name="clean-bindings">
+		<delete dir="${sol3.dir}/service/xsd" />
+	</target>     		
+	
+	<!-- Target generate-bindings -->
+	<target name="generate-bindings" depends="clean-bindings" description="Generate bindings from schema">
+		<exec executable="xjc" failonerror="true" >
+			<arg value="-d" />
+			<arg value="${src.dir}" />
+			<arg value="-p" />
+			<arg value="it.polito.dp2.NFFG.sol3.service.xsd" />
+			<arg value="${schema.dir}/nffgVerifier.xsd" />
+		</exec>
+	</target>
+   			
+	<target name="build-service" depends="generate-artifacts, generate-bindings">
+		<javac 
+			destdir="${build.dir}"
+			debug="${debug}"
+			debuglevel="${debuglevel}"
+			source="${source}"
+			target="${target}"
+			includeantruntime="false">
+				<src path="${src.dir}/{sol3.dir}/service" />
+				<src path="${src.dir}/{sol3.dir}/service/neo4jxml" />
+				<src path="${src.dir}/{sol3.dir}/service/xsd" />
+				<include name="/*.java" />
+				<classpath>
+					<path refid="nffgService.classpath" />
+				</classpath>
+		</javac>
+	</target>
+	
+</project>
