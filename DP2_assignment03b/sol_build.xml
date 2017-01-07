@@ -5,11 +5,11 @@
 		Script for building NffgService REST Web Service
 	</description>
 	
+	<import file="build.xml"/>
+	
 	<property name="schema.dir" value="${basedir}/xsd" />
 	<property name="NEO4JURL" value="http://localhost:${tomcatPort}/Neo4JXML/rest" />
 	<property name="WADL" value="${NEO4JURL}/application.wadl"/>
-	
-	<import file="build.xml"/>
 		
 	<path id="nffgService.classpath">
 		<fileset dir="${lib.dir}">
@@ -67,9 +67,9 @@
 			source="${source}"
 			target="${target}"
 			includeantruntime="false">
-				<src path="${src.dir}/{sol3.dir}/service" />
-				<src path="${src.dir}/{sol3.dir}/service/neo4jxml" />
-				<src path="${src.dir}/{sol3.dir}/service/xsd" />
+				<src path="${sol3.dir}/service" />
+				<src path="${sol3.dir}/service/neo4jxml" />
+				<src path="${sol3.dir}/service/xsd" />
 				<include name="/*.java" />
 				<classpath>
 					<path refid="nffgService.classpath" />
