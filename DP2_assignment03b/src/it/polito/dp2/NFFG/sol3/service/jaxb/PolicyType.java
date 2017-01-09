@@ -6,7 +6,7 @@
 //
 
 
-package it.polito.dp2.NFFG.sol3.service.xsd;
+package it.polito.dp2.NFFG.sol3.service.jaxb;
 
 import java.util.ArrayList;
 import java.util.List;

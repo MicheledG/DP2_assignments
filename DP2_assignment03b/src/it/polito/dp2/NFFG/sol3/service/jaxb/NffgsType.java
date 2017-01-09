@@ -6,7 +6,7 @@
 //
 
 
-package it.polito.dp2.NFFG.sol3.service.xsd;
+package it.polito.dp2.NFFG.sol3.service.jaxb;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,16 +16,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for policiesType complex type.
+ * <p>Java class for nffgsType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="policiesType">
+ * &lt;complexType name="nffgsType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="policy" type="{}policyType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="nffg" type="{}nffgType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,40 +35,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "policiesType", propOrder = {
-    "policy"
+@XmlType(name = "nffgsType", propOrder = {
+    "nffg"
 })
-public class PoliciesType {
+public class NffgsType {
 
-    protected List<PolicyType> policy;
+    protected List<NffgType> nffg;
 
     /**
-     * Gets the value of the policy property.
+     * Gets the value of the nffg property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the policy property.
+     * This is why there is not a <CODE>set</CODE> method for the nffg property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getPolicy().add(newItem);
+     *    getNffg().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link PolicyType }
+     * {@link NffgType }
      * 
      * 
      */
-    public List<PolicyType> getPolicy() {
-        if (policy == null) {
-            policy = new ArrayList<PolicyType>();
+    public List<NffgType> getNffg() {
+        if (nffg == null) {
+            nffg = new ArrayList<NffgType>();
         }
-        return this.policy;
+        return this.nffg;
     }
 
 }

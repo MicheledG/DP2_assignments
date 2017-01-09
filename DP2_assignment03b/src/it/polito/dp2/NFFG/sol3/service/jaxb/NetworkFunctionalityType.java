@@ -6,7 +6,7 @@
 //
 
 
-package it.polito.dp2.NFFG.sol3.service.xsd;
+package it.polito.dp2.NFFG.sol3.service.jaxb;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
