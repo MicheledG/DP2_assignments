@@ -1,4 +1,4 @@
-package it.polito.dp2.NFFG.sol3.service;
+package it.polito.dp2.NFFG.sol3.service.lab2;
 
 /**
  * An interface for interacting with a remote service that
@@ -6,7 +6,7 @@ package it.polito.dp2.NFFG.sol3.service;
  * reachability in the loaded graph.
  *
  */
-public interface NEO4JXMLClient {
+public interface ReachabilityTester {
 	
 	/**
 	 * Loads the NFFG with the given name into the remote service.
