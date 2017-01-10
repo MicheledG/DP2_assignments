@@ -4,13 +4,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-@Path("/nffgs")
-public class NffgsService {
+@Path("/policies")
+public class PoliciesResource {
 
 	@GET
 	@Produces("text/plain")
-	public String nffgs(){
-		return new String("nffgs");
+	public String policies(){
+		return new String("polices");
 	}
 	
 }

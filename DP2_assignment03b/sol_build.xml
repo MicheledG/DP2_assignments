@@ -75,7 +75,7 @@
 			includeantruntime="false">
 				<src path="${sol3.dir}/service" />
 				<src path="${sol3.dir}/service/neo4jxml" />
-				<src path="${sol3.dir}/service/xsd" />
+				<src path="${sol3.dir}/service/jaxb" />
 				<include name="/*.java" />
 				<classpath>
 					<path refid="nffgService.classpath" />
