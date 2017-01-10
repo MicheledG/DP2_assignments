@@ -1,32 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	
-	<xsd:complexType name="nffgsType">
-		<xsd:sequence>
-			<xsd:element name="nffg" type="nffgType" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
+	<xsd:element name="nffgs">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="nffg" minOccurs="1" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="nodes">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="node" type="nodeType" minOccurs="0" maxOccurs="unbounded"/>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="links">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="link" type="linkType" minOccurs="0" maxOccurs="unbounded"/>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="lastUpdate" type="xsd:dateTime"/>
+						</xsd:sequence>
+						<xsd:attribute name="name" type="nameType"/>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 	
-	<xsd:complexType name="nffgType">
-		<xsd:sequence>
-			<xsd:element name="nodes">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="node" type="nodeType" minOccurs="0" maxOccurs="unbounded"/>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="links">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="link" type="linkType" minOccurs="0" maxOccurs="unbounded"/>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="lastUpdate" type="xsd:dateTime"/>
-		</xsd:sequence>
-		<xsd:attribute name="name" type="nameType"/>
-	</xsd:complexType>
+	<xsd:element name="nffg">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="nodes">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="node" type="nodeType" minOccurs="0" maxOccurs="unbounded"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="links">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="link" type="linkType" minOccurs="0" maxOccurs="unbounded"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="lastUpdate" type="xsd:dateTime"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="nameType"/>
+		</xsd:complexType>
+	</xsd:element>
 	
 	<xsd:complexType name="nodeType">
 		<xsd:sequence>
@@ -43,26 +68,53 @@
 		<xsd:attribute name="name" type="nameType"/>
 	</xsd:complexType>
 	
-	<xsd:complexType name="policiesType">
-		<xsd:sequence>
-			<xsd:element name="policy" type="policyType" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
+	<xsd:element name="policies">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="policy" minOccurs="1" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="property" type="propertyType"/>
+							<xsd:element name="positive" type="xsd:boolean"/>
+							<xsd:element name="networkFunctionality" type="networkFunctionalityType" minOccurs="0" maxOccurs="unbounded"/>
+							<xsd:element name="nffg" type="nameType"/>
+							<xsd:element name="sourceNode" type="nameType"/>
+							<xsd:element name="destinationNode" type="nameType"/>
+							<xsd:element name="result" type="xsd:boolean" minOccurs="0"/>
+							<xsd:element name="lastVerification" type="xsd:dateTime" minOccurs="0"/>
+							<xsd:element name="description" type="xsd:string" minOccurs="0"/>
+						</xsd:sequence>
+						<xsd:attribute name="name" type="nameType"/>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 	
-	<xsd:complexType name="policyType">
-		<xsd:sequence>
-			<xsd:element name="property" type="propertyType"/>
-			<xsd:element name="positive" type="xsd:boolean"/>
-			<xsd:element name="networkFunctionality" type="networkFunctionalityType" minOccurs="0" maxOccurs="unbounded"/>
-			<xsd:element name="nffg" type="nameType"/>
-			<xsd:element name="sourceNode" type="nameType"/>
-			<xsd:element name="destinationNode" type="nameType"/>
-			<xsd:element name="result" type="xsd:boolean" minOccurs="0"/>
-			<xsd:element name="lastVerification" type="xsd:dateTime" minOccurs="0"/>
-			<xsd:element name="description" type="xsd:string" minOccurs="0"/>
-		</xsd:sequence>
-		<xsd:attribute name="name" type="nameType"/>
-	</xsd:complexType>
+	<xsd:element name="policy">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="property" type="propertyType"/>
+				<xsd:element name="positive" type="xsd:boolean"/>
+				<xsd:element name="networkFunctionality" type="networkFunctionalityType" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element name="nffg" type="nameType"/>
+				<xsd:element name="sourceNode" type="nameType"/>
+				<xsd:element name="destinationNode" type="nameType"/>
+				<xsd:element name="result" type="xsd:boolean" minOccurs="0"/>
+				<xsd:element name="lastVerification" type="xsd:dateTime" minOccurs="0"/>
+				<xsd:element name="description" type="xsd:string" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="nameType"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="namedEntities">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="name" type="nameType" minOccurs="1" maxOccurs="unbounded"/>
+			</xsd:sequence>	
+		</xsd:complexType>
+	</xsd:element>
 	
 	<xsd:simpleType name="nameType">
 		<xsd:restriction base="xsd:string">

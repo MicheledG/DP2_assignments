@@ -30,7 +30,9 @@
 	
 	<!-- target for cleaning neo4jxml artifacts -->
 	<target name="clean-artifacts">
-		<delete dir="${sol3.dir}/service/neo4jxml" />
+		<delete>
+			<fileset dir="${sol3.dir}/service/neo4jxml/" includes="*.java" />
+		</delete>
 	</target>
 	
 	<!-- define the NEO4JXML artifacts generation target -->
@@ -47,7 +49,9 @@
  	
 	<!-- target for cleaning neo4jxml artifacts -->
 	<target name="clean-bindings">
-		<delete dir="${sol3.dir}/service/jaxb" />
+		<delete>
+			<fileset dir="${sol3.dir}/service/jaxb/" includes="*.java" />
+		</delete>
 	</target>     		
 	
 	<!-- Target generate-bindings -->
@@ -56,7 +60,7 @@
 			<arg value="-d" />
 			<arg value="${src.dir}" />
 			<arg value="-p" />
-			<arg value="it.polito.dp2.NFFG.sol3.service.xsd" />
+			<arg value="it.polito.dp2.NFFG.sol3.service.jaxb" />
 			<arg value="${schema.dir}/nffgVerifier.xsd" />
 		</exec>
 	</target>
