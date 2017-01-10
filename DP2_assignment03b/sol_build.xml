@@ -47,7 +47,7 @@
  	
 	<!-- target for cleaning neo4jxml artifacts -->
 	<target name="clean-bindings">
-		<delete dir="${sol3.dir}/service/xsd" />
+		<delete dir="${sol3.dir}/service/jaxb" />
 	</target>     		
 	
 	<!-- Target generate-bindings -->
