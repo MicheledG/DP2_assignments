@@ -15,11 +15,15 @@ import it.polito.dp2.NFFG.sol3.service.jaxb.NamedEntities;
 @Path("/nffgs")
 public class NffgsResource {
 	
+	
+	
 	/* send to the client the list of nffg's names loaded on Neo4J */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getLoadedNffgsNames(){
 		try{
+			/* obtain from NffgDB the names of the loaded NFFGs */
+			Nffg
 			/* put the loaded nffg's names into a NamedEntity object */
 			NamedEntities loadedNffgs = new NamedEntities();
 			return Response.ok(loadedNffgs).build();
