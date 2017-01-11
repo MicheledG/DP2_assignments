@@ -1,6 +1,7 @@
 package it.polito.dp2.NFFG.sol3.service;
 
 import java.net.URI;
+import java.util.Map;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ServerErrorException;
@@ -24,13 +25,16 @@ public class Neo4JXMLClient {
 			this.baseURL = URI.create(baseURL);
 	}
 	
-	public Node createNode(String propertyName, String propertyValue) {
+	public Node createNode(Map<String, String> propertyMap) {
 		/* create local Node element */
 		Node node = this.objectFactory.createNode();
-		Property nameProperty = this.objectFactory.createProperty();
-		nameProperty.setName(propertyName);
-		nameProperty.setValue(propertyValue);
-		node.getProperty().add(nameProperty);
+		/* add all the properties to the new node to create */
+		for (Map.Entry<String, String> propertyEntry : propertyMap.entrySet()) {
+			Property property = this.objectFactory.createProperty();
+			property.setName(propertyEntry.getKey());
+			property.setValue(propertyEntry.getValue());
+			node.getProperty().add(property);
+		}
 		/* load node to Neo4JXML */
 		Client client = ClientBuilder.newClient();
 		Node nodeLoaded = client.target(this.baseURL+"/resource/node").request("application/xml").post(Entity.xml(node), Node.class);
