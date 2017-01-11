@@ -104,45 +104,39 @@ public class NffgsDB {
 			/* load all the nodes */
 			for (NodeType node : nffg.getNodes().getNode()) {
 				/* create the node to load */
-				Map<String, String> nodeProperty = new HashMap<String, String>();
-				nodeProperty.put("name" , node.getName());
-				nodeProperty.put("networkFunctionality", node.getNetworkFunctionality().toString());
+				Node nodeToCreate = this.translateNodeTypeToNode(node);
 				/* load the node */
-				Node nodeLoaded = client.createNode(nodeProperty);
+				Node nodeLoaded = client.createNode(nodeToCreate);
 				/* update the list of the loaded nodes */
 				loadedNodeIds.put(node.getName(), nodeLoaded.getId());
 			}
 			
 			/* load all the relationships */
 			for (LinkType link : nffg.getLinks().getLink()) {
-				/* set the parameters of the relationship to load */
+				/* set the parameters of the relationship to create */
 				String srcNodeId = loadedNodeIds.get(link.getSourceNode());
 				String dstNodeId = loadedNodeIds.get(link.getDestinationNode());
-				/* load the relationship */
+				/* create the relationship */
 				Relationship relationshipLoaded = client.createRelationship(srcNodeId, dstNodeId, "link");
 				/* update the list of the loaded relationships */
 				loadedRelationshipIds.add(relationshipLoaded.getId());
 			}
 			
+			/* create the node of the nffg */
+			Node nffgToCreate = this.translateNffgTypeToNode(nffg);
 			/* load the nffg node */
-			/* set the properties of the nffg node to load */
-			Map<String, String> nffgProperty = new HashMap<String, String>();
-			nffgProperty.put("name" , nffg.getName());
-			nffgProperty.put("lastUpdate", nffg.getLastUpdate().toString());
-			/* load the nffg node */
-			Node nffgLoaded = client.createNode(nffgProperty);
+			Node nffgLoaded = client.createNode(nffgToCreate);
 			/* create the label NFFG */
 			client.createLabel(nffgLoaded.getId(), "NFFG");
-			
 			/* add nffg node to the map of the loaded nodes */
 			loadedNodeIds.put(nffg.getName(), nffgLoaded.getId());
 			
-			/* load the nffg relationships */
+			/* load the nffg relationships "belongs" */
 			for (NodeType node : nffg.getNodes().getNode()) {
-				/* create the relationships "belongs" */
+				/* set the parameters the relationships "belongs" */
 				String srcNodeId = loadedNodeIds.get(nffg.getName());
 				String dstNodeId = loadedNodeIds.get(node.getName());
-				/* load the relationship */
+				/* create the relationship */
 				Relationship relationshipLoaded = client.createRelationship(srcNodeId, dstNodeId, "belongs");
 				/* update the list of the loaded relationships */
 				loadedRelationshipIds.add(relationshipLoaded.getId());
@@ -163,11 +157,45 @@ public class NffgsDB {
 			//TODO: throw some exception!!!
 		} 
 	}
-
-	/* return a NFFG stored inside neo4j */
-	public Nffg getNffg(String nffgName) {
-		
+	
+	/* return the node to create on neo4j to represent a node */
+	private Node translateNodeTypeToNode(NodeType node){
+		/* create the node properties */
+		Property nameProperty = new Property();
+		nameProperty.setName("name");
+		nameProperty.setValue(node.getName());
+		Property networkFunctionalityProperty = new Property();
+		networkFunctionalityProperty.setName("networkFunctionality");
+		networkFunctionalityProperty.setValue(node.getNetworkFunctionality().toString());
+		/* create local Node element */
+		Node nodeToCreate = new Node();
+		/* add all the properties to the new node to create */
+		nodeToCreate.getProperty().add(nameProperty);
+		nodeToCreate.getProperty().add(networkFunctionalityProperty);
+		return nodeToCreate;
 	}
 	
+	/* return the node to create on neo4j to represent a Nffg */
+	private Node translateNffgTypeToNode(Nffg nffg){
+		/* create the nffg properties */
+		Property nameProperty = new Property();
+		nameProperty.setName("name");
+		nameProperty.setValue(nffg.getName());
+		Property lastUpdateProperty = new Property();
+		lastUpdateProperty.setName("lastUpdate");
+		lastUpdateProperty.setValue(nffg.getLastUpdate().toString());
+		/* create local Node element */
+		Node nffgToCreate = new Node();
+		/* add all the properties to the new node to create */
+		nffgToCreate.getProperty().add(nameProperty);
+		nffgToCreate.getProperty().add(lastUpdateProperty);
+		return nffgToCreate;
+	}
+	
+	//TODO
+	///* return a NFFG stored inside neo4j */
+	//public Nffg getNffg(String nffgName) {
+	//
+	//}
 	
 }

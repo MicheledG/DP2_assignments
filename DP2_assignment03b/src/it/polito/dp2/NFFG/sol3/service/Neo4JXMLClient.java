@@ -25,20 +25,11 @@ public class Neo4JXMLClient {
 			this.baseURL = URI.create(baseURL);
 	}
 	
-	public Node createNode(Map<String, String> propertyMap) {
-		/* create local Node element */
-		Node node = this.objectFactory.createNode();
-		/* add all the properties to the new node to create */
-		for (Map.Entry<String, String> propertyEntry : propertyMap.entrySet()) {
-			Property property = this.objectFactory.createProperty();
-			property.setName(propertyEntry.getKey());
-			property.setValue(propertyEntry.getValue());
-			node.getProperty().add(property);
-		}
-		/* load node to Neo4JXML */
+	public Node createNode(Node nodeToCreate) {
+		/* create node to Neo4JXML */
 		Client client = ClientBuilder.newClient();
-		Node nodeLoaded = client.target(this.baseURL+"/resource/node").request("application/xml").post(Entity.xml(node), Node.class);
-		return nodeLoaded;
+		Node nodeCreated = client.target(this.baseURL+"/resource/node").request("application/xml").post(Entity.xml(nodeToCreate), Node.class);
+		return nodeCreated;
 	}
 	
 	public Node getNodeById(String nodeId) {
@@ -96,14 +87,16 @@ public class Neo4JXMLClient {
 
 	public Relationship createRelationship(String srcNodeId, String dstNodeId, String type)  {
 		/* create the relationship locally */
-		Relationship relationship = this.objectFactory.createRelationship();
-		relationship.setDstNode(dstNodeId);
-		relationship.setSrcNode(srcNodeId);
-		relationship.setType(type);
-		/* load relationship to the node in Neo4J */
+		Relationship relationshipToCreate = new Relationship();
+		relationshipToCreate.setDstNode(dstNodeId);
+		relationshipToCreate.setSrcNode(srcNodeId);
+		relationshipToCreate.setType(type);
+		/* create relationship to Neo4J */
 		Client client = ClientBuilder.newClient();
-		Relationship relationshipLoaded = client.target(this.baseURL+"/resource/node/"+srcNodeId+"/relationship").request("application/xml").post(Entity.xml(relationship), Relationship.class);
-		return relationshipLoaded;
+		Relationship relationshipCreated = client
+				.target(this.baseURL+"/resource/node/"+relationshipToCreate.getSrcNode()+"/relationship")
+				.request("application/xml").post(Entity.xml(relationshipToCreate), Relationship.class);
+		return relationshipCreated;
 	}
 	
 	public Relationship getRelationshipById(String relationshipId)  {
