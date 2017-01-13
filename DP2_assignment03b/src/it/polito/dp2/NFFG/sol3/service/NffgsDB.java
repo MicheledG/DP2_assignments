@@ -5,13 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NodeSetType;
+
+import it.polito.dp2.NFFG.lab3.ServiceException;
+import it.polito.dp2.NFFG.lab3.UnknownNameException;
 import it.polito.dp2.NFFG.sol3.service.jaxb.*;
 import it.polito.dp2.NFFG.sol3.service.neo4jxml.*;
 
 
 public class NffgsDB {
 	
-	private Map<String, String> mapNodeIdNffgName = new HashMap<String, String>();
+	private Map<String, String> mapNffgNameNffgNodeId = new HashMap<String, String>();
+	private Map<String, String> mapNodeIdNodeName = new HashMap<String, String>();
+	private Map<String, List<String>> mapNffgNameNodeIds = new HashMap<String, List<String>>();
+	private Map<String, List<String>> mapNodeIdRelationshipIds = new HashMap<String, List<String>>();
+	
 	private static NffgsDB nffgsDB = new NffgsDB();
 	
 	/* return the single nffgsDB */
@@ -21,9 +29,14 @@ public class NffgsDB {
 	
 	/* get from neo4j the list of the loaded NFFG and store it into the map*/
 	private NffgsDB(){
-		/* initialize mapNodeIdNodeName */
+		/* initialize all the maps */
+		initMaps();
 		initMapNodeIdNffgName();
 		return;
+	}
+	
+	private void initMaps() {
+		
 	}
 	
 	private void initMapNodeIdNffgName(){
@@ -36,6 +49,8 @@ public class NffgsDB {
 			return;
 		}
 		
+		/* init maps: mapNffgNameNffgNodeId and mapNodeIdNodeName */
+		
 		if(!nodes.getNode().isEmpty()){
 			/* there are nodes loaded to neo4j */
 			for (Nodes.Node node: nodes.getNode()) {
@@ -44,10 +59,19 @@ public class NffgsDB {
 					/* the node is an NFFG => add to the map */
 					String nffgName = this.getNodeProperty(node.getProperty(), "name");
 					//TODO at the moment don't check null nffgName 
-					this.mapNodeIdNffgName.put(node.getId(), nffgName);
+					this.mapNffgNameNffgNodeId.put(nffgName, node.getId());
+				} else {
+					/* the node is a simple node */
+					String nodeName = this.getNodeProperty(node.getProperty(), "name");
+					this.mapNffgNameNffgNodeId.put(node.getId(), nodeName);
 				}
 			}
-		}
+		} 
+		else
+			return;
+		
+		//TODO
+			
 	}
 	
 	/* extract the property value of the property named propertyName from a List<Property> */
@@ -84,7 +108,7 @@ public class NffgsDB {
 	/* return the name of the nffg stored in the cache map */
 	public List<String> getNffgNames(){
 		List<String> nffgNames = new ArrayList<String>();
-		for (Map.Entry<String, String> mapEntry: this.mapNodeIdNffgName.entrySet()) {
+		for (Map.Entry<String, String> mapEntry: this.mapNffgNameNffgNodeId.entrySet()) {
 			nffgNames.add(mapEntry.getValue());
 		}
 		return nffgNames;
@@ -143,7 +167,7 @@ public class NffgsDB {
 			}
 			
 			/* add nffg name to the map of the DB */
-			this.mapNodeIdNffgName.put(nffg.getName(), nffgLoaded.getId());
+			this.mapNffgNameNffgNodeId.put(nffg.getName(), nffgLoaded.getId());
 			return;
 			
 		} catch (RuntimeException e) {
@@ -193,9 +217,38 @@ public class NffgsDB {
 	}
 	
 	//TODO
-	///* return a NFFG stored inside neo4j */
-	//public Nffg getNffg(String nffgName) {
-	//
-	//}
+	/* return a NFFG stored inside neo4j */
+	public Nffg getNffg(String nffgName) throws UnknownNameException, ServiceException {
+		try{
+			/* find the id of the node that models the nffg */
+			String nffgNodeId = this.findNffgNodeId(nffgName);
+			/* get the nffg properties */
+			
+			/* get all the nodes of that nffg */
+			List<NodeType> nffgNodes = this.getNffgNodes(nffgNodeId);
+			/* get all the relationships of the nffg */
+			List<LinkType> nffgLinks = this.getNffgLinks(nffgNodeId, nffgNodes);
+			/* create the Nffg element containing all the infos */
+			Nffg nffg = new Nffg();
+			return nffg;
+		} 
+		finally {
+			
+		}
+		
+	}
 	
+	private String findNffgNodeId(String nffgName) throws UnknownNameException{
+		if(this.mapNffgNameNffgNodeId.containsKey(nffgName))
+			return this.mapNffgNameNffgNodeId.get(nffgName);
+		else
+			throw new UnknownNameException("Nffg named "+nffgName+"not found!");	
+	}
+	
+	private List<NodeType> getNffgNodes(String nffgNodeId) {
+		/* find all the relationships "belongs" of the nffg */
+		
+		/* extract all the node id of the nffg */
+		/* get all the nodes of the nffg */
+	}
 }
