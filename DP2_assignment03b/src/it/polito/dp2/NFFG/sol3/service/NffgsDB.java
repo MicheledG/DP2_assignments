@@ -17,8 +17,9 @@ public class NffgsDB {
 	
 	private Map<String, String> mapNffgNameNffgId = new HashMap<String, String>();
 	private Map<String, List<String>> mapNffgNameBelongsIds = new HashMap<String, List<String>>();
+	private Map<String, List<String>> mapNffgNameNodeIds = new HashMap<String, List<String>>();
+	private Map<String, List<String>> mapNffgNameLinkIds = new HashMap<String, List<String>>();
 	private Map<String, String> mapNodeIdNodeName = new HashMap<String, String>();
-	private Map<String, List<String>> mapNodeIdLinkIds = new HashMap<String, List<String>>();
 	private Map<String, String> mapLinkIdLinkName = new HashMap<String, String>();
 	
 	private static NffgsDB nffgsDB = new NffgsDB();
@@ -33,21 +34,6 @@ public class NffgsDB {
 		/* clear all */
 		this.clearAll();
 		return;
-	}
-	
-	/* clear local maps and neo4j */
-	private void clearAll(){
-		/* clear all the eventual nodes on neo4j */
-		Neo4JXMLClient client = new Neo4JXMLClient();
-		//TODO CAN THROW RuntimeException
-		client.deleteAllNodes();
-		
-		/* clear all the maps */
-		this.mapLinkIdLinkName.clear();
-		this.mapNffgNameBelongsIds.clear();
-		this.mapNffgNameNffgId.clear();
-		this.mapNodeIdLinkIds.clear();
-		this.mapNodeIdNodeName.clear();
 	}
 	
 	/* extract the property value of the property named propertyName from a List<Property> */
@@ -179,33 +165,30 @@ public class NffgsDB {
 			/* update NffgName <=> BelongsIds map */
 			this.mapNffgNameBelongsIds.put(nffg.getName(), createdBelongs);
 			
-			/* update NodeId <=> NodeName map */
-			for (Map.Entry<String, String> nodeNameNodeIdEntry: mapCreatedNodeNameNodeId.entrySet()) {
-				this.mapNodeIdNodeName.put(nodeNameNodeIdEntry.getValue(), nodeNameNodeIdEntry.getKey());
-			}
-			
-			/* update NodeId <=> LinkIds map */
+			/* update NffgName <=> NodeIds map + NodeId <=> NodeName map*/
+			List<String> nffgNodeIds = new ArrayList<String>(); 
 			for (NodeType node : nffg.getNodes().getNode()) {
-				List<String> outputLink = new ArrayList<String>();
-				for (LinkType link : nffg.getLinks().getLink()) {
-					if(link.getSourceNode().equals(node.getName()))
-						outputLink.add(mapCreatedLinkNameLinkId.get(link.getName()));
-				}
-				this.mapNodeIdLinkIds.put(mapCreatedNodeNameNodeId.get(node.getName()), outputLink);
+				String nodeName = node.getName();
+				String nodeId = mapCreatedNodeNameNodeId.get(nodeName);
+				nffgNodeIds.add(nodeId);
+				this.mapNodeIdNodeName.put(nodeId, nodeName);
 			}
+			this.mapNffgNameNodeIds.put(nffg.getName(), nffgNodeIds);
 			
-			/* update LinkId <=> LinkName map */
-			for (Map.Entry<String, String> linkNameLinkIdEntry: mapCreatedLinkNameLinkId.entrySet()) {
-				this.mapLinkIdLinkName.put(linkNameLinkIdEntry.getValue(), linkNameLinkIdEntry.getKey());
+			/* update NffgName <=> LinkIds map + LinkId <=> LinkName map */
+			List<String> nffgLinkIds = new ArrayList<String>(); 
+			for (LinkType link : nffg.getLinks().getLink()) {
+				String linkName = link.getName(); 
+				String linkId = mapCreatedLinkNameLinkId.get(linkName);
+				nffgLinkIds.add(linkId);
+				this.mapLinkIdLinkName.put(linkId, linkName);
 			}
+			this.mapNffgNameLinkIds.put(nffg.getName(), nffgLinkIds);
 			
 			return;
 			
 		} catch (RuntimeException e) {
-			/* clear all */
-			this.clearAll();
 			throw new ServiceException("Error loading nffg named " + nffg.getName() + ", content reset");
-			//TODO clear also the policies
 		} 
 	}
 	
@@ -223,7 +206,22 @@ public class NffgsDB {
 		/* create the Nffg element containing all the infos */
 		Nffg nffg = new Nffg();
 		return nffg;
+	}
+	
+	/* clear local maps and neo4j */
+	public void clearAll(){
+		/* clear all the eventual nodes on neo4j */
+		Neo4JXMLClient client = new Neo4JXMLClient();
+		//TODO CAN THROW RuntimeException
+		client.deleteAllNodes();
 		
+		/* clear all the maps */
+		this.mapNffgNameNffgId.clear();
+		this.mapNffgNameBelongsIds.clear();
+		this.mapNffgNameNodeIds.clear();
+		this.mapNffgNameLinkIds.clear();
+		this.mapNodeIdNodeName.clear();
+		this.mapLinkIdLinkName.clear();
 	}
 	
 }
