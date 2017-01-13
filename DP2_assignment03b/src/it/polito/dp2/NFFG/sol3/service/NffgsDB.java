@@ -15,10 +15,11 @@ import it.polito.dp2.NFFG.sol3.service.neo4jxml.*;
 
 public class NffgsDB {
 	
-	private Map<String, String> mapNffgNameNffgNodeId = new HashMap<String, String>();
+	private Map<String, String> mapNffgNameNffgId = new HashMap<String, String>();
+	private Map<String, List<String>> mapNffgNameBelongsIds = new HashMap<String, List<String>>();
 	private Map<String, String> mapNodeIdNodeName = new HashMap<String, String>();
-	private Map<String, List<String>> mapNffgNameNodeIds = new HashMap<String, List<String>>();
-	private Map<String, List<String>> mapNodeIdRelationshipIds = new HashMap<String, List<String>>();
+	private Map<String, List<String>> mapNodeIdLinkIds = new HashMap<String, List<String>>();
+	private Map<String, String> mapLinkIdLinkName = new HashMap<String, String>();
 	
 	private static NffgsDB nffgsDB = new NffgsDB();
 	
@@ -27,51 +28,26 @@ public class NffgsDB {
 		return nffgsDB;
 	}
 	
-	/* get from neo4j the list of the loaded NFFG and store it into the map*/
+	/* clear Neo4J */
 	private NffgsDB(){
-		/* initialize all the maps */
-		initMaps();
-		initMapNodeIdNffgName();
+		/* clear all */
+		this.clearAll();
 		return;
 	}
 	
-	private void initMaps() {
-		
-	}
-	
-	private void initMapNodeIdNffgName(){
-		/* download all the nodes loaded on Neo4J */
+	/* clear local maps and neo4j */
+	private void clearAll(){
+		/* clear all the eventual nodes on neo4j */
 		Neo4JXMLClient client = new Neo4JXMLClient();
-		Nodes nodes = null;
-		try {
-			nodes = client.getAllNodes();
-		} catch (RuntimeException e) {
-			return;
-		}
+		//TODO CAN THROW RuntimeException
+		client.deleteAllNodes();
 		
-		/* init maps: mapNffgNameNffgNodeId and mapNodeIdNodeName */
-		
-		if(!nodes.getNode().isEmpty()){
-			/* there are nodes loaded to neo4j */
-			for (Nodes.Node node: nodes.getNode()) {
-				/* check if a node is a NFFG */
-				if(this.nodeIsNffg(node)){
-					/* the node is an NFFG => add to the map */
-					String nffgName = this.getNodeProperty(node.getProperty(), "name");
-					//TODO at the moment don't check null nffgName 
-					this.mapNffgNameNffgNodeId.put(nffgName, node.getId());
-				} else {
-					/* the node is a simple node */
-					String nodeName = this.getNodeProperty(node.getProperty(), "name");
-					this.mapNffgNameNffgNodeId.put(node.getId(), nodeName);
-				}
-			}
-		} 
-		else
-			return;
-		
-		//TODO
-			
+		/* clear all the maps */
+		this.mapLinkIdLinkName.clear();
+		this.mapNffgNameBelongsIds.clear();
+		this.mapNffgNameNffgId.clear();
+		this.mapNodeIdLinkIds.clear();
+		this.mapNodeIdNodeName.clear();
 	}
 	
 	/* extract the property value of the property named propertyName from a List<Property> */
@@ -103,83 +79,6 @@ public class NffgsDB {
 			return false;
 		else
 			return true;
-	}
-	
-	/* return the name of the nffg stored in the cache map */
-	public List<String> getNffgNames(){
-		List<String> nffgNames = new ArrayList<String>();
-		for (Map.Entry<String, String> mapEntry: this.mapNffgNameNffgNodeId.entrySet()) {
-			nffgNames.add(mapEntry.getValue());
-		}
-		return nffgNames;
-	}
-	
-	/* create a NFFG on neo4j */
-	//TODO => must check the validity of the nffg before use this methods
-	public void createNffg(Nffg nffg){
-		
-		Neo4JXMLClient client = new Neo4JXMLClient();
-		/* used to keep trace of the loaded elements */
-		Map<String, String> loadedNodeIds = new HashMap<String, String>();
-		List<String> loadedRelationshipIds = new ArrayList<String>();
-			
-		try {
-			
-			/* load all the nodes */
-			for (NodeType node : nffg.getNodes().getNode()) {
-				/* create the node to load */
-				Node nodeToCreate = this.translateNodeTypeToNode(node);
-				/* load the node */
-				Node nodeLoaded = client.createNode(nodeToCreate);
-				/* update the list of the loaded nodes */
-				loadedNodeIds.put(node.getName(), nodeLoaded.getId());
-			}
-			
-			/* load all the relationships */
-			for (LinkType link : nffg.getLinks().getLink()) {
-				/* set the parameters of the relationship to create */
-				String srcNodeId = loadedNodeIds.get(link.getSourceNode());
-				String dstNodeId = loadedNodeIds.get(link.getDestinationNode());
-				/* create the relationship */
-				Relationship relationshipLoaded = client.createRelationship(srcNodeId, dstNodeId, "link");
-				/* update the list of the loaded relationships */
-				loadedRelationshipIds.add(relationshipLoaded.getId());
-			}
-			
-			/* create the node of the nffg */
-			Node nffgToCreate = this.translateNffgTypeToNode(nffg);
-			/* load the nffg node */
-			Node nffgLoaded = client.createNode(nffgToCreate);
-			/* create the label NFFG */
-			client.createLabel(nffgLoaded.getId(), "NFFG");
-			/* add nffg node to the map of the loaded nodes */
-			loadedNodeIds.put(nffg.getName(), nffgLoaded.getId());
-			
-			/* load the nffg relationships "belongs" */
-			for (NodeType node : nffg.getNodes().getNode()) {
-				/* set the parameters the relationships "belongs" */
-				String srcNodeId = loadedNodeIds.get(nffg.getName());
-				String dstNodeId = loadedNodeIds.get(node.getName());
-				/* create the relationship */
-				Relationship relationshipLoaded = client.createRelationship(srcNodeId, dstNodeId, "belongs");
-				/* update the list of the loaded relationships */
-				loadedRelationshipIds.add(relationshipLoaded.getId());
-			}
-			
-			/* add nffg name to the map of the DB */
-			this.mapNffgNameNffgNodeId.put(nffg.getName(), nffgLoaded.getId());
-			return;
-			
-		} catch (RuntimeException e) {
-			
-			/* remove all the loaded relationships */
-			for (String relationshipId : loadedRelationshipIds)
-				client.deleteRelationshipById(relationshipId);
-			/* remove all the loaded nodes */
-			for (Map.Entry<String, String> mapEntry: loadedNodeIds.entrySet())
-				client.deleteNodeById(mapEntry.getValue());
-			//TODO: throw some exception!!!
-		} 
 	}
 	
 	/* return the node to create on neo4j to represent a node */
@@ -216,39 +115,115 @@ public class NffgsDB {
 		return nffgToCreate;
 	}
 	
-	//TODO
-	/* return a NFFG stored inside neo4j */
-	public Nffg getNffg(String nffgName) throws UnknownNameException, ServiceException {
-		try{
-			/* find the id of the node that models the nffg */
-			String nffgNodeId = this.findNffgNodeId(nffgName);
-			/* get the nffg properties */
-			
-			/* get all the nodes of that nffg */
-			List<NodeType> nffgNodes = this.getNffgNodes(nffgNodeId);
-			/* get all the relationships of the nffg */
-			List<LinkType> nffgLinks = this.getNffgLinks(nffgNodeId, nffgNodes);
-			/* create the Nffg element containing all the infos */
-			Nffg nffg = new Nffg();
-			return nffg;
-		} 
-		finally {
-			
-		}
-		
-	}
-	
 	private String findNffgNodeId(String nffgName) throws UnknownNameException{
-		if(this.mapNffgNameNffgNodeId.containsKey(nffgName))
-			return this.mapNffgNameNffgNodeId.get(nffgName);
+		if(this.mapNffgNameNffgId.containsKey(nffgName))
+			return this.mapNffgNameNffgId.get(nffgName);
 		else
 			throw new UnknownNameException("Nffg named "+nffgName+"not found!");	
 	}
 	
-	private List<NodeType> getNffgNodes(String nffgNodeId) {
-		/* find all the relationships "belongs" of the nffg */
+	/* create a NFFG on neo4j */
+	public void createNffg(Nffg nffg) throws ServiceException{
 		
-		/* extract all the node id of the nffg */
-		/* get all the nodes of the nffg */
+		Neo4JXMLClient client = new Neo4JXMLClient();
+		/* used to keep trace of the loaded elements */
+		Map<String, String> mapCreatedNodeNameNodeId = new HashMap<String, String>();
+		Map<String, String> mapCreatedLinkNameLinkId = new HashMap<String, String>();
+		List<String> createdBelongs = new ArrayList<String>();
+		
+		try {
+			
+			/* load all the nodes */
+			for (NodeType node : nffg.getNodes().getNode()) {
+				/* create the node to load */
+				Node nodeToCreate = this.translateNodeTypeToNode(node);
+				/* load the node */
+				Node nodeCreated = client.createNode(nodeToCreate);
+				/* update the map of the loaded nodes */
+				mapCreatedNodeNameNodeId.put(node.getName(), nodeCreated.getId());
+			}
+			
+			/* load all the links */
+			for (LinkType link : nffg.getLinks().getLink()) {
+				/* set the parameters of the relationship to create */
+				String srcNodeId = mapCreatedNodeNameNodeId.get(link.getSourceNode());
+				String dstNodeId = mapCreatedNodeNameNodeId.get(link.getDestinationNode());
+				/* create the link */
+				Relationship linkCreated = client.createRelationship(srcNodeId, dstNodeId, "link");
+				/* update the map of the loaded links */
+				mapCreatedLinkNameLinkId.put(link.getName(), linkCreated.getId());
+			}
+			
+			/* create the node of the nffg */
+			Node nffgToCreate = this.translateNffgTypeToNode(nffg);
+			/* load the nffg node */
+			Node nffgCreated = client.createNode(nffgToCreate);
+			/* create the label NFFG */
+			client.createLabel(nffgCreated.getId(), "NFFG");
+			
+			/* load all the belongs */
+			for (NodeType node : nffg.getNodes().getNode()) {
+				/* set the parameters the relationships "belongs" */
+				String srcNodeId = mapCreatedNodeNameNodeId.get(nffg.getName());
+				String dstNodeId = mapCreatedLinkNameLinkId.get(node.getName());
+				/* create the belongs */
+				Relationship belongsCreated = client.createRelationship(srcNodeId, dstNodeId, "belongs");
+				/* update the list of the loaded belongs */
+				createdBelongs.add(belongsCreated.getId());
+			}
+			
+			/* add all the information to the NffgsDB maps */
+			/* update NffgName <=> NffgId map */
+			this.mapNffgNameNffgId.put(nffg.getName(), nffgCreated.getId());
+			
+			/* update NffgName <=> BelongsIds map */
+			this.mapNffgNameBelongsIds.put(nffg.getName(), createdBelongs);
+			
+			/* update NodeId <=> NodeName map */
+			for (Map.Entry<String, String> nodeNameNodeIdEntry: mapCreatedNodeNameNodeId.entrySet()) {
+				this.mapNodeIdNodeName.put(nodeNameNodeIdEntry.getValue(), nodeNameNodeIdEntry.getKey());
+			}
+			
+			/* update NodeId <=> LinkIds map */
+			for (NodeType node : nffg.getNodes().getNode()) {
+				List<String> outputLink = new ArrayList<String>();
+				for (LinkType link : nffg.getLinks().getLink()) {
+					if(link.getSourceNode().equals(node.getName()))
+						outputLink.add(mapCreatedLinkNameLinkId.get(link.getName()));
+				}
+				this.mapNodeIdLinkIds.put(mapCreatedNodeNameNodeId.get(node.getName()), outputLink);
+			}
+			
+			/* update LinkId <=> LinkName map */
+			for (Map.Entry<String, String> linkNameLinkIdEntry: mapCreatedLinkNameLinkId.entrySet()) {
+				this.mapLinkIdLinkName.put(linkNameLinkIdEntry.getValue(), linkNameLinkIdEntry.getKey());
+			}
+			
+			return;
+			
+		} catch (RuntimeException e) {
+			/* clear all */
+			this.clearAll();
+			throw new ServiceException("Error loading nffg named " + nffg.getName() + ", content reset");
+			//TODO clear also the policies
+		} 
 	}
+	
+	//TODO
+	/* return a NFFG stored inside neo4j */
+	public Nffg getNffg(String nffgName) throws UnknownNameException, ServiceException {
+		/* find nffgId of the node that models the nffg */
+		String nffgNodeId = this.findNffgNodeId(nffgName);
+		/* get the nffg properties */
+		
+		/* get all the nodes of that nffg */
+		List<NodeType> nffgNodes = this.getNffgNodes(nffgNodeId);
+		/* get all the relationships of the nffg */
+		List<LinkType> nffgLinks = this.getNffgLinks(nffgNodeId, nffgNodes);
+		/* create the Nffg element containing all the infos */
+		Nffg nffg = new Nffg();
+		return nffg;
+		
+	}
+	
 }
