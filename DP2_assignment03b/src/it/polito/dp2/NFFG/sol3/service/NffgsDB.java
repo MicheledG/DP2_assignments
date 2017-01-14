@@ -35,7 +35,7 @@ public class NffgsDB {
 		return nffgsDB;
 	}
 	
-	/* clear Neo4J */
+	/* clear all */
 	private NffgsDB(){
 		/* clear all */
 		try {
@@ -325,8 +325,8 @@ public class NffgsDB {
 		} 
 	}
 	
-	/* create the nffg contained inside nffgs (1 or more)*/
-	public void createNffgs(Nffgs nffgs) throws ServiceException {
+	/* store the nffg contained inside nffgs (1 or more)*/
+	public void storeNffgs(Nffgs nffgs) throws ServiceException {
 		for (Nffgs.Nffg nffg: nffgs.getNffg()) {
 			this.createNffg(nffg);
 		}
@@ -335,7 +335,7 @@ public class NffgsDB {
 	/* return the list of all the nffg */
 	public Nffgs getNffgs() throws NoGraphException, ServiceException{
 		if(this.mapNffgNameNffgId.isEmpty())
-			throw new NoGraphException("no data loaded on neo4j");
+			throw new NoGraphException("no nffg in the DB");
 		
 		Nffgs nffgs = new Nffgs();
 		try{
@@ -358,7 +358,7 @@ public class NffgsDB {
 		return nffgs;
 	}
 	
-	/* clear all local maps and neo4j */
+	/* clear neo4j and all local maps*/
 	public void deleteNffgs() throws ServiceException{
 		try{
 			/* clear all the eventual nodes on neo4j */
@@ -379,8 +379,8 @@ public class NffgsDB {
 		
 	}
 	
-	/* remove data of a single nffg */
-	public void deleteNffg(String nffgName) throws UnknownNameException, ServiceException{		
+	/* remove data of a single nffg from neo4j and the maps */
+	public void deleteNffgs(String nffgName) throws UnknownNameException, ServiceException{		
 		
 		/* find and check if the nffg is present */
 		String nffgId = this.findNffgId(nffgName);
@@ -391,21 +391,24 @@ public class NffgsDB {
 		for (String linkId: linkIds) {
 			client.deleteRelationshipById(linkId);
 			this.mapLinkIdLinkName.remove(linkId);
-			this.mapNffgNameLinkIds.get(nffgName).remove(linkId);
 		}
+		this.mapNffgNameLinkIds.remove(nffgName);
+		
 		/* delete all the belongs */
 		Set<String> belongsIds = this.mapNffgNameBelongsIds.get(nffgName);
 		for (String belongsId: belongsIds) {
 			client.deleteRelationshipById(belongsId);
-			this.mapNffgNameBelongsIds.get(nffgName).remove(belongsId);
 		}
+		this.mapNffgNameBelongsIds.remove(nffgName);
+		
 		/* delete all the nodes */
 		Set<String> nodeIds = this.mapNffgNameNodeIds.get(nffgName);
 		for (String nodeId: nodeIds) {
-			client.deleteRelationshipById(nodeId);
+			client.deleteNodeById(nodeId);
 			this.mapNodeIdNodeName.remove(nodeId);
-			this.mapNffgNameNodeIds.get(nffgName).remove(nodeId);
 		}
+		this.mapNffgNameNodeIds.get(nffgName);
+		
 		/* delete nffg node */
 		client.deleteNodeById(nffgId);
 		this.mapNffgNameNffgId.remove(nffgName);
