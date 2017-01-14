@@ -63,4 +63,7 @@ public class PoliciesDB {
 	
 	}
 	
+	public boolean containsPolicy(String policyName){
+		return this.mapPolicyNamePolicyObject.containsKey(policyName);
+	}
 }

@@ -47,7 +47,10 @@ public class NffgsResource {
 			/* obtain from NffgDB the names of the loaded NFFGs */
 			nffgsDB.storeNffgs(nffgs);
 			return Response.noContent().build();
-		} 
+		}
+		catch (AlreadyLoadedException e) {
+			return Response.status(Response.Status.FORBIDDEN).entity(e.toString()).build();
+		}
 		catch(ServiceException e){
 			return Response.status(Response.Status.BAD_REQUEST).entity(e.toString()).build();
 		}

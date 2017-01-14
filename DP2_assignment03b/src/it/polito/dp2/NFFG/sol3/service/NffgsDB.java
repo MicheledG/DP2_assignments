@@ -169,6 +169,25 @@ public class NffgsDB {
 			throw new UnknownNameException("Node with id "+nodeId+" not found!");	
 	}
 	
+	private String findNodeId(String nffgName, String nodeName) throws UnknownNameException{
+		if(this.containsNffg(nffgName)){
+			/* nffg is on the DB */
+			Set<String> nffgNodeIds = this.mapNffgNameNodeIds.get(nffgName);
+			String nodeId = null;
+			for (String nffgNodeId : nffgNodeIds) {
+				/* find among all nffg's nodes the one we are interested in */
+				String tmpNodeId = this.findNodeName(nffgNodeId);
+				if(tmpNodeId.equals(nodeName)){
+					nodeId = tmpNodeId;
+					break;
+				}
+			}
+			return nodeId;
+		}
+		else
+			throw new UnknownNameException("nffg named "+nffgName+" not found");
+	}
+	
 	private String findLinkName(String linkId) throws UnknownNameException{
 		if(this.mapLinkIdLinkName.containsKey(linkId))
 			return this.mapLinkIdLinkName.get(linkId);
@@ -326,9 +345,12 @@ public class NffgsDB {
 	}
 	
 	/* store the nffg contained inside nffgs (1 or more)*/
-	public void storeNffgs(Nffgs nffgs) throws ServiceException {
+	public void storeNffgs(Nffgs nffgs) throws AlreadyLoadedException, ServiceException {
 		for (Nffgs.Nffg nffg: nffgs.getNffg()) {
-			this.createNffg(nffg);
+			if(!this.containsNffg(nffg.getName()))
+				this.createNffg(nffg);
+			else 
+				throw new AlreadyLoadedException("already loaded nffg named " + nffg.getName());
 		}
 	}
 	
@@ -416,5 +438,23 @@ public class NffgsDB {
 		this.mapNffgNameLinkIds.remove(nffgName);
 		this.mapNffgNameBelongsIds.remove(nffgName);
 	}
-
+	
+	public boolean containsNffg(String nffgName){
+		return this.mapNffgNameNffgId.containsKey(nffgName);
+	}
+	
+	/* check if there is at least one path between two nodes of the same nffg */
+	public boolean isReachable(String nffgName, String srcNodeName, String dstNodeName) throws UnknownNameException, ServiceException{
+		String srcNodeId = this.findNodeId(nffgName, srcNodeName);
+		String dstNodeId = this.findNodeId(nffgName, dstNodeName);
+		
+		Neo4JXMLClient client = new Neo4JXMLClient();
+		Paths paths = client.getPathsSrcNodeDstNode(srcNodeId, dstNodeId);
+		
+		if(paths.getPath().size()>=1)
+			return true;
+		else
+			return false;
+	}
+	
 }

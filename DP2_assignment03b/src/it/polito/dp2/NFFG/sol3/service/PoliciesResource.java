@@ -102,5 +102,5 @@ public class PoliciesResource {
 			return Response.serverError().entity(e.toString()).build();
 		}
 	}
-	
+
 }
