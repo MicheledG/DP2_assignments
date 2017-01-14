@@ -44,7 +44,6 @@
 	     	<produces dir="${sol3.dir}/service/neo4jxml" includes="*.java"/>
 	    </wjc>
 		<delete file="${sol3.dir}/service/neo4jxml/Localhost_Neo4JXMLRest.java"></delete>
-		<delete file="${sol3.dir}/service/neo4jxml/package-info.java"></delete>
 	</target>
  	
 	<!-- target for cleaning neo4jxml artifacts -->

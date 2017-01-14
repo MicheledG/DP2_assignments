@@ -19,6 +19,8 @@ import it.polito.dp2.NFFG.sol3.service.neo4jxml.*;
 
 public class NffgsDB {
 	
+	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+	
 	private Map<String, String> mapNffgNameNffgId = new HashMap<String, String>();
 	private Map<String, Set<String>> mapNffgNameBelongsIds = new HashMap<String, Set<String>>();
 	private Map<String, Set<String>> mapNffgNameNodeIds = new HashMap<String, Set<String>>();
@@ -133,7 +135,7 @@ public class NffgsDB {
 	
 	private Property setNffgLastUpdateProperty(){
 		/* compute now instant using default time zone*/
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+		SimpleDateFormat df = new SimpleDateFormat(this.DATE_FORMAT);
 		Date now = new Date(System.currentTimeMillis());
 		String nowString = df.format(now);
 		/* create the property */
@@ -145,7 +147,7 @@ public class NffgsDB {
 	
 	private XMLGregorianCalendar getNffgLastUpdateXMLGregorianCalendar(String lastUpdate){
 		/* compute now instant using default time zone*/
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z");
+		SimpleDateFormat df = new SimpleDateFormat(this.DATE_FORMAT);
 		Date lastUpdateDate;
 		try{
 			lastUpdateDate = df.parse(lastUpdate);
@@ -200,7 +202,7 @@ public class NffgsDB {
 		Neo4JXMLClient client = new Neo4JXMLClient();
 		List<LinkType> links = new ArrayList<LinkType>();
 		try{
-			for (String linkId : this.mapNffgNameNodeIds.get(nffgName)) {
+			for (String linkId : this.mapNffgNameLinkIds.get(nffgName)) {
 				Relationship relationship = client.getRelationshipById(linkId);
 				LinkType linkType = this.translateRelationshipToLinkType(relationship);
 				links.add(linkType);
@@ -228,12 +230,16 @@ public class NffgsDB {
 		Nffgs.Nffg nffg = new Nffgs.Nffg();
 		nffg.setName(nffgName);
 		nffg.setLastUpdate(lastUpdateCalendar);
+		Nffgs.Nffg.Nodes nodes = new Nffgs.Nffg.Nodes();
 		for (NodeType node : nffgNodes) {
-			nffg.getNodes().getNode().add(node);
+			nodes.getNode().add(node);
 		}
+		nffg.setNodes(nodes);
+		Nffgs.Nffg.Links links = new Nffgs.Nffg.Links();
 		for (LinkType link : nffgLinks) {
-			nffg.getLinks().getLink().add(link);
+			links.getLink().add(link);
 		}
+		nffg.setLinks(links);
 		return nffg;
 	}
 	
@@ -279,8 +285,8 @@ public class NffgsDB {
 			/* load all the belongs */
 			for (NodeType node : nffg.getNodes().getNode()) {
 				/* set the parameters the relationships "belongs" */
-				String srcNodeId = mapCreatedNodeNameNodeId.get(nffg.getName());
-				String dstNodeId = mapCreatedLinkNameLinkId.get(node.getName());
+				String srcNodeId = nffgCreated.getId();
+				String dstNodeId = mapCreatedNodeNameNodeId.get(node.getName());
 				/* create the belongs */
 				Relationship belongsCreated = client.createRelationship(srcNodeId, dstNodeId, "belongs");
 				/* update the list of the loaded belongs */

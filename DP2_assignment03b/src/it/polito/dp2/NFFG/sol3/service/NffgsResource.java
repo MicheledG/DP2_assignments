@@ -28,24 +28,26 @@ public class NffgsResource {
 		} 
 		catch (NoGraphException e) {
 			return Response.noContent().build();
-		} 
-		catch(ServiceException | RuntimeException  e){
-			return Response.serverError().build();
 		}
+		catch(ServiceException | RuntimeException  e){
+			return Response.serverError().entity(e.toString()).build();
+		}
+		//catch(ServiceException | RuntimeException  e){
+		//	return Response.serverError().build();
+		//}
 	}
 	
 	/* store the posted nffgs into the DB */
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
-	@Produces(MediaType.APPLICATION_XML)
 	public Response createNffgs(Nffgs nffgs){
 		try{
 			/* obtain from NffgDB the names of the loaded NFFGs */
 			nffgsDB.createNffgs(nffgs);
-			return Response.ok(nffgs).build();
+			return Response.noContent().build();
 		} 
 		catch(ServiceException e){
-			return Response.status(Response.Status.BAD_REQUEST).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity(e.toString()).build();
 		}
 		catch(RuntimeException e){
 			return Response.serverError().build();
@@ -58,7 +60,7 @@ public class NffgsResource {
 	public Response deleteNffgs(){
 		try{
 			nffgsDB.deleteNffgs();
-			return Response.status(Response.Status.RESET_CONTENT).build();
+			return Response.noContent().build();
 		} 
 		catch(ServiceException| RuntimeException e){
 			return Response.serverError().build();

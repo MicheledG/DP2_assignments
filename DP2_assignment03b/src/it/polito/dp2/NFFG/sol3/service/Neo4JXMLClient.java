@@ -11,7 +11,6 @@ import it.polito.dp2.NFFG.sol3.service.neo4jxml.*;
 public class Neo4JXMLClient {
 	
 	private URI baseURL = null;
-	private ObjectFactory objectFactory;
 	
 	public Neo4JXMLClient(){
 		/* check base url from the system property */
@@ -60,7 +59,7 @@ public class Neo4JXMLClient {
 	
 	public void createLabel(String nodeId, String labelValue) {
 		/* create the label locally */
-		Labels labels = this.objectFactory.createLabels();
+		Labels labels = new Labels();
 		labels.getValue().add(labelValue);
 		/* load label to the node in Neo4J */
 		Client client = ClientBuilder.newClient();
