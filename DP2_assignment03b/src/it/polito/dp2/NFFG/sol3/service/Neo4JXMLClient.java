@@ -1,10 +1,7 @@
 package it.polito.dp2.NFFG.sol3.service;
 
 import java.net.URI;
-import java.util.Map;
 
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;

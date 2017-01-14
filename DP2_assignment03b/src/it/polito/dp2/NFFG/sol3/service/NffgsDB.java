@@ -1,24 +1,28 @@
 package it.polito.dp2.NFFG.sol3.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NodeSetType;
+import javax.xml.datatype.XMLGregorianCalendar;
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
-import it.polito.dp2.NFFG.lab3.ServiceException;
-import it.polito.dp2.NFFG.lab3.UnknownNameException;
+import it.polito.dp2.NFFG.sol3.service.exceptions.*;
 import it.polito.dp2.NFFG.sol3.service.jaxb.*;
 import it.polito.dp2.NFFG.sol3.service.neo4jxml.*;
-
 
 public class NffgsDB {
 	
 	private Map<String, String> mapNffgNameNffgId = new HashMap<String, String>();
-	private Map<String, List<String>> mapNffgNameBelongsIds = new HashMap<String, List<String>>();
-	private Map<String, List<String>> mapNffgNameNodeIds = new HashMap<String, List<String>>();
-	private Map<String, List<String>> mapNffgNameLinkIds = new HashMap<String, List<String>>();
+	private Map<String, Set<String>> mapNffgNameBelongsIds = new HashMap<String, Set<String>>();
+	private Map<String, Set<String>> mapNffgNameNodeIds = new HashMap<String, Set<String>>();
+	private Map<String, Set<String>> mapNffgNameLinkIds = new HashMap<String, Set<String>>();
 	private Map<String, String> mapNodeIdNodeName = new HashMap<String, String>();
 	private Map<String, String> mapLinkIdLinkName = new HashMap<String, String>();
 	
@@ -32,7 +36,11 @@ public class NffgsDB {
 	/* clear Neo4J */
 	private NffgsDB(){
 		/* clear all */
-		this.clearAll();
+		try {
+			this.deleteNffgs();
+		} catch (ServiceException e) {
+			throw new RuntimeException(e);
+		}
 		return;
 	}
 	
@@ -84,15 +92,37 @@ public class NffgsDB {
 		return nodeToCreate;
 	}
 	
+	/* return the nodeType to send to the client */
+	private NodeType translateNodeToNodeType(Node node){
+		/* create the node properties */
+		NodeType nodeType = new NodeType();
+		String nodeName = this.getNodeProperty(node.getProperty(), "name");
+		String nodeNetworkFunctionality = this.getNodeProperty(node.getProperty(), "networkFunctionality");
+		nodeType.setName(nodeName);
+		nodeType.setNetworkFunctionality(NetworkFunctionalityType.valueOf(nodeNetworkFunctionality));
+		return nodeType;
+	}
+	
+	/* return the linkType to send to the client */
+	private LinkType translateRelationshipToLinkType(Relationship relationship) throws UnknownNameException{
+		/* create the link properties */
+		LinkType link = new LinkType();
+		String linkName = this.findLinkName(relationship.getId());
+		String srcNode = this.findNodeName(relationship.getSrcNode());
+		String dstNode = this.findNodeName(relationship.getDstNode());
+		link.setName(linkName);
+		link.setSourceNode(srcNode);
+		link.setDestinationNode(dstNode);
+		return link;
+	}
+	
 	/* return the node to create on neo4j to represent a Nffg */
-	private Node translateNffgTypeToNode(Nffg nffg){
+	private Node translateNffgTypeToNode(Nffgs.Nffg nffg){
 		/* create the nffg properties */
 		Property nameProperty = new Property();
 		nameProperty.setName("name");
 		nameProperty.setValue(nffg.getName());
-		Property lastUpdateProperty = new Property();
-		lastUpdateProperty.setName("lastUpdate");
-		lastUpdateProperty.setValue(nffg.getLastUpdate().toString());
+		Property lastUpdateProperty = this.setNffgLastUpdateProperty();
 		/* create local Node element */
 		Node nffgToCreate = new Node();
 		/* add all the properties to the new node to create */
@@ -101,21 +131,120 @@ public class NffgsDB {
 		return nffgToCreate;
 	}
 	
-	private String findNffgNodeId(String nffgName) throws UnknownNameException{
+	private Property setNffgLastUpdateProperty(){
+		/* compute now instant using default time zone*/
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+		Date now = new Date(System.currentTimeMillis());
+		String nowString = df.format(now);
+		/* create the property */
+		Property lastUpdateProperty = new Property();
+		lastUpdateProperty.setName("lastUpdate");
+		lastUpdateProperty.setValue(nowString);
+		return lastUpdateProperty;
+	}
+	
+	private XMLGregorianCalendar getNffgLastUpdateXMLGregorianCalendar(String lastUpdate){
+		/* compute now instant using default time zone*/
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z");
+		Date lastUpdateDate;
+		try{
+			lastUpdateDate = df.parse(lastUpdate);
+		} catch (java.text.ParseException e) {
+			/* set to the current time */
+			lastUpdateDate =  new Date(System.currentTimeMillis());
+		}
+		/* create the xml gregorian calendar */
+		GregorianCalendar lastUpdateGregorianCalendar = new GregorianCalendar();
+		lastUpdateGregorianCalendar.setTime(lastUpdateDate);
+		XMLGregorianCalendarImpl lastUpdateXMLGregorianCalendar = new XMLGregorianCalendarImpl(lastUpdateGregorianCalendar);
+		return lastUpdateXMLGregorianCalendar;
+	}
+	
+	private String findNodeName(String nodeId) throws UnknownNameException{
+		if(this.mapNodeIdNodeName.containsKey(nodeId))
+			return this.mapNodeIdNodeName.get(nodeId);
+		else
+			throw new UnknownNameException("Node with id "+nodeId+" not found!");	
+	}
+	
+	private String findLinkName(String linkId) throws UnknownNameException{
+		if(this.mapLinkIdLinkName.containsKey(linkId))
+			return this.mapLinkIdLinkName.get(linkId);
+		else
+			throw new UnknownNameException("Link with id "+linkId+" not found!");	
+	}
+	
+	private String findNffgId(String nffgName) throws UnknownNameException{
 		if(this.mapNffgNameNffgId.containsKey(nffgName))
 			return this.mapNffgNameNffgId.get(nffgName);
 		else
-			throw new UnknownNameException("Nffg named "+nffgName+"not found!");	
+			throw new UnknownNameException("Nffg named "+nffgName+" not found!");	
+	}
+	
+	private List<NodeType> getNffgNodes(String nffgName) throws ServiceException {
+		Neo4JXMLClient client = new Neo4JXMLClient();
+		List<NodeType> nodes = new ArrayList<NodeType>();
+		try{
+			for (String nodeId : this.mapNffgNameNodeIds.get(nffgName)) {
+				Node node = client.getNodeById(nodeId);
+				NodeType nodeType = translateNodeToNodeType(node);
+				nodes.add(nodeType);
+			}
+		} catch (RuntimeException e) {
+			throw new ServiceException("Error retrieving nodes of nffg " + nffgName);
+		}
+		return nodes;
+	}
+	
+	private List<LinkType> getNffgLinks(String nffgName) throws ServiceException {
+		Neo4JXMLClient client = new Neo4JXMLClient();
+		List<LinkType> links = new ArrayList<LinkType>();
+		try{
+			for (String linkId : this.mapNffgNameNodeIds.get(nffgName)) {
+				Relationship relationship = client.getRelationshipById(linkId);
+				LinkType linkType = this.translateRelationshipToLinkType(relationship);
+				links.add(linkType);
+			}
+		} catch (UnknownNameException | RuntimeException e) {
+			throw new ServiceException("Error retrieving links of nffg " + nffgName);
+		} 
+		return links;
+	}
+	
+	/* return a NFFG stored inside neo4j */
+	private Nffgs.Nffg getNffg(String nffgName) throws UnknownNameException, ServiceException {
+		/* find nffgId of the node that models the nffg */
+		String nffgId = this.findNffgId(nffgName);
+		/* get the nffg properties */
+		Neo4JXMLClient client = new Neo4JXMLClient();
+		Node nffgNode = client.getNodeById(nffgId);
+		String lastUpdateString = this.getNodeProperty(nffgNode.getProperty(), "lastUpdate");
+		XMLGregorianCalendar lastUpdateCalendar = this.getNffgLastUpdateXMLGregorianCalendar(lastUpdateString);
+		/* get all the nodes of that nffg */
+		List<NodeType> nffgNodes = this.getNffgNodes(nffgName);
+		/* get all the relationships of the nffg */
+		List<LinkType> nffgLinks = this.getNffgLinks(nffgName);
+		/* create the Nffg element containing all the infos */
+		Nffgs.Nffg nffg = new Nffgs.Nffg();
+		nffg.setName(nffgName);
+		nffg.setLastUpdate(lastUpdateCalendar);
+		for (NodeType node : nffgNodes) {
+			nffg.getNodes().getNode().add(node);
+		}
+		for (LinkType link : nffgLinks) {
+			nffg.getLinks().getLink().add(link);
+		}
+		return nffg;
 	}
 	
 	/* create a NFFG on neo4j */
-	public void createNffg(Nffg nffg) throws ServiceException{
+	private void createNffg(Nffgs.Nffg nffg) throws ServiceException{
 		
 		Neo4JXMLClient client = new Neo4JXMLClient();
 		/* used to keep trace of the loaded elements */
 		Map<String, String> mapCreatedNodeNameNodeId = new HashMap<String, String>();
 		Map<String, String> mapCreatedLinkNameLinkId = new HashMap<String, String>();
-		List<String> createdBelongs = new ArrayList<String>();
+		Set<String> createdBelongs = new HashSet<String>();
 		
 		try {
 			
@@ -166,7 +295,7 @@ public class NffgsDB {
 			this.mapNffgNameBelongsIds.put(nffg.getName(), createdBelongs);
 			
 			/* update NffgName <=> NodeIds map + NodeId <=> NodeName map*/
-			List<String> nffgNodeIds = new ArrayList<String>(); 
+			Set<String> nffgNodeIds = new HashSet<String>(); 
 			for (NodeType node : nffg.getNodes().getNode()) {
 				String nodeName = node.getName();
 				String nodeId = mapCreatedNodeNameNodeId.get(nodeName);
@@ -176,7 +305,7 @@ public class NffgsDB {
 			this.mapNffgNameNodeIds.put(nffg.getName(), nffgNodeIds);
 			
 			/* update NffgName <=> LinkIds map + LinkId <=> LinkName map */
-			List<String> nffgLinkIds = new ArrayList<String>(); 
+			Set<String> nffgLinkIds = new HashSet<String>(); 
 			for (LinkType link : nffg.getLinks().getLink()) {
 				String linkName = link.getName(); 
 				String linkId = mapCreatedLinkNameLinkId.get(linkName);
@@ -185,43 +314,98 @@ public class NffgsDB {
 			}
 			this.mapNffgNameLinkIds.put(nffg.getName(), nffgLinkIds);
 			
-			return;
-			
 		} catch (RuntimeException e) {
 			throw new ServiceException("Error loading nffg named " + nffg.getName() + ", content reset");
 		} 
 	}
 	
-	//TODO
-	/* return a NFFG stored inside neo4j */
-	public Nffg getNffg(String nffgName) throws UnknownNameException, ServiceException {
-		/* find nffgId of the node that models the nffg */
-		String nffgNodeId = this.findNffgNodeId(nffgName);
-		/* get the nffg properties */
-		
-		/* get all the nodes of that nffg */
-		List<NodeType> nffgNodes = this.getNffgNodes(nffgNodeId);
-		/* get all the relationships of the nffg */
-		List<LinkType> nffgLinks = this.getNffgLinks(nffgNodeId, nffgNodes);
-		/* create the Nffg element containing all the infos */
-		Nffg nffg = new Nffg();
-		return nffg;
+	/* create the nffg contained inside nffgs (1 or more)*/
+	public void createNffgs(Nffgs nffgs) throws ServiceException {
+		for (Nffgs.Nffg nffg: nffgs.getNffg()) {
+			this.createNffg(nffg);
+		}
 	}
 	
-	/* clear local maps and neo4j */
-	public void clearAll(){
-		/* clear all the eventual nodes on neo4j */
+	/* return the list of all the nffg */
+	public Nffgs getNffgs() throws NoGraphException, ServiceException{
+		if(this.mapNffgNameNffgId.isEmpty())
+			throw new NoGraphException("no data loaded on neo4j");
+		
+		Nffgs nffgs = new Nffgs();
+		try{
+			for (String nffgName: this.mapNffgNameNffgId.keySet()) {
+				Nffgs.Nffg nffg = getNffg(nffgName);
+				nffgs.getNffg().add(nffg);
+			}
+		} 
+		catch (UnknownNameException e) {
+			throw new ServiceException(e);
+		}
+		return nffgs;
+	}
+	
+	/* return nffgs containing a single nffg */
+	public Nffgs getNffgs(String nffgName) throws UnknownNameException,ServiceException{
+		Nffgs nffgs = new Nffgs();	
+		Nffgs.Nffg nffg = getNffg(nffgName);
+		nffgs.getNffg().add(nffg);
+		return nffgs;
+	}
+	
+	/* clear all local maps and neo4j */
+	public void deleteNffgs() throws ServiceException{
+		try{
+			/* clear all the eventual nodes on neo4j */
+			Neo4JXMLClient client = new Neo4JXMLClient();
+			client.deleteAllNodes();
+			/* clear all the maps */
+			this.mapNffgNameNffgId.clear();
+			this.mapNffgNameBelongsIds.clear();
+			this.mapNffgNameNodeIds.clear();
+			this.mapNffgNameLinkIds.clear();
+			this.mapNodeIdNodeName.clear();
+			this.mapLinkIdLinkName.clear();
+		} 
+		catch (RuntimeException e) {
+			throw new ServiceException("Error deleting all nffgs");
+		}
+		return;
+		
+	}
+	
+	/* remove data of a single nffg */
+	public void deleteNffg(String nffgName) throws UnknownNameException, ServiceException{		
+		
+		/* find and check if the nffg is present */
+		String nffgId = this.findNffgId(nffgName);
+		
 		Neo4JXMLClient client = new Neo4JXMLClient();
-		//TODO CAN THROW RuntimeException
-		client.deleteAllNodes();
-		
-		/* clear all the maps */
-		this.mapNffgNameNffgId.clear();
-		this.mapNffgNameBelongsIds.clear();
-		this.mapNffgNameNodeIds.clear();
-		this.mapNffgNameLinkIds.clear();
-		this.mapNodeIdNodeName.clear();
-		this.mapLinkIdLinkName.clear();
+		/* delete all the links */
+		Set<String> linkIds = this.mapNffgNameLinkIds.get(nffgName);
+		for (String linkId: linkIds) {
+			client.deleteRelationshipById(linkId);
+			this.mapLinkIdLinkName.remove(linkId);
+			this.mapNffgNameLinkIds.get(nffgName).remove(linkId);
+		}
+		/* delete all the belongs */
+		Set<String> belongsIds = this.mapNffgNameBelongsIds.get(nffgName);
+		for (String belongsId: belongsIds) {
+			client.deleteRelationshipById(belongsId);
+			this.mapNffgNameBelongsIds.get(nffgName).remove(belongsId);
+		}
+		/* delete all the nodes */
+		Set<String> nodeIds = this.mapNffgNameNodeIds.get(nffgName);
+		for (String nodeId: nodeIds) {
+			client.deleteRelationshipById(nodeId);
+			this.mapNodeIdNodeName.remove(nodeId);
+			this.mapNffgNameNodeIds.get(nffgName).remove(nodeId);
+		}
+		/* delete nffg node */
+		client.deleteNodeById(nffgId);
+		this.mapNffgNameNffgId.remove(nffgName);
+		this.mapNffgNameNodeIds.remove(nffgName);
+		this.mapNffgNameLinkIds.remove(nffgName);
+		this.mapNffgNameBelongsIds.remove(nffgName);
 	}
-	
+
 }
