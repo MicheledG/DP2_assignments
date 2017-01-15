@@ -35,17 +35,6 @@ public class NffgsDB {
 		return nffgsDB;
 	}
 	
-	/* clear all */
-	private NffgsDB(){
-		/* clear all */
-		try {
-			this.deleteNffgs();
-		} catch (ServiceException e) {
-			throw new RuntimeException(e);
-		}
-		return;
-	}
-	
 	/* extract the property value of the property named propertyName from a List<Property> */
 	private String getNodeProperty(List<Property> propertyList, String propertyName){
 		String propertyValue = null;
@@ -340,7 +329,7 @@ public class NffgsDB {
 			this.mapNffgNameLinkIds.put(nffg.getName(), nffgLinkIds);
 			
 		} catch (RuntimeException e) {
-			throw new ServiceException("Error loading nffg named " + nffg.getName() + ", content reset");
+			throw new ServiceException("Error loading nffg named " + nffg.getName());
 		} 
 	}
 	

@@ -18,9 +18,12 @@ public class PoliciesDB {
 	}
 	
 	/* store the policies (1 or more) into the DB*/
-	public void storePolicies(Policies policies){
+	public void storePolicies(Policies policies) throws AlreadyLoadedException{
 		for (Policies.Policy policy : policies.getPolicy()) {
-			this.mapPolicyNamePolicyObject.put(policy.getName(), policy);
+			String policyName = policy.getName();
+			if(this.containsPolicy(policyName))
+					throw new AlreadyLoadedException("policy named "+policyName+"already stored");
+			this.mapPolicyNamePolicyObject.put(policyName, policy);
 		}
 	}
 	

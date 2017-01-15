@@ -1,5 +1,6 @@
 package it.polito.dp2.NFFG.sol3.service;
 
+import javax.management.relation.RelationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -11,58 +12,45 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import it.polito.dp2.NFFG.sol3.service.exceptions.*;
-import it.polito.dp2.NFFG.sol3.service.jaxb.Nffgs;
 import it.polito.dp2.NFFG.sol3.service.jaxb.Policies;
+
+//TODO: remove from the response with status code SERVER ERROR the description of the exception
 
 @Path("/policies")
 public class PoliciesResource {
 
-	private NffgsDB nffgsDB = NffgsDB.newNffgsDB();
-	private PoliciesDB policiesDB = PoliciesDB.newPoliciesDB();
+	private NffgService nffgService = new NffgService();
+	
+	/* store the posted policies into the DB */
+	@POST
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response storePolicies(Policies policies){
+		try{
+			nffgService.storePolicies(policies);
+			return Response.noContent().build();
+		} 
+		catch (RelationException | AlreadyLoadedException e) {
+			return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
+		} 
+		catch(RuntimeException e){
+			return Response.serverError().build();
+		}
+	}
 	
 	/* send to the client the list of policies loaded on the DB */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getNffgs(){
+	public Response getPolicies(){
 		try{
 			/* obtain from NffgDB the names of the loaded NFFGs */
-			Policies policies = policiesDB.getPolicies();
+			Policies policies = nffgService.getPolicies();
 			return Response.ok(policies).build();
 		} 
 		catch (NoPolicyException e) {
 			return Response.noContent().build();
 		}
 		catch( RuntimeException  e){
-			return Response.serverError().entity(e.toString()).build();
-		}
-		//catch(RuntimeException  e){
-		//	return Response.serverError().build();
-		//}
-	}
-	
-	//TODO => demo version => no nffg check!
-	/* store the posted policies into the DB */
-	@POST
-	@Consumes(MediaType.APPLICATION_XML)
-	public Response storePolicies(Policies policies){
-		try{
-			policiesDB.storePolicies(policies);
-			return Response.noContent().build();
-		} 
-		catch(RuntimeException e){
-			return Response.serverError().build();
-		}
-	}
-	
-	/* delete all the policies */
-	@DELETE
-	public Response deletePolicies(){
-		try{
-			policiesDB.deletePolicies();
-			return Response.noContent().build();
-		} 
-		catch(RuntimeException e){
-			return Response.serverError().build();
+			return Response.serverError().entity(e.getMessage()).build();
 		}
 	}
 	
@@ -73,18 +61,27 @@ public class PoliciesResource {
 	public Response getSinglePolicies(@PathParam("policyName") String policyName){
 		try{
 			/* obtain from PoliciesDB the names of the loaded policies */
-			Policies policies = policiesDB.getPolicies(policyName);
+			Policies policies = nffgService.getSinglePolicies(policyName);
 			return Response.ok(policies).build();
 		}
 		catch (UnknownNameException e) {
-			return Response.status(Response.Status.NOT_FOUND).entity(e.toString()).build();
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
 		}
 		catch(RuntimeException  e){
-			return Response.serverError().entity(e.toString()).build();
+			return Response.serverError().entity(e.getMessage()).build();
 		}
-		//catch(ServiceException | RuntimeException  e){
-		//	return Response.serverError().build();
-		//}
+	}
+	
+	/* delete all the policies */
+	@DELETE
+	public Response deletePolicies(){
+		try{
+			nffgService.deletePolicies();
+			return Response.noContent().build();
+		} 
+		catch(RuntimeException e){
+			return Response.serverError().build();
+		}
 	}
 	
 	/* delete a single policy */
@@ -92,14 +89,14 @@ public class PoliciesResource {
 	@DELETE
 	public Response deletePolicies(@PathParam("policyName") String policyName){
 		try{
-			policiesDB.deletePolicies(policyName);
+			nffgService.deleteSinglePolicies(policyName);
 			return Response.noContent().build();
 		}
 		catch (UnknownNameException e) {
-			return Response.status(Response.Status.NOT_FOUND).entity(e.toString()).build();
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
 		}
 		catch(RuntimeException e){
-			return Response.serverError().entity(e.toString()).build();
+			return Response.serverError().entity(e.getMessage()).build();
 		}
 	}
 

@@ -1,5 +1,6 @@
 package it.polito.dp2.NFFG.sol3.service;
 
+import javax.management.relation.RelationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -15,115 +16,95 @@ import javax.ws.rs.core.Response;
 import it.polito.dp2.NFFG.sol3.service.exceptions.*;
 import it.polito.dp2.NFFG.sol3.service.jaxb.Nffgs;
 
+//TODO: remove from the response with status code SERVER ERROR the description of the exception
+
 @Path("/nffgs")
 public class NffgsResource {
 	
-	private NffgsDB nffgsDB = NffgsDB.newNffgsDB();
-	private PoliciesDB policiesDB = PoliciesDB.newPoliciesDB();
+	private NffgService nffgService = new NffgService();
 	
-	/* store the posted nffgs into the DB */
+	/* store the posted nffgs into the service */
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response storeNffgs(Nffgs nffgs){
 		try{
 			/* obtain from NffgDB the names of the loaded NFFGs */
-			nffgsDB.storeNffgs(nffgs);
+			nffgService.storeNffgs(nffgs);
 			return Response.noContent().build();
 		}
 		catch (AlreadyLoadedException e) {
-			return Response.status(Response.Status.FORBIDDEN).entity(e.toString()).build();
+			return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
 		}
-		catch(ServiceException e){
-			return Response.status(Response.Status.BAD_REQUEST).entity(e.toString()).build();
-		}
-		catch(RuntimeException e){
-			return Response.serverError().build();
+		catch(RuntimeException | ServiceException e){
+			return Response.serverError().entity(e.getMessage()).build();
 		}
 	}
 	
-	/* send to the client the list of nffg loaded on the DB */
+	/* send to the client the list of nffg loaded on the service */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getNffgs(){
 		try{
 			/* obtain from NffgDB the names of the loaded NFFGs */
-			Nffgs nffgs = nffgsDB.getNffgs();
+			Nffgs nffgs = nffgService.getNffgs();
 			return Response.ok(nffgs).build();
 		} 
 		catch (NoGraphException e) {
 			return Response.noContent().build();
 		}
 		catch(ServiceException | RuntimeException  e){
-			return Response.serverError().entity(e.toString()).build();
+			return Response.serverError().entity(e.getMessage()).build();
 		}
-		//catch(ServiceException | RuntimeException  e){
-		//	return Response.serverError().build();
-		//}
 	}
 	
 	@Path("/{nffgName}")
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	/* get a single nffg */
+	/* send to the client a single nffg loaded on the service */
 	public Response getSingleNffgs(@PathParam("nffgName") String nffgName){
 		try{
 			/* obtain from NffgDB the names of the loaded NFFGs */
-			Nffgs nffgs = nffgsDB.getNffgs(nffgName);
+			Nffgs nffgs = nffgService.getSingleNffgs(nffgName);
 			return Response.ok(nffgs).build();
 		}
 		catch (UnknownNameException e) {
-			return Response.status(Response.Status.NOT_FOUND).entity(e.toString()).build();
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
 		}
 		catch(ServiceException | RuntimeException  e){
-			return Response.serverError().entity(e.toString()).build();
+			return Response.serverError().entity(e.getMessage()).build();
 		}
-		//catch(ServiceException | RuntimeException  e){
-		//	return Response.serverError().build();
-		//}
 	}
 	
 	/* delete all the nffgs */
 	@DELETE
-	public Response deleteNffgs(
-			@DefaultValue("false") @QueryParam("deletePolicies") boolean deletePolicies ){
+	public Response deleteNffgs(){
 		try{
-			if(deletePolicies){
-				/* delete all data */
-				nffgsDB.deleteNffgs();
-				policiesDB.deletePolicies();
-			}
-			else{
-				/* check if there are policies */
-				if(policiesDB.isEmpty())
-					/* there is no problem deleting all the nffgs */
-					nffgsDB.deleteNffgs();
-				else
-					throw new PolicyRelatedException();
-			}
+			nffgService.deleteNffgs();
 			return Response.noContent().build();
-		}
-		catch(PolicyRelatedException e){
-			return Response.status(Response.Status.FORBIDDEN).build();
 		}
 		catch(ServiceException| RuntimeException e){
 			return Response.serverError().build();
 		}
 	}
 	
-	//TODO demo version => no policies check
 	/* delete a single nffg */
 	@Path("/{nffgName}")
 	@DELETE
-	public Response deleteNffgs(@PathParam("nffgName") String nffgName){
+	public Response deleteNffgs(
+			@PathParam("nffgName") String nffgName,
+			@DefaultValue("false") @QueryParam("deletePolicies") boolean deletePolicies){
 		try{
-			nffgsDB.deleteNffgs(nffgName);
+			nffgService.deleteSingleNffgs(nffgName, deletePolicies);
 			return Response.noContent().build();
 		}
 		catch (UnknownNameException e) {
-			return Response.status(Response.Status.NOT_FOUND).entity(e.toString()).build();
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+		}
+		catch (RelationException e) {
+			return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
 		}
 		catch(ServiceException| RuntimeException e){
-			return Response.serverError().entity(e.toString()).build();
+			return Response.serverError().entity(e.getMessage()).build();
 		}
 	}
 	

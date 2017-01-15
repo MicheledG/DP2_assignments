@@ -4,6 +4,7 @@ import javax.management.relation.RelationException;
 
 import it.polito.dp2.NFFG.sol3.service.exceptions.*;
 import it.polito.dp2.NFFG.sol3.service.jaxb.Nffgs;
+import it.polito.dp2.NFFG.sol3.service.jaxb.Policies;
 
 public class NffgService {
 	
@@ -47,6 +48,46 @@ public class NffgService {
 		/* otherwise delete the nffg */
 		nffgsDB.deleteNffgs(nffgName);
 		
+		return;
+	}
+	
+	/* store the policies into the DB */
+	public void storePolicies(Policies policies) throws RelationException, AlreadyLoadedException{
+		
+		/* check if a policy to store refers an Nffg not loaded on NffgDB */
+		for (Policies.Policy policy : policies.getPolicy()) {
+			if(!nffgsDB.containsNffg(policy.getNffg()))
+				throw new RelationException("missing nffg "+policy.getNffg()+" for policy " + policy.getName());
+		}
+		
+		/* otherwise store the policies into policiesDB */
+		policiesDB.storePolicies(policies);
+		return;
+	}
+	
+	//TODO: update policies
+	
+	/* get the list of policies loaded on the DB */
+	public Policies getPolicies() throws NoPolicyException{
+		/* obtain from PoliciesDB all the policies stored */
+		Policies policies = policiesDB.getPolicies();
+		return policies;
+	}
+	
+	/* get a single policy from policiesDB */
+	public Policies getSinglePolicies(String policyName) throws UnknownNameException{
+		Policies policies = policiesDB.getPolicies(policyName);
+		return policies;
+	}
+	
+	/* delete all the policies */
+	public void deletePolicies(){
+		policiesDB.deletePolicies();
+	}
+	
+	/* delete a single policy */
+	public void deleteSinglePolicies(String policyName) throws UnknownNameException{
+		policiesDB.deletePolicies(policyName);
 		return;
 	}
 	
