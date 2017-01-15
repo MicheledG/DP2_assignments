@@ -2,11 +2,13 @@ package it.polito.dp2.NFFG.sol3.service;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -18,26 +20,6 @@ public class NffgsResource {
 	
 	private NffgsDB nffgsDB = NffgsDB.newNffgsDB();
 	private PoliciesDB policiesDB = PoliciesDB.newPoliciesDB();
-	
-	/* send to the client the list of nffg loaded on the DB */
-	@GET
-	@Produces(MediaType.APPLICATION_XML)
-	public Response getNffgs(){
-		try{
-			/* obtain from NffgDB the names of the loaded NFFGs */
-			Nffgs nffgs = nffgsDB.getNffgs();
-			return Response.ok(nffgs).build();
-		} 
-		catch (NoGraphException e) {
-			return Response.noContent().build();
-		}
-		catch(ServiceException | RuntimeException  e){
-			return Response.serverError().entity(e.toString()).build();
-		}
-		//catch(ServiceException | RuntimeException  e){
-		//	return Response.serverError().build();
-		//}
-	}
 	
 	/* store the posted nffgs into the DB */
 	@POST
@@ -59,17 +41,24 @@ public class NffgsResource {
 		}
 	}
 	
-	//TODO demo version => no policies check
-	/* delete all the nffgs */
-	@DELETE
-	public Response deleteNffgs(){
+	/* send to the client the list of nffg loaded on the DB */
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getNffgs(){
 		try{
-			nffgsDB.deleteNffgs();
-			return Response.noContent().build();
+			/* obtain from NffgDB the names of the loaded NFFGs */
+			Nffgs nffgs = nffgsDB.getNffgs();
+			return Response.ok(nffgs).build();
 		} 
-		catch(ServiceException| RuntimeException e){
-			return Response.serverError().build();
+		catch (NoGraphException e) {
+			return Response.noContent().build();
 		}
+		catch(ServiceException | RuntimeException  e){
+			return Response.serverError().entity(e.toString()).build();
+		}
+		//catch(ServiceException | RuntimeException  e){
+		//	return Response.serverError().build();
+		//}
 	}
 	
 	@Path("/{nffgName}")
@@ -91,6 +80,34 @@ public class NffgsResource {
 		//catch(ServiceException | RuntimeException  e){
 		//	return Response.serverError().build();
 		//}
+	}
+	
+	/* delete all the nffgs */
+	@DELETE
+	public Response deleteNffgs(
+			@DefaultValue("false") @QueryParam("deletePolicies") boolean deletePolicies ){
+		try{
+			if(deletePolicies){
+				/* delete all data */
+				nffgsDB.deleteNffgs();
+				policiesDB.deletePolicies();
+			}
+			else{
+				/* check if there are policies */
+				if(policiesDB.isEmpty())
+					/* there is no problem deleting all the nffgs */
+					nffgsDB.deleteNffgs();
+				else
+					throw new PolicyRelatedException();
+			}
+			return Response.noContent().build();
+		}
+		catch(PolicyRelatedException e){
+			return Response.status(Response.Status.FORBIDDEN).build();
+		}
+		catch(ServiceException| RuntimeException e){
+			return Response.serverError().build();
+		}
 	}
 	
 	//TODO demo version => no policies check

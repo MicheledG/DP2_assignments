@@ -2,6 +2,7 @@ package it.polito.dp2.NFFG.sol3.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import it.polito.dp2.NFFG.sol3.service.exceptions.*;
 import it.polito.dp2.NFFG.sol3.service.jaxb.Policies;
@@ -65,5 +66,22 @@ public class PoliciesDB {
 	
 	public boolean containsPolicy(String policyName){
 		return this.mapPolicyNamePolicyObject.containsKey(policyName);
+	}
+	
+	public Set<String> getPoliciesNames(){
+		return this.mapPolicyNamePolicyObject.keySet();
+	}
+	
+	/* check if there is a policy referring a particular nffg */
+	public boolean refersNffg(String nffgName){
+		for (Map.Entry<String, Policies.Policy> mapEntry: this.mapPolicyNamePolicyObject.entrySet()) {
+			if(mapEntry.getValue().getNffg().equals(nffgName))
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean isEmpty(){
+		return this.mapPolicyNamePolicyObject.isEmpty();
 	}
 }

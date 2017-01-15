@@ -439,8 +439,16 @@ public class NffgsDB {
 		this.mapNffgNameBelongsIds.remove(nffgName);
 	}
 	
+	public Set<String> getNffgsNames(){
+		return this.mapNffgNameNffgId.keySet();
+	}
+	
 	public boolean containsNffg(String nffgName){
 		return this.mapNffgNameNffgId.containsKey(nffgName);
+	}
+	
+	public boolean isEmpty(){
+		return this.mapNffgNameNffgId.isEmpty();
 	}
 	
 	/* check if there is at least one path between two nodes of the same nffg */
