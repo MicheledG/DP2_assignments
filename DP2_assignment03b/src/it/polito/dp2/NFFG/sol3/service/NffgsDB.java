@@ -391,7 +391,7 @@ public class NffgsDB {
 	}
 	
 	/* remove data of a single nffg from neo4j and the maps */
-	public void deleteNffgs(String nffgName) throws UnknownNameException, ServiceException{		
+	public void deleteNffg(String nffgName) throws UnknownNameException, ServiceException{		
 		
 		/* find and check if the nffg is present */
 		String nffgId = this.findNffgId(nffgName);

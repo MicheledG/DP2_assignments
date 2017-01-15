@@ -1,6 +1,8 @@
 package it.polito.dp2.NFFG.sol3.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,6 +14,15 @@ public class PoliciesDB {
 	private Map<String, Policies.Policy> mapPolicyNamePolicyObject = new HashMap<String, Policies.Policy>();
 	
 	private static PoliciesDB policiesDB = new PoliciesDB();
+	
+	private void updatePolicyEntry(String policyName, Policies.Policy policyUpdate) {
+		
+		/* remove the old policy and add the new one*/
+		this.mapPolicyNamePolicyObject.remove(policyName);
+		this.mapPolicyNamePolicyObject.put(policyName, policyUpdate);
+		
+	}
+	
 	
 	public static PoliciesDB newPoliciesDB(){
 		return policiesDB;
@@ -27,6 +38,16 @@ public class PoliciesDB {
 		}
 	}
 	
+	/* update the policies (1 or more) into the DB*/
+	public void updatePolicies(Policies policiesUpdate) throws UnknownNameException{
+		for (Policies.Policy policyUpdate : policiesUpdate.getPolicy()) {
+			String policyUpdateName = policyUpdate.getName();
+			if(!this.containsPolicy(policyUpdateName))
+					throw new UnknownNameException("missing policy named "+policyUpdateName);
+			this.updatePolicyEntry(policyUpdateName, policyUpdate);
+		}
+	}
+
 	/* return the list of all the nffg */
 	public Policies getPolicies() throws NoPolicyException {
 		if(this.mapPolicyNamePolicyObject.isEmpty())
@@ -40,7 +61,7 @@ public class PoliciesDB {
 		return policies;
 	}
 	
-	/* return nffgs containing a single nffg */
+	/* return policies containing a single nffg */
 	public Policies getPolicies(String policyName) throws UnknownNameException{
 		if(!this.mapPolicyNamePolicyObject.containsKey(policyName))
 			throw new UnknownNameException("policy named " + policyName + " not found");
@@ -58,7 +79,7 @@ public class PoliciesDB {
 	}
 	
 	/* remove policy from the local map */
-	public void deletePolicies(String policyName) throws UnknownNameException{		
+	public void deletePolicy(String policyName) throws UnknownNameException{		
 		
 		if(!this.mapPolicyNamePolicyObject.containsKey(policyName))
 			throw new UnknownNameException("policy named " + policyName + " not found");
@@ -76,12 +97,21 @@ public class PoliciesDB {
 	}
 	
 	/* check if there is a policy referring a particular nffg */
-	public boolean refersNffg(String nffgName){
+	public boolean areReferringThisNffg(String nffgName){
 		for (Map.Entry<String, Policies.Policy> mapEntry: this.mapPolicyNamePolicyObject.entrySet()) {
 			if(mapEntry.getValue().getNffg().equals(nffgName))
 				return true;
 		}
 		return false;
+	}
+	
+	public List<String> getPolicyNamesReferringNffg(String nffgName){
+		List<String> policyNames = new ArrayList<String>();
+		for (Map.Entry<String, Policies.Policy> mapPolicyNamePolicyObjectEntry: this.mapPolicyNamePolicyObject.entrySet()) {
+			if(mapPolicyNamePolicyObjectEntry.getValue().getNffg().equals(nffgName))
+				policyNames.add(mapPolicyNamePolicyObjectEntry.getKey());
+		}
+		return policyNames;
 	}
 	
 	public boolean isEmpty(){

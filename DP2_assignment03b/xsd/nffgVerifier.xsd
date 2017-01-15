@@ -57,9 +57,7 @@
 							<xsd:element name="nffg" type="nameType"/>
 							<xsd:element name="sourceNode" type="nameType"/>
 							<xsd:element name="destinationNode" type="nameType"/>
-							<xsd:element name="result" type="xsd:boolean" minOccurs="0"/>
-							<xsd:element name="lastVerification" type="xsd:dateTime" minOccurs="0"/>
-							<xsd:element name="description" type="xsd:string" minOccurs="0"/>
+							<xsd:element name="verificationResult" type="verificationResultType" minOccurs="0"/>
 						</xsd:sequence>
 						<xsd:attribute name="name" type="nameType"/>
 					</xsd:complexType>
@@ -103,5 +101,13 @@
 			<xsd:enumeration value="WEB_SERVER"/>  
 		</xsd:restriction>
 	</xsd:simpleType>
+	
+	<xsd:complexType name="verificationResultType">
+		<xsd:sequence>
+			<xsd:element name="satisfied" type="xsd:boolean"/>
+			<xsd:element name="lastVerification" type="xsd:dateTime"/>
+			<xsd:element name="description" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
 	
 </xsd:schema>

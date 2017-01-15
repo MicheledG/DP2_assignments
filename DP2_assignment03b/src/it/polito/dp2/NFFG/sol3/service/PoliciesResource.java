@@ -5,6 +5,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -21,7 +22,7 @@ public class PoliciesResource {
 
 	private NffgService nffgService = new NffgService();
 	
-	/* store the posted policies into the DB */
+	/* store the posted policies into the service */
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response storePolicies(Policies policies){
@@ -37,7 +38,43 @@ public class PoliciesResource {
 		}
 	}
 	
-	/* send to the client the list of policies loaded on the DB */
+	/* update the posted policies into the service */
+	@PUT
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response updatePolicies(Policies policies){
+		try{
+			nffgService.updatePolicies(policies);
+			return Response.noContent().build();
+		} 
+		catch (RelationException | UnknownNameException e) {
+			return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
+		} 
+		catch(RuntimeException e){
+			return Response.serverError().build();
+		}
+	}
+	
+	/* update the single posted policies into the service */
+	@Path("/{policyName}")
+	@PUT
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response updateSinglePolicies(@PathParam("policyName") String policyName, Policies policies){
+		try{
+			nffgService.updatePolicies(policies);
+			return Response.noContent().build();
+		}
+		catch (UnknownNameException e) {
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+		} 
+		catch (RelationException e) {
+			return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
+		} 
+		catch(RuntimeException e){
+			return Response.serverError().build();
+		}
+	}
+	
+	/* send to the client the list of policies loaded on the service */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getPolicies(){
@@ -49,7 +86,7 @@ public class PoliciesResource {
 		catch (NoPolicyException e) {
 			return Response.noContent().build();
 		}
-		catch( RuntimeException  e){
+		catch(RuntimeException  e){
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 	}
