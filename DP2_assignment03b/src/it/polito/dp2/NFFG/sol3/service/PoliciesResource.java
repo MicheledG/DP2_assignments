@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import it.polito.dp2.NFFG.sol3.service.exceptions.*;
+import it.polito.dp2.NFFG.sol3.service.jaxb.NamedEntities;
 import it.polito.dp2.NFFG.sol3.service.jaxb.Policies;
 
 //TODO: remove from the response with status code SERVER ERROR the description of the exception
@@ -136,5 +137,23 @@ public class PoliciesResource {
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 	}
+	
+	/* update the single posted policies into the service */
+	@Path("/verifier")
+	@PUT
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response verifyPolicies(NamedEntities policyNames){
+		try{
+			nffgService.verifyReachabilityPolicies(policyNames);
+			return Response.noContent().build();
+		}
+		catch (UnknownNameException e) {
+			return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
+		} 
+		catch(ServiceException | RuntimeException e){
+			return Response.serverError().build();
+		}
+	}
+	
 
 }

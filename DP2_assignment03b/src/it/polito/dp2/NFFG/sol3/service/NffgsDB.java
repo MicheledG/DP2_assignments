@@ -47,25 +47,6 @@ public class NffgsDB {
 		return propertyValue;
 	}
 	
-	/* check if a node is a NFFG */
-	private boolean nodeIsNffg(Nodes.Node node){
-		
-		/* check if the node is a NFFG looking at the label */
-		Neo4JXMLClient client = new Neo4JXMLClient();
-		Labels labels = null;
-		try {
-			labels = client.getLabelByNodeId(node.getId());
-		} catch (RuntimeException e) {
-			return false;
-		}
-		
-		if(!labels.getValue().contains("NFFG"))
-			/* the node is not a NFFG */
-			return false;
-		else
-			return true;
-	}
-	
 	/* return the node to create on neo4j to represent a node */
 	private Node translateNodeTypeToNode(NodeType node){
 		/* create the node properties */
@@ -124,7 +105,7 @@ public class NffgsDB {
 	
 	private Property setNffgLastUpdateProperty(){
 		/* compute now instant using default time zone*/
-		SimpleDateFormat df = new SimpleDateFormat(this.DATE_FORMAT);
+		SimpleDateFormat df = new SimpleDateFormat(NffgsDB.DATE_FORMAT);
 		Date now = new Date(System.currentTimeMillis());
 		String nowString = df.format(now);
 		/* create the property */
@@ -136,7 +117,7 @@ public class NffgsDB {
 	
 	private XMLGregorianCalendar getNffgLastUpdateXMLGregorianCalendar(String lastUpdate){
 		/* compute now instant using default time zone*/
-		SimpleDateFormat df = new SimpleDateFormat(this.DATE_FORMAT);
+		SimpleDateFormat df = new SimpleDateFormat(NffgsDB.DATE_FORMAT);
 		Date lastUpdateDate;
 		try{
 			lastUpdateDate = df.parse(lastUpdate);
@@ -441,7 +422,7 @@ public class NffgsDB {
 	}
 	
 	/* check if there is at least one path between two nodes of the same nffg */
-	public boolean isReachable(String nffgName, String srcNodeName, String dstNodeName) throws UnknownNameException, ServiceException{
+	public boolean isTherePath(String nffgName, String srcNodeName, String dstNodeName) throws UnknownNameException, ServiceException{
 		String srcNodeId = this.findNodeId(nffgName, srcNodeName);
 		String dstNodeId = this.findNodeId(nffgName, dstNodeName);
 		

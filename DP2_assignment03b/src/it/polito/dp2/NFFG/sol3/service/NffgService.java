@@ -1,17 +1,29 @@
 package it.polito.dp2.NFFG.sol3.service;
 
+import java.lang.invoke.WrongMethodTypeException;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.management.relation.RelationException;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 import it.polito.dp2.NFFG.sol3.service.exceptions.*;
+import it.polito.dp2.NFFG.sol3.service.jaxb.NamedEntities;
 import it.polito.dp2.NFFG.sol3.service.jaxb.Nffgs;
 import it.polito.dp2.NFFG.sol3.service.jaxb.Policies;
+import it.polito.dp2.NFFG.sol3.service.jaxb.VerificationResultType;
+
 
 public class NffgService {
 	
 	private NffgsDB nffgsDB = NffgsDB.newNffgsDB();
 	private PoliciesDB policiesDB = PoliciesDB.newPoliciesDB();
+	
+	private static final String POSITIVE_POLICY_RESULT_DESCRIPTION = "Policy verification result true";
+	private static final String NEGATIVE_POLICY_RESULT_DESCRIPTION = "Policy verification result not true";
 	
 	private void checkNffgsReferencedByPolicies(Policies policies) throws RelationException{
 		/* check if a policy refers an Nffg not loaded on NffgDB */
@@ -19,6 +31,15 @@ public class NffgService {
 			if(!nffgsDB.containsNffg(policy.getNffg()))
 				throw new RelationException("missing nffg "+policy.getNffg()+" for policy " + policy.getName());
 		}
+	}
+	
+	private XMLGregorianCalendar getNowTimeXMLGregorianCalendar(){
+		Date now = new Date(System.currentTimeMillis());
+		/* create the xml gregorian calendar */
+		GregorianCalendar nowGregorianCalendar = new GregorianCalendar();
+		nowGregorianCalendar.setTime(now);
+		XMLGregorianCalendarImpl nowXMLGregorianCalendar = new XMLGregorianCalendarImpl(nowGregorianCalendar);
+		return nowXMLGregorianCalendar;
 	}
 	
 	/* store nffgs into the DB */
@@ -118,6 +139,56 @@ public class NffgService {
 	public void deleteSinglePolicies(String policyName) throws UnknownNameException{
 		policiesDB.deletePolicy(policyName);
 		return;
+	}
+	
+	/* verify a reachability policy already loaded on policiesDB */
+	public Policies verifyReachabilityPolicies(NamedEntities policyNamesPosted) throws UnknownNameException, ServiceException {
+		
+		List<String> policyNames = policyNamesPosted.getName();
+		/* check if all the policies are stored on policiesDB and if they are of type "Reachability"*/
+		for (String policyName: policyNames) {
+			if(!policiesDB.containsPolicy(policyName))
+				throw new UnknownNameException("missing policy named "+policyName);
+			else
+				if(!policiesDB.isReachabilityPolicy(policyName))
+					throw new WrongMethodTypeException("policy "+policyName+"is not of type reachability");
+		}
+		
+		/*verify each policy*/
+		Policies policiesVerified = new Policies();
+		for (String policyName: policyNames) {
+			Policies.Policy policyToVerify = policiesDB.getPolicies(policyName).getPolicy().get(0);
+			String nffgName = policyToVerify.getNffg();
+			String srcNodeName = policyToVerify.getSourceNode();
+			String dstNodeName = policyToVerify.getDestinationNode();
+			boolean pathIsPresent = nffgsDB.isTherePath(nffgName, srcNodeName, dstNodeName);
+			XMLGregorianCalendar nowTime = this.getNowTimeXMLGregorianCalendar();
+			/* compute the result of the verification */
+			boolean satisfied;
+			if(policyToVerify.isPositive())	
+				satisfied = pathIsPresent;
+			else 
+				satisfied = !pathIsPresent;
+			String verificationDescription;
+			if(satisfied)
+				verificationDescription = NffgService.POSITIVE_POLICY_RESULT_DESCRIPTION;
+			else
+				verificationDescription = NffgService.NEGATIVE_POLICY_RESULT_DESCRIPTION;
+			VerificationResultType verificationResult = new VerificationResultType();
+			verificationResult.setSatisfied(satisfied);
+			verificationResult.setLastVerification(nowTime);
+			verificationResult.setDescription(verificationDescription);
+			
+			/* add the verified policy to the set of the policies verified */
+			Policies.Policy policyVerified = policyToVerify;
+			policyVerified.setVerificationResult(verificationResult);
+			policiesVerified.getPolicy().add(policyVerified);
+		}
+		
+		/* update the policies on policiesDB */
+		policiesDB.updatePolicies(policiesVerified);
+		
+		return policiesVerified;
 	}
 	
 }

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import it.polito.dp2.NFFG.sol3.service.exceptions.*;
 import it.polito.dp2.NFFG.sol3.service.jaxb.Policies;
+import it.polito.dp2.NFFG.sol3.service.jaxb.PropertyType;
 
 public class PoliciesDB {
 	
@@ -116,5 +117,14 @@ public class PoliciesDB {
 	
 	public boolean isEmpty(){
 		return this.mapPolicyNamePolicyObject.isEmpty();
+	}
+
+
+	public boolean isReachabilityPolicy(String policyName) {
+		Policies.Policy policy = this.mapPolicyNamePolicyObject.get(policyName);
+		if(policy.getProperty().equals(PropertyType.REACHABILITY))
+			return true;
+		else
+			return false;
 	}
 }
