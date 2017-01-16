@@ -25,13 +25,13 @@ import it.polito.dp2.NFFG.lab3.AlreadyLoadedException;
 import it.polito.dp2.NFFG.lab3.NFFGClient;
 import it.polito.dp2.NFFG.lab3.ServiceException;
 import it.polito.dp2.NFFG.lab3.UnknownNameException;
-import it.polito.dp2.NFFG.sol3.service.jaxb.LinkType;
-import it.polito.dp2.NFFG.sol3.service.jaxb.NamedEntities;
-import it.polito.dp2.NFFG.sol3.service.jaxb.NetworkFunctionalityType;
-import it.polito.dp2.NFFG.sol3.service.jaxb.Nffgs;
-import it.polito.dp2.NFFG.sol3.service.jaxb.NodeType;
-import it.polito.dp2.NFFG.sol3.service.jaxb.Policies;
-import it.polito.dp2.NFFG.sol3.service.jaxb.PropertyType;
+import it.polito.dp2.NFFG.sol3.client1.nffgservice.LinkType;
+import it.polito.dp2.NFFG.sol3.client1.nffgservice.NamedEntities;
+import it.polito.dp2.NFFG.sol3.client1.nffgservice.NetworkFunctionalityType;
+import it.polito.dp2.NFFG.sol3.client1.nffgservice.Nffgs;
+import it.polito.dp2.NFFG.sol3.client1.nffgservice.NodeType;
+import it.polito.dp2.NFFG.sol3.client1.nffgservice.Policies;
+import it.polito.dp2.NFFG.sol3.client1.nffgservice.PropertyType;
 
 public class NFFGClientImpl implements NFFGClient {
 	
@@ -168,7 +168,7 @@ public class NFFGClientImpl implements NFFGClient {
 		NodeType nodeTranslated = new NodeType();
 		nodeTranslated.setName(node.getName());
 		NetworkFunctionalityType networkFunctionalityType = NetworkFunctionalityType.valueOf(node.getFuncType().toString());
-		nodeTranslated.setNetworkFunctionality(networkFunctionalityType);
+		nodeTranslated.setNetworkFunctionality(networkFunctionalityType.toString());
 		
 		return nodeTranslated;
 	}
@@ -248,7 +248,7 @@ public class NFFGClientImpl implements NFFGClient {
 		Policies.Policy policyToLoad = new Policies.Policy();
 		policyToLoad.setName(name);
 		policyToLoad.setNffg(nffgName);
-		policyToLoad.setProperty(PropertyType.REACHABILITY);
+		policyToLoad.setProperty(PropertyType.REACHABILITY.toString());
 		policyToLoad.setPositive(isPositive);
 		policyToLoad.setSourceNode(srcNodeName);
 		policyToLoad.setDestinationNode(dstNodeName);

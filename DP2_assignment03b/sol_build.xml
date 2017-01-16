@@ -8,8 +8,9 @@
 	<import file="build.xml"/>
 	
 	<property name="schema.dir" value="${basedir}/xsd" />
-	<property name="NEO4JURL" value="http://localhost:${tomcatPort}/Neo4JXML/rest" />
-	<property name="WADL" value="${NEO4JURL}/application.wadl"/>
+	<property name="NEO4JURL" value="http://localhost:${tomcatPort}/Neo4JXML/rest"/>
+	<property name="NEO4J-WADL" value="${NEO4JURL}/application.wadl"/>
+	<property name="NFFGSERVICE-WADL" value="${URL}/application.wadl"/>
 		
 	<path id="nffgService.classpath">
 		<fileset dir="${lib.dir}">
@@ -25,7 +26,7 @@
 	</taskdef>
 	
 	<!-- target for cleaning all stuff -->
-	<target name="clean-all" depends="clean-artifacts, clean-bindings">
+	<target name="clean-all" depends="clean-artifacts, clean-bindings, clean-nffgservice-artifacts-client1, clean-nffgservice-artifacts-client2">
 	</target>
 	
 	<!-- target for cleaning neo4jxml artifacts -->
@@ -38,15 +39,15 @@
 	<!-- define the NEO4JXML artifacts generation target -->
 	<target name="generate-artifacts" depends="clean-artifacts">
 	   	<echo message="Compiling the descriptions..." />
-		<echo message="${WADL}" />
-	   	<wjc description="${WADL}" package="it.polito.dp2.NFFG.sol3.service.neo4jxml"
+		<echo message="${NEO4J-WADL}" />
+	   	<wjc description="${NEO4J-WADL}" package="it.polito.dp2.NFFG.sol3.service.neo4jxml"
 	       autoSchemaPackage="false" target="${src.dir}">
 	     	<produces dir="${sol3.dir}/service/neo4jxml" includes="*.java"/>
 	    </wjc>
 		<delete file="${sol3.dir}/service/neo4jxml/Localhost_Neo4JXMLRest.java"></delete>
 	</target>
  	
-	<!-- target for cleaning neo4jxml artifacts -->
+	<!-- target for cleaning bindings artifacts -->
 	<target name="clean-bindings">
 		<delete>
 			<fileset dir="${sol3.dir}/service/jaxb/" includes="*.java" />
@@ -82,5 +83,80 @@
 				</classpath>
 		</javac>
 	</target>
+	
+	<!-- TARGETS FOR CLIENT1 -->
+	<!-- target for cleaning NFFGSERVICE artifacts -->
+	<target name="clean-nffgservice-artifacts-client1">
+		<delete>
+			<fileset dir="${sol3.dir}/client1/nffgservice/" includes="*.java" />
+		</delete>
+	</target>
+	
+	<!-- define the NFFGSERVICE artifacts generation target -->
+	<target name="generate-nffgservice-artifacts-client1" depends="clean-nffgservice-artifacts-client1">
+	   	<echo message="Compiling the descriptions..." />
+		<echo message="${NFFGSERVICE-WADL}" />
+	   	<wjc description="${NFFGSERVICE-WADL}" package="it.polito.dp2.NFFG.sol3.client1.nffgservice"
+	       autoSchemaPackage="false" target="${src.dir}">
+	     	<produces dir="${sol3.dir}/client1/nffgservice" includes="*.java"/>
+	    </wjc>
+		<delete file="${sol3.dir}/client1/nffgservice/Localhost_NffgServiceRest.java"></delete>
+	</target>
+	
+	<target name="build-client1" depends="generate-nffgservice-artifacts-client1">
+		<javac 
+			destdir="${build.dir}"
+			debug="${debug}"
+			debuglevel="${debuglevel}"
+			source="${source}"
+			target="${target}"
+			includeantruntime="false">
+				<src path="${sol3.dir}/client1" />
+				<src path="${sol3.dir}/client1/nffgservice" />
+				<src path="${sol3.dir}" />
+				<include name="/*.java" />
+				<classpath>
+					<path refid="nffgService.classpath" />
+				</classpath>
+		</javac>
+	</target>
+	<!-- TARGETS FOR CLIENT2 -->
+	<!-- target for cleaning NFFGSERVICE artifacts -->
+	<target name="clean-nffgservice-artifacts-client2">
+		<delete>
+			<fileset dir="${sol3.dir}/client2/nffgservice/" includes="*.java" />
+		</delete>
+	</target>
+	
+	<!-- define the NFFGSERVICE artifacts generation target -->
+	<target name="generate-nffgservice-artifacts-client2" depends="clean-nffgservice-artifacts-client2">
+	   	<echo message="Compiling the descriptions..." />
+		<echo message="${NFFGSERVICE-WADL}" />
+	   	<wjc description="${NFFGSERVICE-WADL}" package="it.polito.dp2.NFFG.sol3.client2.nffgservice"
+	       autoSchemaPackage="false" target="${src.dir}">
+	     	<produces dir="${sol3.dir}/client2/nffgservice" includes="*.java"/>
+	    </wjc>
+		<delete file="${sol3.dir}/client2/nffgservice/Localhost_NffgServiceRest.java"></delete>
+	</target>
+	
+	<target name="build-client2" depends="generate-nffgservice-artifacts-client2">
+		<javac 
+			destdir="${build.dir}"
+			debug="${debug}"
+			debuglevel="${debuglevel}"
+			source="${source}"
+			target="${target}"
+			includeantruntime="false">
+				<src path="${sol3.dir}/client2" />
+				<src path="${sol3.dir}/client2/nffgservice" />
+				<src path="${sol3.dir}" />
+				<include name="/*.java" />
+				<classpath>
+					<path refid="nffgService.classpath" />
+				</classpath>
+		</javac>
+	</target>
+	
+	<target name="build-client" depends="build-client1, build-client2"/>
 	
 </project>

@@ -31,7 +31,7 @@
 	<!-- The default URL to be used by clients -->
 	<property name="URL" value="http://localhost:8080/NffgService/rest" />
 	<!--property name="NEO4JURL" value="http://localhost:${tomcatPort}/Neo4JXML/rest" /-->
-
+	
 	<!-- The ant file to be provided for client and service compilation -->
 	<property name="sol.build.file" value="sol_build.xml" />
 	<property name="sol.build.filepath" location="${lab3.location}/${sol.build.file}" />
