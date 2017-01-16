@@ -15,6 +15,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
+import it.polito.dp2.NFFG.FunctionalType;
 import it.polito.dp2.NFFG.LinkReader;
 import it.polito.dp2.NFFG.NffgReader;
 import it.polito.dp2.NFFG.NffgVerifier;
@@ -22,6 +23,9 @@ import it.polito.dp2.NFFG.NffgVerifierException;
 import it.polito.dp2.NFFG.NffgVerifierFactory;
 import it.polito.dp2.NFFG.NodeReader;
 import it.polito.dp2.NFFG.PolicyReader;
+import it.polito.dp2.NFFG.ReachabilityPolicyReader;
+import it.polito.dp2.NFFG.TraversalPolicyReader;
+import it.polito.dp2.NFFG.VerificationResultReader;
 import it.polito.dp2.NFFG.lab3.AlreadyLoadedException;
 import it.polito.dp2.NFFG.lab3.NFFGClient;
 import it.polito.dp2.NFFG.lab3.ServiceException;
@@ -32,8 +36,8 @@ import it.polito.dp2.NFFG.sol3.client1.nffgservice.NetworkFunctionalityType;
 import it.polito.dp2.NFFG.sol3.client1.nffgservice.Nffgs;
 import it.polito.dp2.NFFG.sol3.client1.nffgservice.NodeType;
 import it.polito.dp2.NFFG.sol3.client1.nffgservice.Policies;
-import it.polito.dp2.NFFG.sol3.client1.nffgservice.Policies.Policy;
 import it.polito.dp2.NFFG.sol3.client1.nffgservice.PropertyType;
+import it.polito.dp2.NFFG.sol3.client1.nffgservice.VerificationResultType;
 
 public class NFFGClientImpl implements NFFGClient {
 	
@@ -111,7 +115,7 @@ public class NFFGClientImpl implements NFFGClient {
 		Policies policiesVerified;
 		
 		switch (response.getStatus()) {
-		case 204:
+		case 200:
 			policiesVerified = response.readEntity(Policies.class);
 			break;
 		case 403:
@@ -176,15 +180,40 @@ public class NFFGClientImpl implements NFFGClient {
 	}
 	
 	private Policies.Policy translatePolicyReaderToPolicy(PolicyReader policyReader) {
-		
-		//TODO
-		
+
 		Policies.Policy policyTranslated = new Policies.Policy();
-		policyTranslated.setName(policyReader.getName());
-		policyTranslated.setNffg(policyReader.getNffg().getName());
-		policyTranslated.setProperty(policyReader.);
 		
-		return null;
+		ReachabilityPolicyReader reachPolicyReader = (ReachabilityPolicyReader) policyReader;
+		/* general part of the policy contained both into reachability both into traversal policy */
+		policyTranslated.setName(reachPolicyReader.getName());
+		policyTranslated.setNffg(reachPolicyReader.getNffg().getName());
+		policyTranslated.setPositive(reachPolicyReader.isPositive());
+		
+		VerificationResultReader result = reachPolicyReader.getResult();
+		if(result != null){
+			/* we have a result in the policyTranslated */
+			VerificationResultType verificationResult = new VerificationResultType();
+			verificationResult.setSatisfied(result.getVerificationResult());
+			verificationResult.setLastVerification(translateCalendarToXMLGregorianCalendar(result.getVerificationTime()));
+			verificationResult.setDescription(result.getVerificationResultMsg());
+			policyTranslated.setVerificationResult(verificationResult);
+		}
+		
+		policyTranslated.setSourceNode(reachPolicyReader.getSourceNode().getName());
+		policyTranslated.setDestinationNode(reachPolicyReader.getDestinationNode().getName());
+		
+		/* more specific part depending on the instanceof policyTranslated reader */
+		if(reachPolicyReader instanceof TraversalPolicyReader){
+			policyTranslated.setProperty(PropertyType.TRAVERSAL.toString());
+			TraversalPolicyReader traversalPolicyReader = (TraversalPolicyReader) reachPolicyReader;
+			for (FunctionalType functionalType: traversalPolicyReader.getTraversedFuctionalTypes()) {
+				policyTranslated.getNetworkFunctionality().add(functionalType.toString());
+			}
+		}
+		else
+			policyTranslated.setProperty(PropertyType.REACHABILITY.toString());
+		
+		return policyTranslated;
 	}
 	
 	private XMLGregorianCalendar translateCalendarToXMLGregorianCalendar(Calendar updateTime) {

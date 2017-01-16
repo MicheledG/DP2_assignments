@@ -6,7 +6,8 @@ import it.polito.dp2.NFFG.PolicyReader;
 import it.polito.dp2.NFFG.VerificationResultReader;
 import it.polito.dp2.NFFG.sol3.client2.nffgservice.Nffgs;
 import it.polito.dp2.NFFG.sol3.client2.nffgservice.Policies;
-import it.polito.dp2.NFFG.sol3.service.jaxb.PropertyType;
+import it.polito.dp2.NFFG.sol3.client2.nffgservice.PropertyType;
+
 
 public class PolicyReaderImpl implements PolicyReader, NamedEntityReader {
 	

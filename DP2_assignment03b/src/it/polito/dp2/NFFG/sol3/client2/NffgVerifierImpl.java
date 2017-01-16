@@ -58,6 +58,14 @@ public class NffgVerifierImpl implements NffgVerifier {
 		return policies;
 	}
 	
+	private Nffgs.Nffg getNffgFromNffgs(String nffgName) {
+		for (Nffgs.Nffg nffg : this.nffgs.getNffg()) {
+			if(nffg.getName().equals(nffgName))
+				return nffg;
+		}
+		return null;
+	}
+	
 	@Override
 	public NffgReader getNffg(String arg0) {
 		
@@ -86,11 +94,11 @@ public class NffgVerifierImpl implements NffgVerifier {
 	@Override
 	public Set<PolicyReader> getPolicies() {
 		
+		
 		Set<PolicyReader> policyReaders = new HashSet<PolicyReader>();
-		for (Nffgs.Nffg nffg: this.nffgs.getNffg()) {
-			for (Policies.Policy policy: this.policies.getPolicy()) {
-				policyReaders.add(PolicyReaderImpl.translatePolicyTypeToPolicyReader(nffg, policy));
-			}
+		for (Policies.Policy policy: this.policies.getPolicy()) {
+			Nffgs.Nffg policyNffg = this.getNffgFromNffgs(policy.getNffg());
+			policyReaders.add(PolicyReaderImpl.translatePolicyTypeToPolicyReader(policyNffg, policy));
 		}
 		
 		return policyReaders;
@@ -100,10 +108,14 @@ public class NffgVerifierImpl implements NffgVerifier {
 	@Override
 	public Set<PolicyReader> getPolicies(String arg0) {
 		
-		Set<PolicyReader> policyReaders = getPolicies();
-		for (PolicyReader policyReader : policyReaders) {
-			if(!policyReader.getNffg().getName().equals(arg0))
-				policyReaders.remove(policyReader);
+		Nffgs.Nffg nffg = this.getNffgFromNffgs(arg0);
+		Set<PolicyReader> policyReaders = new HashSet<PolicyReader>();
+				
+		for (Policies.Policy policy : this.policies.getPolicy()) {
+			if(policy.getNffg().equals(arg0)){
+				PolicyReader policyReader = PolicyReaderImpl.translatePolicyTypeToPolicyReader(nffg, policy);
+				policyReaders.add(policyReader);
+			}
 		}
 		
 		return policyReaders;
@@ -112,10 +124,18 @@ public class NffgVerifierImpl implements NffgVerifier {
 	@Override
 	public Set<PolicyReader> getPolicies(Calendar arg0) {
 		
-		Set<PolicyReader> policyReaders = getPolicies();
-		for (PolicyReader policyReader : policyReaders) {
-			if(policyReader.getResult().getVerificationTime().before(arg0))
-				policyReaders.remove(policyReader);
+		Set<PolicyReader> policyReaders = new HashSet<PolicyReader>();
+				
+		for (Policies.Policy policy : this.policies.getPolicy()) {
+			VerificationResultType verificationResult = policy.getVerificationResult();
+			if(verificationResult != null){
+				Calendar lastVerification = NffgReaderImpl.translateXMLGregorianCalendarToCalendar(verificationResult.getLastVerification());
+				if(lastVerification.after(arg0)){
+					Nffgs.Nffg nffg = this.getNffgFromNffgs(policy.getNffg());
+					PolicyReader policyReader = PolicyReaderImpl.translatePolicyTypeToPolicyReader(nffg, policy);
+					policyReaders.add(policyReader);
+				}
+			}
 		}
 	
 		return policyReaders;	

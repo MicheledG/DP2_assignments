@@ -1,5 +1,8 @@
 package it.polito.dp2.NFFG.sol3.service;
 
+//TODO: check reachability check behavior
+import java.lang.invoke.WrongMethodTypeException;
+
 import javax.management.relation.RelationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -107,10 +110,10 @@ public class PoliciesResource {
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response verifyPolicies(NamedEntities policyNames){
 		try{
-			nffgService.verifyReachabilityPolicies(policyNames);
-			return Response.noContent().build();
+			Policies policiesVerified = nffgService.verifyReachabilityPolicies(policyNames);
+			return Response.ok(policiesVerified).build();
 		}
-		catch (UnknownNameException e) {
+		catch (UnknownNameException /*| WrongMethodTypeException */ e) {
 			return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
 		} 
 		catch(ServiceException | RuntimeException e){

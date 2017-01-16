@@ -146,9 +146,9 @@ public class NffgsDB {
 			String nodeId = null;
 			for (String nffgNodeId : nffgNodeIds) {
 				/* find among all nffg's nodes the one we are interested in */
-				String tmpNodeId = this.findNodeName(nffgNodeId);
-				if(tmpNodeId.equals(nodeName)){
-					nodeId = tmpNodeId;
+				String foundNodeName = this.findNodeName(nffgNodeId);
+				if(foundNodeName.equals(nodeName)){
+					nodeId = nffgNodeId;
 					break;
 				}
 			}

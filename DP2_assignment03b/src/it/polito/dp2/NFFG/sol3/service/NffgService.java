@@ -1,5 +1,6 @@
 package it.polito.dp2.NFFG.sol3.service;
 
+//TODO: check reachability check behavior
 import java.lang.invoke.WrongMethodTypeException;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -146,16 +147,17 @@ public class NffgService {
 	}
 	
 	/* verify a reachability policy already loaded on policiesDB */
-	public Policies verifyReachabilityPolicies(NamedEntities policyNamesPosted) throws UnknownNameException, ServiceException {
+	public Policies verifyReachabilityPolicies(NamedEntities policyNamesPosted) throws UnknownNameException, /*WrongMethodTypeException,*/ ServiceException {
 		
 		List<String> policyNames = policyNamesPosted.getName();
 		/* check if all the policies are stored on policiesDB and if they are of type "Reachability"*/
 		for (String policyName: policyNames) {
 			if(!policiesDB.containsPolicy(policyName))
 				throw new UnknownNameException("missing policy named "+policyName);
-			else
-				if(!policiesDB.isReachabilityPolicy(policyName))
-					throw new WrongMethodTypeException("policy "+policyName+"is not of type reachability");
+			//else
+			//	if(!policiesDB.isReachabilityPolicy(policyName))
+			//		throw new WrongMethodTypeException("policy "+policyName+" is not of type reachability");
+			//
 		}
 		
 		/*verify each policy*/
