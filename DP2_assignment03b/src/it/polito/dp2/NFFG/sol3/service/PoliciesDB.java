@@ -29,23 +29,19 @@ public class PoliciesDB {
 		return policiesDB;
 	}
 	
-	/* store the policies (1 or more) into the DB*/
-	public void storePolicies(Policies policies) throws AlreadyLoadedException{
+	/* store or update the policies (1 or more) into the DB*/
+	public void storePolicies(Policies policies){
 		for (Policies.Policy policy : policies.getPolicy()) {
 			String policyName = policy.getName();
-			if(this.containsPolicy(policyName))
-					throw new AlreadyLoadedException("policy named "+policyName+"already stored");
-			this.mapPolicyNamePolicyObject.put(policyName, policy);
-		}
-	}
-	
-	/* update the policies (1 or more) into the DB*/
-	public void updatePolicies(Policies policiesUpdate) throws UnknownNameException{
-		for (Policies.Policy policyUpdate : policiesUpdate.getPolicy()) {
-			String policyUpdateName = policyUpdate.getName();
-			if(!this.containsPolicy(policyUpdateName))
-					throw new UnknownNameException("missing policy named "+policyUpdateName);
-			this.updatePolicyEntry(policyUpdateName, policyUpdate);
+			if(this.containsPolicy(policyName)) {
+				/* it is an update of a policy */
+				this.updatePolicyEntry(policyName, policy);
+			}
+			else {
+				/* it is a new policy to store */
+				this.mapPolicyNamePolicyObject.put(policyName, policy);
+			}
+			
 		}
 	}
 

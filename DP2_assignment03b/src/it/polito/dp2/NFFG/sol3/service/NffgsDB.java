@@ -417,6 +417,15 @@ public class NffgsDB {
 		return this.mapNffgNameNffgId.containsKey(nffgName);
 	}
 	
+	public boolean nffgContainsNode(String nffgName, String nodeName){
+		Set<String> nodeIds = this.mapNffgNameNodeIds.get(nffgName);
+		Set<String> nodeNames = new HashSet<String>();
+		for (String nodeId: nodeIds) {
+			nodeNames.add(this.mapNodeIdNodeName.get(nodeId));
+		}
+		return nodeNames.contains(nodeName);
+	}
+	
 	public boolean isEmpty(){
 		return this.mapNffgNameNffgId.isEmpty();
 	}

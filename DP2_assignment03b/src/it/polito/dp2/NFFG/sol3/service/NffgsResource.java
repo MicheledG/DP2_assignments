@@ -90,7 +90,7 @@ public class NffgsResource {
 	/* delete a single nffg */
 	@Path("/{nffgName}")
 	@DELETE
-	public Response deleteNffgs(
+	public Response deleteSingleNffgs(
 			@PathParam("nffgName") String nffgName,
 			@DefaultValue("false") @QueryParam("deletePolicies") boolean deletePolicies){
 		try{

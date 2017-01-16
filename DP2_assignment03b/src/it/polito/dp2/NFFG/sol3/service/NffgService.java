@@ -98,23 +98,27 @@ public class NffgService {
 		return;
 	}
 	
-	/* store the policies into the DB */
-	public void storePolicies(Policies policies) throws RelationException, AlreadyLoadedException{
+	/* store or update already present policies into the DB */
+	public void storePolicies(Policies policies) throws RelationException {
 		
 		/* check if the policies to store refers to an Nffg not stored inside the DB*/
 		this.checkNffgsReferencedByPolicies(policies);
+		/* check if the nodes referenced by the policies are present in the nffg */
+		for (Policies.Policy policy : policies.getPolicy()) {
+			String policyName = policy.getName();
+			String nffgName = policy.getNffg();
+			/* check if the referenced nffg contains the src node */
+			String srcNodeName = policy.getSourceNode();
+			if(!nffgsDB.nffgContainsNode(nffgName, srcNodeName))
+				throw new RelationException("Missing node "+srcNodeName+" in nffg "+nffgName+" referenced by policy "+policyName);
+			/* check if the referenced nffg contains the dst node */
+			String dstNodeName = policy.getDestinationNode();
+			if(!nffgsDB.nffgContainsNode(nffgName, dstNodeName))
+				throw new RelationException("Missing node "+dstNodeName+" in nffg "+nffgName+" referenced by policy "+policyName);
+		}
 		/* store the policies into policiesDB */
 		policiesDB.storePolicies(policies);
 		return;
-	}
-	
-	/* update policies of the DB */
-	public void updatePolicies(Policies policies) throws UnknownNameException, RelationException{
-		
-		/* check if the policies update refers to an Nffg not stored inside the DB*/
-		this.checkNffgsReferencedByPolicies(policies);
-		/*update the policies */
-		policiesDB.updatePolicies(policies);
 	}
 	
 	/* get the list of policies loaded on the DB */
@@ -186,7 +190,7 @@ public class NffgService {
 		}
 		
 		/* update the policies on policiesDB */
-		policiesDB.updatePolicies(policiesVerified);
+		policiesDB.storePolicies(policiesVerified);
 		
 		return policiesVerified;
 	}

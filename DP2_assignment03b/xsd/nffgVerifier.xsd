@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://it.polito.dp2.NFFG.sol3.service.jaxb"
+	xmlns="http://it.polito.dp2.NFFG.sol3.service.jaxb">
 	
 	<xsd:element name="nffgs">
 		<xsd:complexType>
