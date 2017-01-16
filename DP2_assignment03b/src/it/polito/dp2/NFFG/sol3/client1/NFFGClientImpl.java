@@ -21,6 +21,7 @@ import it.polito.dp2.NFFG.NffgVerifier;
 import it.polito.dp2.NFFG.NffgVerifierException;
 import it.polito.dp2.NFFG.NffgVerifierFactory;
 import it.polito.dp2.NFFG.NodeReader;
+import it.polito.dp2.NFFG.PolicyReader;
 import it.polito.dp2.NFFG.lab3.AlreadyLoadedException;
 import it.polito.dp2.NFFG.lab3.NFFGClient;
 import it.polito.dp2.NFFG.lab3.ServiceException;
@@ -31,6 +32,7 @@ import it.polito.dp2.NFFG.sol3.client1.nffgservice.NetworkFunctionalityType;
 import it.polito.dp2.NFFG.sol3.client1.nffgservice.Nffgs;
 import it.polito.dp2.NFFG.sol3.client1.nffgservice.NodeType;
 import it.polito.dp2.NFFG.sol3.client1.nffgservice.Policies;
+import it.polito.dp2.NFFG.sol3.client1.nffgservice.Policies.Policy;
 import it.polito.dp2.NFFG.sol3.client1.nffgservice.PropertyType;
 
 public class NFFGClientImpl implements NFFGClient {
@@ -65,7 +67,7 @@ public class NFFGClientImpl implements NFFGClient {
 	private void putPolicies(Policies policies) throws ServiceException{
 		
 		Client client = ClientBuilder.newClient();
-		Response response = client.target(this.baseURL+"/policies").request(MediaType.APPLICATION_XML).post(Entity.xml(policies));
+		Response response = client.target(this.baseURL+"/policies").request(MediaType.APPLICATION_XML).put(Entity.xml(policies));
 		
 		switch (response.getStatus()) {
 		case 204:
@@ -172,7 +174,19 @@ public class NFFGClientImpl implements NFFGClient {
 		
 		return nodeTranslated;
 	}
-
+	
+	private Policies.Policy translatePolicyReaderToPolicy(PolicyReader policyReader) {
+		
+		//TODO
+		
+		Policies.Policy policyTranslated = new Policies.Policy();
+		policyTranslated.setName(policyReader.getName());
+		policyTranslated.setNffg(policyReader.getNffg().getName());
+		policyTranslated.setProperty(policyReader.);
+		
+		return null;
+	}
+	
 	private XMLGregorianCalendar translateCalendarToXMLGregorianCalendar(Calendar updateTime) {
 		
 		GregorianCalendar lastUpdateGregorian = new GregorianCalendar();
@@ -217,6 +231,7 @@ public class NFFGClientImpl implements NFFGClient {
 	@Override
 	public void loadAll() throws AlreadyLoadedException, ServiceException {
 		
+		/* load all the nffgs */
 		Set<NffgReader> nffgReaders = this.nffgVerifier.getNffgs();
 		Nffgs nffgsToLoad = new Nffgs();
 		List<Nffgs.Nffg> listOfNffgsToLoad = nffgsToLoad.getNffg();
@@ -224,9 +239,18 @@ public class NFFGClientImpl implements NFFGClient {
 			Nffgs.Nffg nffgToLoad = this.translateNffgReaderToNffg(nffgReader);
 			listOfNffgsToLoad.add(nffgToLoad);
 		}
-		
 		this.postNffgs(nffgsToLoad);
-
+		
+		/* load all the policies */
+		Set<PolicyReader> policyReaders = this.nffgVerifier.getPolicies();
+		Policies policiesToLoad = new Policies();
+		List<Policies.Policy> listOfPoliciesToLoad = policiesToLoad.getPolicy();
+		for (PolicyReader policyReader: policyReaders) {
+			Policies.Policy policyToLoad = this.translatePolicyReaderToPolicy(policyReader);
+			listOfPoliciesToLoad.add(policyToLoad);
+		}
+		this.putPolicies(policiesToLoad);
+		
 	}
 
 	@Override

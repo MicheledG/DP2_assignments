@@ -45,12 +45,16 @@ public class NffgVerifierImpl implements NffgVerifier {
 	private Nffgs getNffgsFromNffgService() {
 		Client client = ClientBuilder.newClient();
 		Nffgs nffgs = client.target(this.baseURL+"/nffgs").request(MediaType.APPLICATION_XML).get(Nffgs.class);
+		if(nffgs == null)
+			nffgs = new Nffgs();
 		return nffgs;
 	}
 	
 	private Policies getPoliciesFromNffgService() {
 		Client client = ClientBuilder.newClient();
 		Policies policies = client.target(this.baseURL+"/policies").request(MediaType.APPLICATION_XML).get(Policies.class);
+		if(policies == null)
+			policies = new Policies();
 		return policies;
 	}
 	
