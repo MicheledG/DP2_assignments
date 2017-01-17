@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
 
 import it.polito.dp2.NFFG.NffgReader;
 import it.polito.dp2.NFFG.NffgVerifier;
+import it.polito.dp2.NFFG.NffgVerifierException;
 import it.polito.dp2.NFFG.PolicyReader;
 
 import it.polito.dp2.NFFG.sol1.jaxb.*;
@@ -22,7 +23,7 @@ public class NffgVerifierImpl implements NffgVerifier {
 	
 	NffgInfoWrapper nffgInfoWrapper;
 	
-	public NffgVerifierImpl(){
+	public NffgVerifierImpl() throws NffgVerifierException {
 		/*unmarshalls an XML document and feeds the root element with the unmarshalled root element*/
 		JAXBContext jaxbContext = null;
 		javax.xml.bind.Unmarshaller unmarshaller = null;
@@ -37,8 +38,7 @@ public class NffgVerifierImpl implements NffgVerifier {
 		catch(JAXBException e){
 			System.err.println("ERROR: unable to create unmarshaller. Exception follows.");
             e.printStackTrace();
-            //TODO: server reliability => exit or return?
-            System.exit(-1); 
+            throw new NffgVerifierException(e);
 		}
 		
 		try {
@@ -61,13 +61,11 @@ public class NffgVerifierImpl implements NffgVerifier {
 		catch (JAXBException e) {
 			System.err.println("ERROR: unable to unmarshall. Exception follows.");
             e.printStackTrace();
-            //TODO: server reliability => exit or return?
-            System.exit(-1);
+            throw new NffgVerifierException(e);
 		} catch (SAXException e) {
 			System.err.println("ERROR: unable to load the schema. Exception follows.");
             e.printStackTrace();
-            //TODO: server reliability => exit or return?
-            System.exit(-1);
+            throw new NffgVerifierException(e);
 		}
 	}
 	
@@ -113,24 +111,32 @@ public class NffgVerifierImpl implements NffgVerifier {
 	@Override
 	public Set<PolicyReader> getPolicies(String arg0) {
 		
-		Set<PolicyReader> policyReaders = getPolicies();
-		for (PolicyReader policyReader : policyReaders) {
-			if(!policyReader.getNffg().getName().equals(arg0))
-				policyReaders.remove(policyReader);
+		Set<PolicyReader> policyReaders = new HashSet<PolicyReader>();
+		for (NffgInfoType nffgInfo : this.nffgInfoWrapper.getNffgInfos().getNffgInfo()) {
+			for (PolicyType policy : nffgInfo.getPolicies().getPolicy()) {
+				if(policy.getNffg().equals(arg0)){
+					PolicyReader policyReader = PolicyReaderImpl.translatePolicyTypeToPolicyReader(nffgInfo.getNffg(), policy);
+					policyReaders.add(policyReader);
+				}
+			}
 		}
-		
 		return policyReaders;
 	}
 
 	@Override
 	public Set<PolicyReader> getPolicies(Calendar arg0) {
 		
-		Set<PolicyReader> policyReaders = getPolicies();
-		for (PolicyReader policyReader : policyReaders) {
-			if(policyReader.getResult().getVerificationTime().before(arg0))
-				policyReaders.remove(policyReader);
+		Set<PolicyReader> policyReaders = new HashSet<PolicyReader>();
+		for (NffgInfoType nffgInfo : this.nffgInfoWrapper.getNffgInfos().getNffgInfo()) {
+			for (PolicyType policy : nffgInfo.getPolicies().getPolicy()) {
+				Calendar lastVerification = NffgReaderImpl.translateXMLGregorianCalendarToCalendar(policy.getLastVerification());
+				if(lastVerification.after(arg0)){
+					PolicyReader policyReader = PolicyReaderImpl.translatePolicyTypeToPolicyReader(nffgInfo.getNffg(), policy);
+					policyReaders.add(policyReader);
+				}
+			}
 		}
-	
+		
 		return policyReaders;	
 	}
 
