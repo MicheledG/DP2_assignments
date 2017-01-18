@@ -57,7 +57,7 @@ public class NffgService {
 	
 	/* get a single nffg stored into the DB */
 	public Nffgs getSingleNffgs(String nffgName) throws UnknownNameException, ServiceException{
-		Nffgs nffgs = nffgsDB.getNffgs(nffgName);
+		Nffgs nffgs = nffgsDB.getSingleNffgs(nffgName);
 		return nffgs;
 	}
 	
@@ -94,13 +94,13 @@ public class NffgService {
 		}
 		
 		/* eventually delete the nffg */
-		nffgsDB.deleteNffg(nffgName);
+		nffgsDB.deleteSingleNffgs(nffgName);
 		
 		return;
 	}
 	
 	/* store or update already present policies into the DB */
-	public void storePolicies(Policies policies) throws RelationException {
+	public void storePolicies(Policies policies) throws RelationException, ServiceException{
 		
 		/* check if the policies to store refers to an Nffg not stored inside the DB*/
 		this.checkNffgsReferencedByPolicies(policies);
@@ -108,14 +108,19 @@ public class NffgService {
 		for (Policies.Policy policy : policies.getPolicy()) {
 			String policyName = policy.getName();
 			String nffgName = policy.getNffg();
-			/* check if the referenced nffg contains the src node */
-			String srcNodeName = policy.getSourceNode();
-			if(!nffgsDB.nffgContainsNode(nffgName, srcNodeName))
-				throw new RelationException("Missing node "+srcNodeName+" in nffg "+nffgName+" referenced by policy "+policyName);
-			/* check if the referenced nffg contains the dst node */
-			String dstNodeName = policy.getDestinationNode();
-			if(!nffgsDB.nffgContainsNode(nffgName, dstNodeName))
-				throw new RelationException("Missing node "+dstNodeName+" in nffg "+nffgName+" referenced by policy "+policyName);
+			try{
+				/* check if the referenced nffg contains the src node */
+				String srcNodeName = policy.getSourceNode();
+				if(!nffgsDB.nffgContainsNode(nffgName, srcNodeName))
+					throw new RelationException("Missing node "+srcNodeName+" in nffg "+nffgName+" referenced by policy "+policyName);
+				/* check if the referenced nffg contains the dst node */
+				String dstNodeName = policy.getDestinationNode();
+				if(!nffgsDB.nffgContainsNode(nffgName, dstNodeName))
+					throw new RelationException("Missing node "+dstNodeName+" in nffg "+nffgName+" referenced by policy "+policyName);	
+			} 
+			catch (UnknownNameException e) {
+				throw new ServiceException("corrupted DB! nffg "+nffgName+" removed during the verification");
+			}
 		}
 		/* store the policies into policiesDB */
 		policiesDB.storePolicies(policies);

@@ -14,7 +14,6 @@ import java.util.Set;
 import javax.xml.datatype.XMLGregorianCalendar;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
-import it.polito.dp2.NFFG.lab3.UnknownNameException;
 import it.polito.dp2.NFFG.sol3.service.exceptions.*;
 import it.polito.dp2.NFFG.sol3.service.jaxb.*;
 import it.polito.dp2.NFFG.sol3.service.neo4jxml.*;
@@ -88,7 +87,12 @@ public class NffgsDB {
 		Nffgs nffgs = new Nffgs();
 		Set<String> nffgNames = this.extractNffgNames();
 		for (String nffgName: nffgNames) {
-			Nffgs.Nffg nffg = this.extractNffg(nffgName);
+			Nffgs.Nffg nffg;
+			try {
+				nffg = this.getNffg(nffgName);
+			} catch (UnknownNameException e) {
+				throw new ServiceException(e.getMessage());
+			}
 			nffgs.getNffg().add(nffg);
 		}
 		
@@ -96,23 +100,27 @@ public class NffgsDB {
 	}
 	
 	/* return nffgs containing a single nffg */
-	public  Nffgs getSingleNffgs(String nffgName) throws UnknownNameException,ServiceException{
-		if(!this.containsNffg(nffgName))
-			throw new UnknownNameException("missing nffg named "+nffgName);
+	public  Nffgs getSingleNffgs(String nffgName) throws UnknownNameException, ServiceException{
 		Nffgs nffgs = new Nffgs();	
-		Nffgs.Nffg nffg = extractNffg(nffgName);
+		Nffgs.Nffg nffg = getNffg(nffgName);
 		nffgs.getNffg().add(nffg);
 		return nffgs;
 	}
 	
 	/* clear neo4j and all local maps*/
-	public  void deleteNffgs() throws ServiceException{
+	public synchronized void deleteNffgs() throws ServiceException{
 		try{
 			/* clear all the eventual nodes on neo4j */
 			Neo4JXMLClient client = new Neo4JXMLClient();
 			client.deleteAllNodes();
 			/* clear all the maps */
-			this.removeAllNffgs();
+			this.mapNffgNameNffgId.clear();
+			this.mapNffgNameBelongsIds.clear();
+			this.mapNffgNameNodeIds.clear();
+			this.mapNffgNameLinkIds.clear();
+			this.mapNodeIdNodeName.clear();
+			this.mapLinkIdLinkName.clear();
+			
 		} 
 		catch (RuntimeException e) {
 			throw new ServiceException("Error deleting all nffgs");
@@ -122,15 +130,19 @@ public class NffgsDB {
 	}
 
 	/* remove data of a single nffg from neo4j and the maps */
-	public  void deleteNffg(String nffgName) throws UnknownNameException, ServiceException{		
+	public synchronized void deleteSingleNffgs(String nffgName) throws UnknownNameException, ServiceException{		
 		
 		/* find and check if the nffg is present */
 		if(!this.containsNffg(nffgName))
 			throw new UnknownNameException("missing nffg named "+nffgName);
 		
+		/* delete nffg corrispondence on the local map */
+		String nffgId = this.extractNffgId(nffgName);
+		this.mapNffgNameNffgId.remove(nffgName);
+		
 		Neo4JXMLClient client = new Neo4JXMLClient();
 		/* delete all the links */
-		Set<String> linkIds = extractNffgLinkIds(nffgName);
+		Set<String> linkIds = this.extractNffgLinkIds(nffgName);
 		for (String linkId: linkIds) {
 			client.deleteRelationshipById(linkId);
 			this.mapLinkIdLinkName.remove(linkId);
@@ -138,14 +150,14 @@ public class NffgsDB {
 		this.mapNffgNameLinkIds.remove(nffgName);
 		
 		/* delete all the belongs */
-		Set<String> belongsIds = this.mapNffgNameBelongsIds.get(nffgName);
+		Set<String> belongsIds = this.extractNffgBelongsIds(nffgName);
 		for (String belongsId: belongsIds) {
 			client.deleteRelationshipById(belongsId);
 		}
 		this.mapNffgNameBelongsIds.remove(nffgName);
 		
 		/* delete all the nodes */
-		Set<String> nodeIds = this.mapNffgNameNodeIds.get(nffgName);
+		Set<String> nodeIds = this.extractNffgNodeIds(nffgName);
 		for (String nodeId: nodeIds) {
 			client.deleteNodeById(nodeId);
 			this.mapNodeIdNodeName.remove(nodeId);
@@ -153,13 +165,12 @@ public class NffgsDB {
 		this.mapNffgNameNodeIds.remove(nffgName);
 		
 		/* delete nffg node */
-		String nffgId = this.extractNffgId(nffgName);
 		client.deleteNodeById(nffgId);
-		this.mapNffgNameNffgId.remove(nffgName);
 	}
 	
 	/* check if there is at least one path between two nodes of the same nffg */
 	public  boolean isTherePath(String nffgName, String srcNodeName, String dstNodeName) throws UnknownNameException, ServiceException{
+		
 		String srcNodeId = this.extractNodeId(nffgName, srcNodeName);
 		String dstNodeId = this.extractNodeId(nffgName, dstNodeName);
 		
@@ -173,7 +184,7 @@ public class NffgsDB {
 	}
 
 	/* extract the property value of the property named propertyName from a List<Property> */
-	private static String getNodeProperty(List<Property> propertyList, String propertyName){
+	private String getNodeProperty(List<Property> propertyList, String propertyName){
 		String propertyValue = null;
 		for (Property property : propertyList) {
 			if(property.getName().equals(propertyName)){
@@ -185,7 +196,7 @@ public class NffgsDB {
 	}
 	
 	/* return the node to create on neo4j to represent a node */
-	private static Node translateNodeTypeToNode(NodeType node){
+	private Node translateNodeTypeToNode(NodeType node){
 		/* create the node properties */
 		Property nameProperty = new Property();
 		nameProperty.setName("name");
@@ -202,11 +213,11 @@ public class NffgsDB {
 	}
 	
 	/* return the nodeType to send to the client */
-	private static NodeType translateNodeToNodeType(Node node){
+	private NodeType translateNodeToNodeType(Node node){
 		/* create the node properties */
 		NodeType nodeType = new NodeType();
-		String nodeName = NffgsDB.getNodeProperty(node.getProperty(), "name");
-		String nodeNetworkFunctionality = NffgsDB.getNodeProperty(node.getProperty(), "networkFunctionality");
+		String nodeName = this.getNodeProperty(node.getProperty(), "name");
+		String nodeNetworkFunctionality = this.getNodeProperty(node.getProperty(), "networkFunctionality");
 		nodeType.setName(nodeName);
 		nodeType.setNetworkFunctionality(NetworkFunctionalityType.valueOf(nodeNetworkFunctionality));
 		return nodeType;
@@ -226,12 +237,12 @@ public class NffgsDB {
 	}
 	
 	/* return the node to create on neo4j to represent a Nffg */
-	private static Node translateNffgTypeToNode(Nffgs.Nffg nffg){
+	private Node translateNffgTypeToNode(Nffgs.Nffg nffg){
 		/* create the nffg properties */
 		Property nameProperty = new Property();
 		nameProperty.setName("name");
 		nameProperty.setValue(nffg.getName());
-		Property lastUpdateProperty = NffgsDB.setNffgLastUpdateProperty();
+		Property lastUpdateProperty = this.setNffgLastUpdateProperty();
 		/* create local Node element */
 		Node nffgToCreate = new Node();
 		/* add all the properties to the new node to create */
@@ -240,7 +251,7 @@ public class NffgsDB {
 		return nffgToCreate;
 	}
 	
-	private static Property setNffgLastUpdateProperty(){
+	private Property setNffgLastUpdateProperty(){
 		/* compute now instant using default time zone*/
 		SimpleDateFormat df = new SimpleDateFormat(NffgsDB.DATE_FORMAT);
 		Date now = new Date(System.currentTimeMillis());
@@ -383,23 +394,18 @@ public class NffgsDB {
 		return links;
 	}
 	
-	private void removeAllNffgs() {	
-		this.mapNffgNameNffgId.clear();
-		this.mapNffgNameBelongsIds.clear();
-		this.mapNffgNameNodeIds.clear();
-		this.mapNffgNameLinkIds.clear();
-		this.mapNodeIdNodeName.clear();
-		this.mapLinkIdLinkName.clear();
-	}
-	
 	/* return a NFFG stored inside neo4j */
-	private Nffgs.Nffg extractNffg(String nffgName) throws ServiceException {
+	private Nffgs.Nffg getNffg(String nffgName) throws UnknownNameException, ServiceException {
+
+		if(!this.containsNffg(nffgName))
+			throw new UnknownNameException("missing nffg named " + nffgName);
+		
 		/* find nffgId of the node that models the nffg */
 		String nffgId = this.extractNffgId(nffgName);
 		/* get the nffg properties */
 		Neo4JXMLClient client = new Neo4JXMLClient();
 		Node nffgNode = client.getNodeById(nffgId);
-		String lastUpdateString = NffgsDB.getNodeProperty(nffgNode.getProperty(), "lastUpdate");
+		String lastUpdateString = this.getNodeProperty(nffgNode.getProperty(), "lastUpdate");
 		XMLGregorianCalendar lastUpdateCalendar = this.getNffgLastUpdateXMLGregorianCalendar(lastUpdateString);
 		/* get all the nodes of that nffg */
 		List<NodeType> nffgNodes = this.getNffgNodes(nffgName);
@@ -440,7 +446,7 @@ public class NffgsDB {
 			/* load all the nodes */
 			for (NodeType node : nffg.getNodes().getNode()) {
 				/* create the node to load */
-				Node nodeToCreate = NffgsDB.translateNodeTypeToNode(node);
+				Node nodeToCreate = this.translateNodeTypeToNode(node);
 				/* load the node */
 				Node nodeCreated = client.createNode(nodeToCreate);
 				/* update the map of the loaded nodes */
@@ -459,7 +465,7 @@ public class NffgsDB {
 			}
 			
 			/* create the node of the nffg */
-			Node nffgToCreate = NffgsDB.translateNffgTypeToNode(nffg);
+			Node nffgToCreate = this.translateNffgTypeToNode(nffg);
 			/* load the nffg node */
 			Node nffgCreated = client.createNode(nffgToCreate);
 			/* create the label NFFG */

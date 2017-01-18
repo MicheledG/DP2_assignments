@@ -36,7 +36,7 @@ public class PoliciesResource {
 		catch (RelationException e) {
 			return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
 		} 
-		catch(RuntimeException e){
+		catch(ServiceException | RuntimeException e){
 			return Response.serverError().build();
 		}
 	}
