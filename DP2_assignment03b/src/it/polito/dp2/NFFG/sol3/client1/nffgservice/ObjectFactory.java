@@ -54,6 +54,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link EntityPointers }
+     * 
+     */
+    public EntityPointers createEntityPointers() {
+        return new EntityPointers();
+    }
+
+    /**
+     * Create an instance of {@link EntityPointerType }
+     * 
+     */
+    public EntityPointerType createEntityPointerType() {
+        return new EntityPointerType();
+    }
+
+    /**
      * Create an instance of {@link Policies.Policy }
      * 
      */

@@ -10,25 +10,24 @@ package it.polito.dp2.NFFG.sol3.service.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for nodeType complex type.
+ * <p>Java class for entityPointerType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="nodeType">
+ * &lt;complexType name="entityPointerType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="networkFunctionality" type="{http://it.polito.dp2.NFFG.sol3.service.jaxb}networkFunctionalityType"/>
+ *         &lt;element name="name" type="{http://it.polito.dp2.NFFG.sol3.service.jaxb}nameType"/>
+ *         &lt;element name="pointer" type="{http://www.w3.org/2001/XMLSchema}anyURI"/>
  *       &lt;/sequence>
- *       &lt;attribute name="name" type="{http://it.polito.dp2.NFFG.sol3.service.jaxb}nameType" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -37,40 +36,17 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "nodeType", propOrder = {
-    "networkFunctionality"
+@XmlType(name = "entityPointerType", propOrder = {
+    "name",
+    "pointer"
 })
-public class NodeType {
+public class EntityPointerType {
 
     @XmlElement(required = true)
-    @XmlSchemaType(name = "string")
-    protected NetworkFunctionalityType networkFunctionality;
-    @XmlAttribute(name = "name")
     protected String name;
-
-    /**
-     * Gets the value of the networkFunctionality property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link NetworkFunctionalityType }
-     *     
-     */
-    public NetworkFunctionalityType getNetworkFunctionality() {
-        return networkFunctionality;
-    }
-
-    /**
-     * Sets the value of the networkFunctionality property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link NetworkFunctionalityType }
-     *     
-     */
-    public void setNetworkFunctionality(NetworkFunctionalityType value) {
-        this.networkFunctionality = value;
-    }
+    @XmlElement(required = true)
+    @XmlSchemaType(name = "anyURI")
+    protected String pointer;
 
     /**
      * Gets the value of the name property.
@@ -94,6 +70,30 @@ public class NodeType {
      */
     public void setName(String value) {
         this.name = value;
+    }
+
+    /**
+     * Gets the value of the pointer property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPointer() {
+        return pointer;
+    }
+
+    /**
+     * Sets the value of the pointer property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPointer(String value) {
+        this.pointer = value;
     }
 
 }

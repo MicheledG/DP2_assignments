@@ -29,49 +29,36 @@ public class PoliciesDB {
 	}
 	
 	/* store or update the policies (1 or more) into the DB*/
-	public void storePolicies(Policies policies){
-		for (Policies.Policy policy : policies.getPolicy()) {
-			String policyName = policy.getName();
-			if(this.containsPolicy(policyName)) {
-				/* it is an update of a policy */
-				this.updatePolicyEntry(policyName, policy);
-			}
-			else {
-				/* it is a new policy to store */
-				this.mapPolicyNamePolicyObject.put(policyName, policy);
-			}
-			
+	public void storePolicy(Policies.Policy policy){
+		String policyName = policy.getName();
+		if(this.containsPolicy(policyName)) {
+			/* it is an update of a policy */
+			this.updatePolicyEntry(policyName, policy);
 		}
+		else
+			/* it is a new policy to store */
+			this.mapPolicyNamePolicyObject.put(policyName, policy);			
 	}
 
 	/* return the list of all the nffg */
-	public Policies getPolicies() throws NoPolicyException {
+	public Set<String> getPolicyNames() throws NoPolicyException {
 		if(this.mapPolicyNamePolicyObject.isEmpty())
 			throw new NoPolicyException("no policy in the DB");
-		
-		Policies policies = new Policies();
-		for (Map.Entry<String, Policies.Policy> mapEntry: this.mapPolicyNamePolicyObject.entrySet()) {
-			policies.getPolicy().add(mapEntry.getValue());
-		}
-		
-		return policies;
+
+		return this.mapPolicyNamePolicyObject.keySet();
 	}
 	
 	/* return policies containing a single nffg */
-	public Policies getPolicy(String policyName) throws UnknownNameException{
+	public Policies.Policy getPolicy(String policyName) throws UnknownNameException{
 		if(!this.mapPolicyNamePolicyObject.containsKey(policyName))
 			throw new UnknownNameException("policy named " + policyName + " not found");
-		else{
-			Policies policies = new Policies();
-			policies.getPolicy().add(this.mapPolicyNamePolicyObject.get(policyName));
-			return policies;
-		}		
+		else
+			return this.mapPolicyNamePolicyObject.get(policyName);	
 	}
 	
 	/* clear local map */
 	public void deletePolicies(){
 		this.mapPolicyNamePolicyObject.clear();
-		
 	}
 	
 	/* remove policy from the local map */

@@ -1,8 +1,10 @@
 package it.polito.dp2.NFFG.sol3.service;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 
 import javax.management.relation.RelationException;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -10,6 +12,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 import it.polito.dp2.NFFG.sol3.service.exceptions.*;
+import it.polito.dp2.NFFG.sol3.service.jaxb.EntityPointerType;
+import it.polito.dp2.NFFG.sol3.service.jaxb.EntityPointers;
 import it.polito.dp2.NFFG.sol3.service.jaxb.NamedEntities;
 import it.polito.dp2.NFFG.sol3.service.jaxb.Nffgs;
 import it.polito.dp2.NFFG.sol3.service.jaxb.Policies;
@@ -23,51 +27,56 @@ public class NffgService {
 	
 	private static final String POSITIVE_POLICY_RESULT_DESCRIPTION = "Policy verification result true";
 	private static final String NEGATIVE_POLICY_RESULT_DESCRIPTION = "Policy verification result not true";
+	private static URI NffgServiceURL;
 	
-	private void checkNffgsReferencedByPolicies(Policies policies) throws RelationException{
-		/* check if a policy refers an Nffg not loaded on NffgDB */
-		for (Policies.Policy policy : policies.getPolicy()) {
-			if(!nffgsDB.containsNffg(policy.getNffg()))
-				throw new RelationException("missing nffg "+policy.getNffg()+" for policy " + policy.getName());
-		}
-	}
-	
-	private XMLGregorianCalendar getNowTimeXMLGregorianCalendar(){
-		Date now = new Date(System.currentTimeMillis());
-		/* create the xml gregorian calendar */
-		GregorianCalendar nowGregorianCalendar = new GregorianCalendar();
-		nowGregorianCalendar.setTime(now);
-		XMLGregorianCalendarImpl nowXMLGregorianCalendar = new XMLGregorianCalendarImpl(nowGregorianCalendar);
-		return nowXMLGregorianCalendar;
+	public NffgService(){
+		/* check base url from the system property */
+		String baseURL = System.getProperty("it.polito.dp2.NFFG.lab3.URL");
+		if(baseURL == null)
+			NffgService.NffgServiceURL = URI.create("http://localhost:8080/NffgService/rest");
+		else
+			NffgService.NffgServiceURL = URI.create(baseURL);
 	}
 	
 	/* store nffgs into the DB */
 	public void storeNffgs(Nffgs nffgs) throws AlreadyLoadedException, ServiceException {
-		/* obtain from NffgDB the names of the loaded NFFGs */
-		nffgsDB.storeNffgs(nffgs);
+		for (Nffgs.Nffg nffg : nffgs.getNffg()) {
+			this.nffgsDB.storeNffg(nffg);
+		}
 	}
 	
-	/* get the list of nffg stored into the DB */
-	public Nffgs getNffgs() throws NoGraphException, ServiceException {
-		Nffgs nffgs = nffgsDB.getNffgs();
-		return nffgs;
+	/* get the list of nffg names and pointer of the nffgs stored into the DB */
+	public EntityPointers getNffgPointers() throws NoGraphException, ServiceException {
+		Set<String> nffgNames = nffgsDB.getNffgNames();
+		EntityPointers nffgPointers = new EntityPointers();
+		
+		for (String nffgName : nffgNames) {
+			EntityPointerType nffgPointer = new EntityPointerType();
+			nffgPointer.setName(nffgName);
+			nffgPointer.setPointer(NffgService.NffgServiceURL+"/nffgs/"+nffgName);
+			nffgPointers.getEntityPointer().add(nffgPointer);
+		}
+		
+		return nffgPointers;
 	}
 	
 	/* get a single nffg stored into the DB */
 	public Nffgs getSingleNffgs(String nffgName) throws UnknownNameException, ServiceException{
-		Nffgs nffgs = nffgsDB.getNffg(nffgName);
-		return nffgs;
+		Nffgs nffgsToSend = new Nffgs();
+		Nffgs.Nffg nffg = nffgsDB.getNffg(nffgName);
+		nffgsToSend.getNffg().add(nffg);
+		return nffgsToSend;
 	}
 	
 	/* delete all the data from the DB */
-	public void deleteNffgs() throws ServiceException {
+	public void deleteAll() throws ServiceException {
 		/* delete both nffgs and policies */
 		nffgsDB.deleteNffgs();
 		policiesDB.deletePolicies();
 		return;
 	}
 	
-	public void deleteSingleNffgs(String nffgName, boolean deletePolicies) throws UnknownNameException,
+	public void deleteNffg(String nffgName, boolean deletePolicies) throws UnknownNameException,
 	RelationException, ServiceException{
 		
 		if(!nffgsDB.containsNffg(nffgName))
@@ -119,23 +128,35 @@ public class NffgService {
 			catch (UnknownNameException e) {
 				throw new ServiceException("corrupted DB! nffg "+nffgName+" removed during the verification");
 			}
+			/* store the policies into policiesDB */
+			policiesDB.storePolicy(policy);
 		}
-		/* store the policies into policiesDB */
-		policiesDB.storePolicies(policies);
 		return;
+	
 	}
 	
 	/* get the list of policies loaded on the DB */
-	public Policies getPolicies() throws NoPolicyException{
-		/* obtain from PoliciesDB all the policies stored */
-		Policies policies = policiesDB.getPolicies();
-		return policies;
+	public EntityPointers getPolicyPointers() throws NoPolicyException{
+		Set<String> policyNames = policiesDB.getPolicyNames();
+		EntityPointers policyPointers = new EntityPointers();
+		
+		for (String policyName : policyNames) {
+			EntityPointerType policyPointer = new EntityPointerType();
+			policyPointer.setName(policyName);
+			policyPointer.setPointer(NffgService.NffgServiceURL+"/policies/"+policyName);
+			policyPointers.getEntityPointer().add(policyPointer);
+		}
+		
+		return policyPointers;
 	}
 	
 	/* get a single policy from policiesDB */
 	public Policies getSinglePolicies(String policyName) throws UnknownNameException{
-		Policies policies = policiesDB.getPolicy(policyName);
-		return policies;
+		/* get a single policy stored into the DB */
+		Policies policiesToSend = new Policies();
+		Policies.Policy policy = policiesDB.getPolicy(policyName);
+		policiesToSend.getPolicy().add(policy);
+		return policiesToSend;
 	}
 	
 	/* delete all the policies */
@@ -144,7 +165,7 @@ public class NffgService {
 	}
 	
 	/* delete a single policy */
-	public void deleteSinglePolicies(String policyName) throws UnknownNameException{
+	public void deletePolicy(String policyName) throws UnknownNameException{
 		policiesDB.deletePolicy(policyName);
 		return;
 	}
@@ -162,12 +183,14 @@ public class NffgService {
 		/*verify each policy*/
 		Policies policiesVerified = new Policies();
 		for (String policyName: policyNames) {
-			Policies.Policy policyToVerify = policiesDB.getPolicy(policyName).getPolicy().get(0);
+			/* extract information to perform the verification */
+			Policies.Policy policyToVerify = policiesDB.getPolicy(policyName);
 			String nffgName = policyToVerify.getNffg();
 			String srcNodeName = policyToVerify.getSourceNode();
 			String dstNodeName = policyToVerify.getDestinationNode();
 			boolean pathIsPresent = nffgsDB.isTherePath(nffgName, srcNodeName, dstNodeName);
 			XMLGregorianCalendar nowTime = this.getNowTimeXMLGregorianCalendar();
+			
 			/* compute the result of the verification */
 			boolean satisfied;
 			if(policyToVerify.isPositive())	
@@ -179,21 +202,42 @@ public class NffgService {
 				verificationDescription = NffgService.POSITIVE_POLICY_RESULT_DESCRIPTION;
 			else
 				verificationDescription = NffgService.NEGATIVE_POLICY_RESULT_DESCRIPTION;
+			
+			/* store the verification result */
 			VerificationResultType verificationResult = new VerificationResultType();
 			verificationResult.setSatisfied(satisfied);
 			verificationResult.setLastVerification(nowTime);
 			verificationResult.setDescription(verificationDescription);
-			
-			/* add the verified policy to the set of the policies verified */
+
+			/* create the verified policy */
 			Policies.Policy policyVerified = policyToVerify;
 			policyVerified.setVerificationResult(verificationResult);
+			
+			/* update the policy on policiesDB */
+			policiesDB.storePolicy(policyVerified);
+			
+			/* add the verified policy to the set of the policies to send to the client */
 			policiesVerified.getPolicy().add(policyVerified);
 		}
 		
-		/* update the policies on policiesDB */
-		policiesDB.storePolicies(policiesVerified);
-		
 		return policiesVerified;
+	}
+	
+	private void checkNffgsReferencedByPolicies(Policies policies) throws RelationException{
+		/* check if a policy refers an Nffg not loaded on NffgDB */
+		for (Policies.Policy policy : policies.getPolicy()) {
+			if(!nffgsDB.containsNffg(policy.getNffg()))
+				throw new RelationException("missing nffg "+policy.getNffg()+" for policy " + policy.getName());
+		}
+	}
+	
+	private XMLGregorianCalendar getNowTimeXMLGregorianCalendar(){
+		Date now = new Date(System.currentTimeMillis());
+		/* create the xml gregorian calendar */
+		GregorianCalendar nowGregorianCalendar = new GregorianCalendar();
+		nowGregorianCalendar.setTime(now);
+		XMLGregorianCalendarImpl nowXMLGregorianCalendar = new XMLGregorianCalendarImpl(nowGregorianCalendar);
+		return nowXMLGregorianCalendar;
 	}
 	
 }

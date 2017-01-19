@@ -4,7 +4,10 @@ import javax.management.relation.RelationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,9 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import it.polito.dp2.NFFG.sol3.service.exceptions.*;
+import it.polito.dp2.NFFG.sol3.service.jaxb.EntityPointers;
 import it.polito.dp2.NFFG.sol3.service.jaxb.Nffgs;
-
-//TODO: remove from the response with status code SERVER ERROR the description of the exception
 
 @Path("/nffgs")
 public class NffgsResource {
@@ -26,34 +28,34 @@ public class NffgsResource {
 	/* store the posted nffgs into the service */
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response storeNffgs(Nffgs nffgs){
+	public void storeNffgs(Nffgs nffgs){
 		try{
 			/* obtain from NffgDB the names of the loaded NFFGs */
 			nffgService.storeNffgs(nffgs);
-			return Response.noContent().build();
 		}
 		catch (AlreadyLoadedException e) {
-			return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
+			Response forbiddenResponse = Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build(); 
+			throw new ForbiddenException(forbiddenResponse);
 		}
 		catch(RuntimeException | ServiceException e){
-			return Response.serverError().entity(e.getMessage()).build();
+			throw new InternalServerErrorException();
 		}
 	}
 	
 	/* send to the client the list of nffg loaded on the service */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getNffgs(){
+	public EntityPointers getNffgPointers(){
 		try{
 			/* obtain from NffgDB the names of the loaded NFFGs */
-			Nffgs nffgs = nffgService.getNffgs();
-			return Response.ok(nffgs).build();
+			EntityPointers nffgPointers = nffgService.getNffgPointers();
+			return nffgPointers;
 		} 
 		catch (NoGraphException e) {
-			return Response.noContent().build();
+			return null;
 		}
 		catch(ServiceException | RuntimeException  e){
-			return Response.serverError().entity(e.getMessage()).build();
+			throw new InternalServerErrorException();
 		}
 	}
 	
@@ -61,50 +63,53 @@ public class NffgsResource {
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	/* send to the client a single nffg loaded on the service */
-	public Response getSingleNffgs(@PathParam("nffgName") String nffgName){
+	public Nffgs getSingleNffgs(@PathParam("nffgName") String nffgName){
 		try{
 			/* obtain from NffgDB the names of the loaded NFFGs */
 			Nffgs nffgs = nffgService.getSingleNffgs(nffgName);
-			return Response.ok(nffgs).build();
+			return nffgs;
 		}
 		catch (UnknownNameException e) {
-			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+			Response notFoundResponse = Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+			throw new NotFoundException(notFoundResponse);
 		}
 		catch(ServiceException | RuntimeException  e){
-			return Response.serverError().entity(e.getMessage()).build();
+			throw new InternalServerErrorException();
 		}
 	}
 	
 	/* delete all the nffgs */
 	@DELETE
-	public Response deleteNffgs(){
+	public void deleteNffgs(){
 		try{
-			nffgService.deleteNffgs();
-			return Response.noContent().build();
+			nffgService.deleteAll();
+			return;
 		}
 		catch(ServiceException| RuntimeException e){
-			return Response.serverError().build();
+			throw new InternalServerErrorException();
 		}
 	}
 	
 	/* delete a single nffg */
 	@Path("/{nffgName}")
 	@DELETE
-	public Response deleteSingleNffgs(
+	public void deleteSingleNffgs(
 			@PathParam("nffgName") String nffgName,
 			@DefaultValue("false") @QueryParam("deletePolicies") boolean deletePolicies){
 		try{
-			nffgService.deleteSingleNffgs(nffgName, deletePolicies);
-			return Response.noContent().build();
+			nffgService.deleteNffg(nffgName, deletePolicies);
+			return;
 		}
 		catch (UnknownNameException e) {
-			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+			Response notFoundResponse = Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+			throw new NotFoundException(notFoundResponse);
 		}
 		catch (RelationException e) {
-			return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
+			Response forbiddenResponse = Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build(); 
+			throw new ForbiddenException(forbiddenResponse);
 		}
 		catch(ServiceException| RuntimeException e){
-			return Response.serverError().entity(e.getMessage()).build();
+			throw new InternalServerErrorException();
 		}
 	}
 	

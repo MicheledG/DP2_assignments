@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="name" type="{http://it.polito.dp2.NFFG.sol3.service.jaxb}nameType" maxOccurs="unbounded"/>
+ *         &lt;element name="entityPointer" type="{http://it.polito.dp2.NFFG.sol3.service.jaxb}entityPointerType" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,41 +38,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "name"
+    "entityPointer"
 })
-@XmlRootElement(name = "namedEntities")
-public class NamedEntities {
+@XmlRootElement(name = "entityPointers")
+public class EntityPointers {
 
     @XmlElement(required = true)
-    protected List<String> name;
+    protected List<EntityPointerType> entityPointer;
 
     /**
-     * Gets the value of the name property.
+     * Gets the value of the entityPointer property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the name property.
+     * This is why there is not a <CODE>set</CODE> method for the entityPointer property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getName().add(newItem);
+     *    getEntityPointer().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * {@link EntityPointerType }
      * 
      * 
      */
-    public List<String> getName() {
-        if (name == null) {
-            name = new ArrayList<String>();
+    public List<EntityPointerType> getEntityPointer() {
+        if (entityPointer == null) {
+            entityPointer = new ArrayList<EntityPointerType>();
         }
-        return this.name;
+        return this.entityPointer;
     }
 
 }

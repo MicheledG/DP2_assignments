@@ -3,6 +3,7 @@ package it.polito.dp2.NFFG.sol3.client2;
 import java.net.URI;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.client.Client;
@@ -42,29 +43,7 @@ public class NffgVerifierImpl implements NffgVerifier {
 		}
 	}
 	
-	private Nffgs getNffgsFromNffgService() {
-		Client client = ClientBuilder.newClient();
-		Nffgs nffgs = client.target(this.baseURL+"/nffgs").request(MediaType.APPLICATION_XML).get(Nffgs.class);
-		if(nffgs == null)
-			nffgs = new Nffgs();
-		return nffgs;
-	}
 	
-	private Policies getPoliciesFromNffgService() {
-		Client client = ClientBuilder.newClient();
-		Policies policies = client.target(this.baseURL+"/policies").request(MediaType.APPLICATION_XML).get(Policies.class);
-		if(policies == null)
-			policies = new Policies();
-		return policies;
-	}
-	
-	private Nffgs.Nffg getNffgFromNffgs(String nffgName) {
-		for (Nffgs.Nffg nffg : this.nffgs.getNffg()) {
-			if(nffg.getName().equals(nffgName))
-				return nffg;
-		}
-		return null;
-	}
 	
 	@Override
 	public NffgReader getNffg(String arg0) {
@@ -139,6 +118,90 @@ public class NffgVerifierImpl implements NffgVerifier {
 		}
 	
 		return policyReaders;	
+	}
+	
+private Nffgs getNffgsFromNffgService() {
+		
+		Nffgs nffgs = new Nffgs();
+		
+		EntityPointers nffgPointers = this.getNffgPointersFromNffgService();
+		if(nffgPointers==null)
+			/* empty NffgService*/
+			return nffgs;
+		
+		List<Nffgs.Nffg> nffgsList = nffgs.getNffg();
+		for (EntityPointerType nffgPointer : nffgPointers.getEntityPointer()) {
+			Nffgs.Nffg nffg = this.getNffgFromNffgService(nffgPointer.getPointer());
+			if(nffg==null)
+				continue;
+			nffgsList.add(nffg);
+		}
+		
+		return nffgs;
+	}
+
+	private EntityPointers getNffgPointersFromNffgService(){
+		Client client = ClientBuilder.newClient();
+		EntityPointers nffgPointers = client.target(this.baseURL+"/nffgs").request(MediaType.APPLICATION_XML).get(EntityPointers.class);
+		return nffgPointers;
+	}
+	
+	private Nffgs.Nffg getNffgFromNffgService(String nffgPointer) {
+		
+		Client client = ClientBuilder.newClient();
+		Nffgs nffgs = client.target(nffgPointer).request(MediaType.APPLICATION_XML).get(Nffgs.class);
+		Nffgs.Nffg nffg; 
+		if(nffgs==null)
+			nffg = null;
+		else
+			nffg = nffgs.getNffg().get(0);
+		return nffg;
+	}
+	
+	private Policies getPoliciesFromNffgService() {
+		
+		Policies policys = new Policies();
+		
+		EntityPointers policyPointers = this.getPolicyPointersFromNffgService();
+		if(policyPointers==null)
+			/* empty PolicyService*/
+			return policys;
+		
+		List<Policies.Policy> policysList = policys.getPolicy();
+		for (EntityPointerType policyPointer : policyPointers.getEntityPointer()) {
+			Policies.Policy policy = this.getPolicyFromNffgService(policyPointer.getPointer());
+			if(policy==null)
+				continue;
+			policysList.add(policy);
+		}
+		
+		return policys;
+	}
+
+	private EntityPointers getPolicyPointersFromNffgService(){
+		Client client = ClientBuilder.newClient();
+		EntityPointers policyPointers = client.target(this.baseURL+"/policies").request(MediaType.APPLICATION_XML).get(EntityPointers.class);
+		return policyPointers;
+	}
+	
+	private Policies.Policy getPolicyFromNffgService(String policyPointer) {
+		
+		Client client = ClientBuilder.newClient();
+		Policies policys = client.target(policyPointer).request(MediaType.APPLICATION_XML).get(Policies.class);
+		Policies.Policy policy; 
+		if(policys==null)
+			policy = null;
+		else
+			policy = policys.getPolicy().get(0);
+		return policy;
+	}
+	
+	private Nffgs.Nffg getNffgFromNffgs(String nffgName) {
+		for (Nffgs.Nffg nffg : this.nffgs.getNffg()) {
+			if(nffg.getName().equals(nffgName))
+				return nffg;
+		}
+		return null;
 	}
 
 }
