@@ -1,7 +1,5 @@
 package it.polito.dp2.NFFG.sol3.service;
 
-//TODO: check reachability check behavior
-import java.lang.invoke.WrongMethodTypeException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -57,7 +55,7 @@ public class NffgService {
 	
 	/* get a single nffg stored into the DB */
 	public Nffgs getSingleNffgs(String nffgName) throws UnknownNameException, ServiceException{
-		Nffgs nffgs = nffgsDB.getSingleNffgs(nffgName);
+		Nffgs nffgs = nffgsDB.getNffg(nffgName);
 		return nffgs;
 	}
 	
@@ -94,7 +92,7 @@ public class NffgService {
 		}
 		
 		/* eventually delete the nffg */
-		nffgsDB.deleteSingleNffgs(nffgName);
+		nffgsDB.deleteNffg(nffgName);
 		
 		return;
 	}
@@ -136,7 +134,7 @@ public class NffgService {
 	
 	/* get a single policy from policiesDB */
 	public Policies getSinglePolicies(String policyName) throws UnknownNameException{
-		Policies policies = policiesDB.getPolicies(policyName);
+		Policies policies = policiesDB.getPolicy(policyName);
 		return policies;
 	}
 	
@@ -159,16 +157,12 @@ public class NffgService {
 		for (String policyName: policyNames) {
 			if(!policiesDB.containsPolicy(policyName))
 				throw new UnknownNameException("missing policy named "+policyName);
-			//else
-			//	if(!policiesDB.isReachabilityPolicy(policyName))
-			//		throw new WrongMethodTypeException("policy "+policyName+" is not of type reachability");
-			//
 		}
 		
 		/*verify each policy*/
 		Policies policiesVerified = new Policies();
 		for (String policyName: policyNames) {
-			Policies.Policy policyToVerify = policiesDB.getPolicies(policyName).getPolicy().get(0);
+			Policies.Policy policyToVerify = policiesDB.getPolicy(policyName).getPolicy().get(0);
 			String nffgName = policyToVerify.getNffg();
 			String srcNodeName = policyToVerify.getSourceNode();
 			String dstNodeName = policyToVerify.getDestinationNode();

@@ -8,7 +8,6 @@ import java.util.Set;
 
 import it.polito.dp2.NFFG.sol3.service.exceptions.*;
 import it.polito.dp2.NFFG.sol3.service.jaxb.Policies;
-import it.polito.dp2.NFFG.sol3.service.jaxb.PropertyType;
 
 public class PoliciesDB {
 	
@@ -59,7 +58,7 @@ public class PoliciesDB {
 	}
 	
 	/* return policies containing a single nffg */
-	public Policies getPolicies(String policyName) throws UnknownNameException{
+	public Policies getPolicy(String policyName) throws UnknownNameException{
 		if(!this.mapPolicyNamePolicyObject.containsKey(policyName))
 			throw new UnknownNameException("policy named " + policyName + " not found");
 		else{
@@ -102,6 +101,7 @@ public class PoliciesDB {
 		return false;
 	}
 	
+	/* return the list of the policy names which refers a Nffg */
 	public List<String> getPolicyNamesReferringNffg(String nffgName){
 		List<String> policyNames = new ArrayList<String>();
 		for (Map.Entry<String, Policies.Policy> mapPolicyNamePolicyObjectEntry: this.mapPolicyNamePolicyObject.entrySet()) {
@@ -115,12 +115,4 @@ public class PoliciesDB {
 		return this.mapPolicyNamePolicyObject.isEmpty();
 	}
 
-
-	public boolean isReachabilityPolicy(String policyName) {
-		Policies.Policy policy = this.mapPolicyNamePolicyObject.get(policyName);
-		if(policy.getProperty().equals(PropertyType.REACHABILITY))
-			return true;
-		else
-			return false;
-	}
 }

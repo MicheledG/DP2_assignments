@@ -36,42 +36,7 @@ public class NffgsDB {
 		return nffgsDB;
 	}
 	
-	/* TOOLS */
-	//TODO: need to understand the advantages of the concurrent hash map
-	public boolean isEmpty(){
-		return this.mapNffgNameNffgId.isEmpty();
-	}
-	
-	public Set<String> getNffgsNames(){
-		return this.extractNffgNames();
-	}
-	
-	public boolean containsNffg(String nffgName){
-		return this.mapNffgNameNffgId.containsKey(nffgName);
-	}
-	
-	public boolean nffgContainsNode(String nffgName, String nodeName) throws UnknownNameException, ServiceException {
-		
-		Set<String> nodeNames = this.getNffgNodeNames(nffgName);
-		return nodeNames.contains(nodeName);
-	
-	}
-	
-	public Set<String> getNffgNodeNames(String nffgName) throws UnknownNameException, ServiceException{
-		
-		if(!this.containsNffg(nffgName))
-			throw new UnknownNameException("missing nffg named "+nffgName);
-		
-		Set<String> nodeIds = this.extractNffgNodeIds(nffgName);
-		Set<String> nodeNames = new HashSet<String>();
-		for (String nodeId: nodeIds) {
-			String nodeName = this.extractNodeName(nodeId);
-			nodeNames.add(nodeName);
-		}
-		
-		return nodeNames;
-	}
-	
+	/* MAJOR PUBLIC FUNCTIONALITIES */
 	/* store the nffg contained inside nffgs (1 or more)*/
 	public  void storeNffgs(Nffgs nffgs) throws AlreadyLoadedException, ServiceException {
 		for (Nffgs.Nffg nffg: nffgs.getNffg())
@@ -79,7 +44,7 @@ public class NffgsDB {
 	}
 	
 	/* return the list of all the nffg */
-	public  Nffgs getNffgs() throws NoGraphException, ServiceException{
+	public Nffgs getNffgs() throws NoGraphException, ServiceException{
 		
 		if(this.isEmpty())
 			throw new NoGraphException("no nffg in the DB");
@@ -89,7 +54,7 @@ public class NffgsDB {
 		for (String nffgName: nffgNames) {
 			Nffgs.Nffg nffg;
 			try {
-				nffg = this.getNffg(nffgName);
+				nffg = this.extractNffg(nffgName);
 			} catch (UnknownNameException e) {
 				throw new ServiceException(e.getMessage());
 			}
@@ -100,15 +65,15 @@ public class NffgsDB {
 	}
 	
 	/* return nffgs containing a single nffg */
-	public  Nffgs getSingleNffgs(String nffgName) throws UnknownNameException, ServiceException{
+	public Nffgs getNffg(String nffgName) throws UnknownNameException, ServiceException{
 		Nffgs nffgs = new Nffgs();	
-		Nffgs.Nffg nffg = getNffg(nffgName);
+		Nffgs.Nffg nffg = extractNffg(nffgName);
 		nffgs.getNffg().add(nffg);
 		return nffgs;
 	}
 	
 	/* clear neo4j and all local maps*/
-	public synchronized void deleteNffgs() throws ServiceException{
+	public void deleteNffgs() throws ServiceException{
 		try{
 			/* clear all the eventual nodes on neo4j */
 			Neo4JXMLClient client = new Neo4JXMLClient();
@@ -130,7 +95,7 @@ public class NffgsDB {
 	}
 
 	/* remove data of a single nffg from neo4j and the maps */
-	public synchronized void deleteSingleNffgs(String nffgName) throws UnknownNameException, ServiceException{		
+	public void deleteNffg(String nffgName) throws UnknownNameException, ServiceException{		
 		
 		/* find and check if the nffg is present */
 		if(!this.containsNffg(nffgName))
@@ -182,19 +147,45 @@ public class NffgsDB {
 		else
 			return false;
 	}
-
-	/* extract the property value of the property named propertyName from a List<Property> */
-	private String getNodeProperty(List<Property> propertyList, String propertyName){
-		String propertyValue = null;
-		for (Property property : propertyList) {
-			if(property.getName().equals(propertyName)){
-				propertyValue = property.getValue();
-				break;
-			}
-		}
-		return propertyValue;
+	
+	/* OTHER PUBLIC METHODS INVOKED BY NffgService */
+	//TODO: need to understand the advantages of the concurrent hash map
+	public boolean isEmpty(){
+		return this.mapNffgNameNffgId.isEmpty();
 	}
 	
+	public Set<String> getNffgsNames(){
+		return this.extractNffgNames();
+	}
+	
+	public boolean containsNffg(String nffgName){
+		return this.mapNffgNameNffgId.containsKey(nffgName);
+	}
+	
+	public boolean nffgContainsNode(String nffgName, String nodeName) throws UnknownNameException, ServiceException {
+		
+		Set<String> nodeNames = this.getNffgNodeNames(nffgName);
+		return nodeNames.contains(nodeName);
+	
+	}
+	
+	public Set<String> getNffgNodeNames(String nffgName) throws UnknownNameException, ServiceException{
+		
+		if(!this.containsNffg(nffgName))
+			throw new UnknownNameException("missing nffg named "+nffgName);
+		
+		Set<String> nodeIds = this.extractNffgNodeIds(nffgName);
+		Set<String> nodeNames = new HashSet<String>();
+		for (String nodeId: nodeIds) {
+			String nodeName = this.extractNodeName(nodeId);
+			nodeNames.add(nodeName);
+		}
+		
+		return nodeNames;
+	}
+	
+	/* PRIVATE SET OF FUNCTIONS */
+	/* TRANSALTION SET OF FUNCTIONS between neo4j world and NffgsDB */
 	/* return the node to create on neo4j to represent a node */
 	private Node translateNodeTypeToNode(NodeType node){
 		/* create the node properties */
@@ -251,6 +242,19 @@ public class NffgsDB {
 		return nffgToCreate;
 	}
 	
+	
+	/* extract the property value of the property named propertyName from a List<Property> */
+	private String getNodeProperty(List<Property> propertyList, String propertyName){
+		String propertyValue = null;
+		for (Property property : propertyList) {
+			if(property.getName().equals(propertyName)){
+				propertyValue = property.getValue();
+				break;
+			}
+		}
+		return propertyValue;
+	}
+	
 	private Property setNffgLastUpdateProperty(){
 		/* compute now instant using default time zone*/
 		SimpleDateFormat df = new SimpleDateFormat(NffgsDB.DATE_FORMAT);
@@ -280,7 +284,7 @@ public class NffgsDB {
 		return lastUpdateXMLGregorianCalendar;
 	}
 	
-	/* TOOLS TO EXTRACT INFORMATION FROM THE LOCAL MAPS */
+	/* SET OF FUNCTIONS TO TO EXTRACT INFORMATIONS FROM LOCAL MAPS*/
 	private String extractNffgId(String nffgName) throws ServiceException{
 		if(!this.containsNffg(nffgName))
 			throw new ServiceException("corrupted map! missing nffg id of nffg "+nffgName);
@@ -362,7 +366,7 @@ public class NffgsDB {
 	}
 	
 	
-	private List<NodeType> getNffgNodes(String nffgName) throws ServiceException {
+	private List<NodeType> extractNffgNodes(String nffgName) throws ServiceException {
 		Neo4JXMLClient client = new Neo4JXMLClient();
 		List<NodeType> nodes = new ArrayList<NodeType>();
 		try{
@@ -378,7 +382,7 @@ public class NffgsDB {
 		return nodes;
 	}
 	
-	private List<LinkType> getNffgLinks(String nffgName) throws ServiceException {
+	private List<LinkType> extractNffgLinks(String nffgName) throws ServiceException {
 		Neo4JXMLClient client = new Neo4JXMLClient();
 		List<LinkType> links = new ArrayList<LinkType>();
 		try{
@@ -394,8 +398,9 @@ public class NffgsDB {
 		return links;
 	}
 	
+	/* SET OF FUNCTIONS TO STORE/EXTRACT INFORMATION TO/FROM NEO4J */
 	/* return a NFFG stored inside neo4j */
-	private Nffgs.Nffg getNffg(String nffgName) throws UnknownNameException, ServiceException {
+	private Nffgs.Nffg extractNffg(String nffgName) throws UnknownNameException, ServiceException {
 
 		if(!this.containsNffg(nffgName))
 			throw new UnknownNameException("missing nffg named " + nffgName);
@@ -408,9 +413,9 @@ public class NffgsDB {
 		String lastUpdateString = this.getNodeProperty(nffgNode.getProperty(), "lastUpdate");
 		XMLGregorianCalendar lastUpdateCalendar = this.getNffgLastUpdateXMLGregorianCalendar(lastUpdateString);
 		/* get all the nodes of that nffg */
-		List<NodeType> nffgNodes = this.getNffgNodes(nffgName);
+		List<NodeType> nffgNodes = this.extractNffgNodes(nffgName);
 		/* get all the relationships of the nffg */
-		List<LinkType> nffgLinks = this.getNffgLinks(nffgName);
+		List<LinkType> nffgLinks = this.extractNffgLinks(nffgName);
 		/* create the Nffg element containing all the infos */
 		Nffgs.Nffg nffg = new Nffgs.Nffg();
 		nffg.setName(nffgName);
