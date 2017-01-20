@@ -28,10 +28,11 @@ public class NffgsResource {
 	/* store the posted nffgs into the service */
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
-	public void storeNffgs(Nffgs nffgs){
+	public EntityPointers storeNffgs(Nffgs nffgs){
 		try{
 			/* obtain from NffgDB the names of the loaded NFFGs */
-			nffgService.storeNffgs(nffgs);
+			EntityPointers nffgPointers = nffgService.storeNffgs(nffgs);
+			return nffgPointers;
 		}
 		catch (AlreadyLoadedException e) {
 			Response forbiddenResponse = Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build(); 

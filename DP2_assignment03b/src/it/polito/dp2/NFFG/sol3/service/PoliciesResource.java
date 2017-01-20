@@ -7,6 +7,7 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -28,10 +29,10 @@ public class PoliciesResource {
 	/* store or update the posted policies into the service */
 	@PUT
 	@Consumes(MediaType.APPLICATION_XML)
-	public void storePolicies(Policies policies){
+	public EntityPointers storePolicies(Policies policies){
 		try{
-			nffgService.storePolicies(policies);
-			return;
+			EntityPointers policyPointers = nffgService.storePolicies(policies);
+			return policyPointers;
 		} 
 		catch (RelationException e) {
 			Response forbiddenResponse = Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build(); 
@@ -107,9 +108,9 @@ public class PoliciesResource {
 		}
 	}
 	
-	/* update the single posted policies into the service */
+	/* verify the policies indicated by the client */
 	@Path("/verifier")
-	@PUT
+	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	public Policies verifyPolicies(NamedEntities policyNames){
 		try{

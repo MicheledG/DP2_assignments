@@ -54,8 +54,9 @@ public class NFFGClientImpl implements NFFGClient {
 		Response response = client.target(this.baseURL+"/nffgs").request(MediaType.APPLICATION_XML).post(Entity.xml(nffgs));
 		
 		switch (response.getStatus()) {
-		case 204:
-			/* no content, everything went fine */
+		//TODO: change to 201
+		case 201:
+			/* nffgs created */
 			break;
 		case 403:
 			/* forbidden, already loaded nffg */
@@ -74,8 +75,9 @@ public class NFFGClientImpl implements NFFGClient {
 		Response response = client.target(this.baseURL+"/policies").request(MediaType.APPLICATION_XML).put(Entity.xml(policies));
 		
 		switch (response.getStatus()) {
-		case 204:
-			/* no content, everything went fine */
+		//TODO: change to 201
+		case 201:
+			/* policies created */
 			break;
 		case 403:
 			/* forbidden, already loaded nffg */
@@ -111,7 +113,7 @@ public class NFFGClientImpl implements NFFGClient {
 	private Policies verifyPolicy(NamedEntities policyName) throws UnknownNameException, ServiceException{
 		
 		Client client = ClientBuilder.newClient();
-		Response response = client.target(this.baseURL+"/policies/verifier").request(MediaType.APPLICATION_XML).put(Entity.xml(policyName));
+		Response response = client.target(this.baseURL+"/policies/verifier").request(MediaType.APPLICATION_XML).post(Entity.xml(policyName));
 		Policies policiesVerified;
 		
 		switch (response.getStatus()) {

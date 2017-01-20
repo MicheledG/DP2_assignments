@@ -28,6 +28,8 @@ public class NffgService {
 	private static final String POSITIVE_POLICY_RESULT_DESCRIPTION = "Policy verification result true";
 	private static final String NEGATIVE_POLICY_RESULT_DESCRIPTION = "Policy verification result not true";
 	private static URI NffgServiceURL;
+	private static final String NFFGS_TYPE = "nffgs";
+	private static final String POLICIES_TYPE = "policies";
 	
 	public NffgService(){
 		/* check base url from the system property */
@@ -39,21 +41,24 @@ public class NffgService {
 	}
 	
 	/* store nffgs into the DB */
-	public void storeNffgs(Nffgs nffgs) throws AlreadyLoadedException, ServiceException {
+	public EntityPointers storeNffgs(Nffgs nffgs) throws AlreadyLoadedException, ServiceException {
+		EntityPointers nffgPointers = new EntityPointers();
 		for (Nffgs.Nffg nffg : nffgs.getNffg()) {
 			this.nffgsDB.storeNffg(nffg);
+			String nffgName = nffg.getName();
+			EntityPointerType nffgPointer = this.createEntityPointer(NffgService.NFFGS_TYPE, nffgName);
+			nffgPointers.getEntityPointer().add(nffgPointer);
 		}
+		return nffgPointers;
 	}
-	
+
 	/* get the list of nffg names and pointer of the nffgs stored into the DB */
 	public EntityPointers getNffgPointers() throws NoGraphException, ServiceException {
 		Set<String> nffgNames = nffgsDB.getNffgNames();
 		EntityPointers nffgPointers = new EntityPointers();
 		
 		for (String nffgName : nffgNames) {
-			EntityPointerType nffgPointer = new EntityPointerType();
-			nffgPointer.setName(nffgName);
-			nffgPointer.setPointer(NffgService.NffgServiceURL+"/nffgs/"+nffgName);
+			EntityPointerType nffgPointer = this.createEntityPointer(NffgService.NFFGS_TYPE, nffgName);
 			nffgPointers.getEntityPointer().add(nffgPointer);
 		}
 		
@@ -107,11 +112,13 @@ public class NffgService {
 	}
 	
 	/* store or update already present policies into the DB */
-	public void storePolicies(Policies policies) throws RelationException, ServiceException{
+	public EntityPointers storePolicies(Policies policies) throws RelationException, ServiceException{
 		
 		/* check if the policies to store refers to an Nffg not stored inside the DB*/
 		this.checkNffgsReferencedByPolicies(policies);
-		/* check if the nodes referenced by the policies are present in the nffg */
+		
+		EntityPointers policyPointers = new EntityPointers();
+		/* load a policy at a time */
 		for (Policies.Policy policy : policies.getPolicy()) {
 			String policyName = policy.getName();
 			String nffgName = policy.getNffg();
@@ -130,8 +137,10 @@ public class NffgService {
 			}
 			/* store the policies into policiesDB */
 			policiesDB.storePolicy(policy);
+			EntityPointerType policyPointer = this.createEntityPointer(NffgService.POLICIES_TYPE, policyName);
+			policyPointers.getEntityPointer().add(policyPointer);
 		}
-		return;
+		return policyPointers;
 	
 	}
 	
@@ -229,6 +238,14 @@ public class NffgService {
 			if(!nffgsDB.containsNffg(policy.getNffg()))
 				throw new RelationException("missing nffg "+policy.getNffg()+" for policy " + policy.getName());
 		}
+	}
+	
+	/* create an entity pointer */
+	private EntityPointerType createEntityPointer(String entityType, String entityName) {
+		EntityPointerType entityPointer = new EntityPointerType();
+		entityPointer.setName(entityName);
+		entityPointer.setPointer(NffgService.NffgServiceURL+"/"+entityType+"/"+entityName);
+		return entityPointer;
 	}
 	
 	private XMLGregorianCalendar getNowTimeXMLGregorianCalendar(){
