@@ -38,7 +38,7 @@ public class NffgsDB {
 	private static NffgsDB nffgsDB = new NffgsDB();
 	
 	/* return the single nffgsDB */
-	public static NffgsDB newNffgsDB(){
+	public static NffgsDB getNffgsDB(){
 		return nffgsDB;
 	}
 	

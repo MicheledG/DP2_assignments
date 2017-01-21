@@ -15,7 +15,7 @@ public class PoliciesDB {
 	
 	private static PoliciesDB policiesDB = new PoliciesDB();
 	
-	public static PoliciesDB newPoliciesDB(){
+	public static PoliciesDB getPoliciesDB(){
 		return policiesDB;
 	}
 	

@@ -1,9 +1,9 @@
 package it.polito.dp2.NFFG.sol3.service;
 
-import javax.management.relation.RelationException;
+//import javax.management.relation.RelationException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
+//import javax.ws.rs.DELETE;
+//import javax.ws.rs.DefaultValue;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
@@ -12,7 +12,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+//import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -79,39 +79,40 @@ public class NffgsResource {
 		}
 	}
 	
-	/* delete all the nffgs */
-	@DELETE
-	public void deleteNffgs(){
-		try{
-			nffgService.deleteAll();
-			return;
-		}
-		catch(ServiceException| RuntimeException e){
-			throw new InternalServerErrorException();
-		}
-	}
+	/* DELETE SECTION -> NO MORE IMPLEMENTED AND SO NO CONCURRENT*/
+	///* delete all the nffgs */
+	//@DELETE
+	//public void deleteNffgs(){
+	//	try{
+	//		nffgService.deleteAll();
+	//		return;
+	//	}
+	//	catch(ServiceException| RuntimeException e){
+	//		throw new InternalServerErrorException();
+	//	}
+	//}
 	
-	/* delete a single nffg */
-	@Path("/{nffgName}")
-	@DELETE
-	public void deleteSingleNffgs(
-			@PathParam("nffgName") String nffgName,
-			@DefaultValue("false") @QueryParam("deletePolicies") boolean deletePolicies){
-		try{
-			nffgService.deleteNffg(nffgName, deletePolicies);
-			return;
-		}
-		catch (UnknownNameException e) {
-			Response notFoundResponse = Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-			throw new NotFoundException(notFoundResponse);
-		}
-		catch (RelationException e) {
-			Response forbiddenResponse = Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build(); 
-			throw new ForbiddenException(forbiddenResponse);
-		}
-		catch(ServiceException| RuntimeException e){
-			throw new InternalServerErrorException();
-		}
-	}
+	///* delete a single nffg */
+	//@Path("/{nffgName}")
+	//@DELETE
+	//public void deleteSingleNffgs(
+	//		@PathParam("nffgName") String nffgName,
+	//		@DefaultValue("false") @QueryParam("deletePolicies") boolean deletePolicies){
+	//	try{
+	//		nffgService.deleteNffg(nffgName, deletePolicies);
+	//		return;
+	//	}
+	//	catch (UnknownNameException e) {
+	//		Response notFoundResponse = Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+	//		throw new NotFoundException(notFoundResponse);
+	//	}
+	//	catch (RelationException e) {
+	//		Response forbiddenResponse = Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build(); 
+	//		throw new ForbiddenException(forbiddenResponse);
+	//	}
+	//	catch(ServiceException| RuntimeException e){
+	//		throw new InternalServerErrorException();
+	//	}
+	//}
 	
 }

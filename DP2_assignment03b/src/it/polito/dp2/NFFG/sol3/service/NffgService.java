@@ -22,28 +22,32 @@ import it.polito.dp2.NFFG.sol3.service.jaxb.VerificationResultType;
 
 public class NffgService {
 	
-	private NffgsDB nffgsDB = NffgsDB.newNffgsDB();
-	private PoliciesDB policiesDB = PoliciesDB.newPoliciesDB();
+	/* both following class are instances of a singleton, they can be used to synchronize */ 
+	private NffgsDB nffgsDB = NffgsDB.getNffgsDB();
+	private PoliciesDB policiesDB = PoliciesDB.getPoliciesDB();
 	
 	private static final String POSITIVE_POLICY_RESULT_DESCRIPTION = "Policy verification result true";
 	private static final String NEGATIVE_POLICY_RESULT_DESCRIPTION = "Policy verification result not true";
-	private static URI NffgServiceURL;
 	private static final String NFFGS_TYPE = "nffgs";
 	private static final String POLICIES_TYPE = "policies";
+	
+	private URI NffgServiceURL;
 	
 	public NffgService(){
 		/* check base url from the system property */
 		String baseURL = System.getProperty("it.polito.dp2.NFFG.lab3.URL");
 		if(baseURL == null)
-			NffgService.NffgServiceURL = URI.create("http://localhost:8080/NffgService/rest");
+			this.NffgServiceURL = URI.create("http://localhost:8080/NffgService/rest");
 		else
-			NffgService.NffgServiceURL = URI.create(baseURL);
+			this.NffgServiceURL = URI.create(baseURL);
 	}
 	
 	/* store nffgs into the DB */
+	/* reentrant method */
 	public EntityPointers storeNffgs(Nffgs nffgs) throws AlreadyLoadedException, ServiceException {
 		EntityPointers nffgPointers = new EntityPointers();
 		for (Nffgs.Nffg nffg : nffgs.getNffg()) {
+			/* storeNffg is reentrant */
 			this.nffgsDB.storeNffg(nffg);
 			String nffgName = nffg.getName();
 			EntityPointerType nffgPointer = this.createEntityPointer(NffgService.NFFGS_TYPE, nffgName);
@@ -53,7 +57,9 @@ public class NffgService {
 	}
 
 	/* get the list of nffg names and pointer of the nffgs stored into the DB */
+	/* reentrant method */
 	public EntityPointers getNffgPointers() throws NoGraphException, ServiceException {
+		/* getNffgsNames is "atomic" */
 		Set<String> nffgNames = nffgsDB.getNffgNames();
 		EntityPointers nffgPointers = new EntityPointers();
 		
@@ -66,63 +72,29 @@ public class NffgService {
 	}
 	
 	/* get a single nffg stored into the DB */
+	/* reentrant method */
 	public Nffgs getSingleNffgs(String nffgName) throws UnknownNameException, ServiceException{
 		Nffgs nffgsToSend = new Nffgs();
+		/* getNffg is reentrant*/
 		Nffgs.Nffg nffg = nffgsDB.getNffg(nffgName);
 		nffgsToSend.getNffg().add(nffg);
 		return nffgsToSend;
 	}
 	
-	/* delete all the data from the DB */
-	public void deleteAll() throws ServiceException {
-		/* delete both nffgs and policies */
-		nffgsDB.deleteNffgs();
-		policiesDB.deletePolicies();
-		return;
-	}
-	
-	public void deleteNffg(String nffgName, boolean deletePolicies) throws UnknownNameException,
-	RelationException, ServiceException{
-		
-		if(!nffgsDB.containsNffg(nffgName))
-			/* missing nffg */
-			throw new UnknownNameException("missing nffg named "+nffgName);
-		
-		if(deletePolicies){
-			/* delete eventual policies referring to this nffg */
-			if(policiesDB.areReferringThisNffg(nffgName)){
-				/* get the names of the policies that refers to this nffg */
-				List<String> policyNames = policiesDB.getPolicyNamesReferringNffg(nffgName);
-				/* remove the policies referring this nffg from policiesDB */
-				for (String policyName : policyNames) {
-					policiesDB.deletePolicy(policyName);
-				}
-			}
-		}	
-		else{
-			/* don't have to remove the policies but you must check if there are policies referring this nffg */
-			if(policiesDB.areReferringThisNffg(nffgName))
-				throw new RelationException("there are policies referring nffg "+nffgName);
-		}
-		
-		/* eventually delete the nffg */
-		nffgsDB.deleteNffg(nffgName);
-		
-		return;
-	}
-	
 	/* store or update already present policies into the DB */
 	public EntityPointers storePolicies(Policies policies) throws RelationException, ServiceException{
-		
-		/* check if the policies to store refers to an Nffg not stored inside the DB*/
-		this.checkNffgsReferencedByPolicies(policies);
 		
 		EntityPointers policyPointers = new EntityPointers();
 		/* load a policy at a time */
 		for (Policies.Policy policy : policies.getPolicy()) {
 			String policyName = policy.getName();
 			String nffgName = policy.getNffg();
+			/* there is no need to synchronize the following block because there is no possibility of remove nffgs,
+			 * so if it present it is ok, otherwise stop 
+			 */
 			try{
+				/* check if the referenced nffg is present in NffgsDB */
+				this.nffgsDB.containsNffg(nffgName);
 				/* check if the referenced nffg contains the src node */
 				String srcNodeName = policy.getSourceNode();
 				if(!nffgsDB.nffgContainsNode(nffgName, srcNodeName))
@@ -136,7 +108,10 @@ public class NffgService {
 				throw new ServiceException("corrupted DB! nffg "+nffgName+" removed during the verification");
 			}
 			/* store the policies into policiesDB */
-			policiesDB.storePolicy(policy);
+			/* need to synchronize to avoid a possible update of a policy being verified */
+			synchronized (this.policiesDB){
+				policiesDB.storePolicy(policy);
+			}
 			EntityPointerType policyPointer = this.createEntityPointer(NffgService.POLICIES_TYPE, policyName);
 			policyPointers.getEntityPointer().add(policyPointer);
 		}
@@ -145,6 +120,7 @@ public class NffgService {
 	}
 	
 	/* get the list of policies loaded on the DB */
+	/* reentrant method, it always read a consistent status */
 	public EntityPointers getPolicyPointers() throws NoPolicyException{
 		Set<String> policyNames = policiesDB.getPolicyNames();
 		EntityPointers policyPointers = new EntityPointers();
@@ -152,7 +128,7 @@ public class NffgService {
 		for (String policyName : policyNames) {
 			EntityPointerType policyPointer = new EntityPointerType();
 			policyPointer.setName(policyName);
-			policyPointer.setPointer(NffgService.NffgServiceURL+"/policies/"+policyName);
+			policyPointer.setPointer(this.NffgServiceURL+"/policies/"+policyName);
 			policyPointers.getEntityPointer().add(policyPointer);
 		}
 		
@@ -160,40 +136,49 @@ public class NffgService {
 	}
 	
 	/* get a single policy from policiesDB */
+	/* reentrant method, it always read a consistent status  */ 
 	public Policies getSinglePolicies(String policyName) throws UnknownNameException{
 		/* get a single policy stored into the DB */
 		Policies policiesToSend = new Policies();
+		/* get policy is atomic */
 		Policies.Policy policy = policiesDB.getPolicy(policyName);
 		policiesToSend.getPolicy().add(policy);
 		return policiesToSend;
 	}
 	
 	/* delete all the policies */
+	/* need to synchronize to avoid interleaving during verification */
 	public void deletePolicies(){
-		policiesDB.deletePolicies();
+		synchronized (this.policiesDB){
+			this.policiesDB.deletePolicies();
+		}
 	}
 	
 	/* delete a single policy */
+	/* need to synchronize to avoid interleaving during verification */
 	public void deletePolicy(String policyName) throws UnknownNameException{
-		policiesDB.deletePolicy(policyName);
+		synchronized (this.policiesDB){
+			this.policiesDB.deletePolicy(policyName);
+		}
 		return;
 	}
 	
 	/* verify a reachability policy already loaded on policiesDB */
-	public Policies verifyReachabilityPolicies(NamedEntities policyNamesPosted) throws UnknownNameException, /*WrongMethodTypeException,*/ ServiceException {
+	public Policies verifyReachabilityPolicies(NamedEntities policyNamesPosted) throws UnknownNameException, ServiceException {
 		
 		List<String> policyNames = policyNamesPosted.getName();
-		/* check if all the policies are stored on policiesDB and if they are of type "Reachability"*/
-		for (String policyName: policyNames) {
-			if(!policiesDB.containsPolicy(policyName))
-				throw new UnknownNameException("missing policy named "+policyName);
-		}
 		
 		/*verify each policy*/
 		Policies policiesVerified = new Policies();
 		for (String policyName: policyNames) {
-			/* extract information to perform the verification */
-			Policies.Policy policyToVerify = policiesDB.getPolicy(policyName);
+			Policies.Policy policyToVerify;
+			/* to avoid getting a UnknownNameException on the getPolicy call since a delete is interleaved */
+			synchronized(this.policiesDB){
+				/* check if the policy is on the PoliciesDB */
+				this.policiesDB.containsPolicy(policyName);
+				/* extract information to perform the verification */
+				policyToVerify = policiesDB.getPolicy(policyName);	
+			}
 			String nffgName = policyToVerify.getNffg();
 			String srcNodeName = policyToVerify.getSourceNode();
 			String dstNodeName = policyToVerify.getDestinationNode();
@@ -232,19 +217,11 @@ public class NffgService {
 		return policiesVerified;
 	}
 	
-	private void checkNffgsReferencedByPolicies(Policies policies) throws RelationException{
-		/* check if a policy refers an Nffg not loaded on NffgDB */
-		for (Policies.Policy policy : policies.getPolicy()) {
-			if(!nffgsDB.containsNffg(policy.getNffg()))
-				throw new RelationException("missing nffg "+policy.getNffg()+" for policy " + policy.getName());
-		}
-	}
-	
 	/* create an entity pointer */
 	private EntityPointerType createEntityPointer(String entityType, String entityName) {
 		EntityPointerType entityPointer = new EntityPointerType();
 		entityPointer.setName(entityName);
-		entityPointer.setPointer(NffgService.NffgServiceURL+"/"+entityType+"/"+entityName);
+		entityPointer.setPointer(this.NffgServiceURL+"/"+entityType+"/"+entityName);
 		return entityPointer;
 	}
 	
@@ -256,5 +233,43 @@ public class NffgService {
 		XMLGregorianCalendarImpl nowXMLGregorianCalendar = new XMLGregorianCalendarImpl(nowGregorianCalendar);
 		return nowXMLGregorianCalendar;
 	}
+	
+	///* delete all the data from the DB */
+	//public void deleteAll() throws ServiceException {
+	//	/* delete both nffgs and policies */
+	//	nffgsDB.deleteNffgs();
+	//	policiesDB.deletePolicies();
+	//	return;
+	//}
+	
+	//public void deleteNffg(String nffgName, boolean deletePolicies) throws UnknownNameException,
+	//RelationException, ServiceException{
+	//	
+	//	if(!nffgsDB.containsNffg(nffgName))
+	//		/* missing nffg */
+	//		throw new UnknownNameException("missing nffg named "+nffgName);
+	//	
+	//	if(deletePolicies){
+	//		/* delete eventual policies referring to this nffg */
+	//		if(policiesDB.areReferringThisNffg(nffgName)){
+	//			/* get the names of the policies that refers to this nffg */
+	//			List<String> policyNames = policiesDB.getPolicyNamesReferringNffg(nffgName);
+	//			/* remove the policies referring this nffg from policiesDB */
+	//			for (String policyName : policyNames) {
+	//				policiesDB.deletePolicy(policyName);
+	//			}
+	//		}
+	//	}	
+	//	else{
+	//		/* don't have to remove the policies but you must check if there are policies referring this nffg */
+	//		if(policiesDB.areReferringThisNffg(nffgName))
+	//			throw new RelationException("there are policies referring nffg "+nffgName);
+	//	}
+	//	
+	//	/* eventually delete the nffg */
+	//	nffgsDB.deleteNffg(nffgName);
+	//	
+	//	return;
+	//}
 	
 }
