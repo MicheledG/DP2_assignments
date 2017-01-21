@@ -33,6 +33,7 @@
 	     	<produces dir="${gen.dir}/it/polito/dp2/NFFG/sol2" includes="*.java"/>
 	   		<depends dir="${root.location}" includes="build.xml"/>
 	    </wjc>
+		<delete file="${gen.dir}/it/polito/dp2/NFFG/sol2/Localhost_Neo4JXMLRest.java"></delete>
 	</target>
 
 	<!-- define the "clean" target (remove directories) -->
