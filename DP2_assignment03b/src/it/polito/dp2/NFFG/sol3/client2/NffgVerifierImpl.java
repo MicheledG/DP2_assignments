@@ -39,6 +39,7 @@ public class NffgVerifierImpl implements NffgVerifier {
 			/* get all policies loaded on NffgService */
 			this.policies = this.getPoliciesFromNffgService(); 
 		} catch(Exception e){
+			/* all possible exceptions are catched and rethrown in the only possible exception */ 
 			throw new NffgVerifierException(e);
 		}
 	}

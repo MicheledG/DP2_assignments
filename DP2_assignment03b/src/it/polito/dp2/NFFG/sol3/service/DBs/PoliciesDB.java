@@ -1,4 +1,4 @@
-package it.polito.dp2.NFFG.sol3.service;
+package it.polito.dp2.NFFG.sol3.service.DBs;
 
 import java.util.ArrayList;
 import java.util.List;

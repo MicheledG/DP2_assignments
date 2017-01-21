@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -54,7 +55,6 @@ public class NFFGClientImpl implements NFFGClient {
 		Response response = client.target(this.baseURL+"/nffgs").request(MediaType.APPLICATION_XML).post(Entity.xml(nffgs));
 		
 		switch (response.getStatus()) {
-		//TODO: change to 201
 		case 201:
 			/* nffgs created */
 			break;
@@ -75,7 +75,6 @@ public class NFFGClientImpl implements NFFGClient {
 		Response response = client.target(this.baseURL+"/policies").request(MediaType.APPLICATION_XML).put(Entity.xml(policies));
 		
 		switch (response.getStatus()) {
-		//TODO: change to 201
 		case 201:
 			/* policies created */
 			break;
@@ -118,12 +117,22 @@ public class NFFGClientImpl implements NFFGClient {
 		
 		switch (response.getStatus()) {
 		case 200:
-			policiesVerified = response.readEntity(Policies.class);
+			/* policy verified */
+			try{
+				policiesVerified = response.readEntity(Policies.class);
+			} catch (ProcessingException e) {
+				throw new ServiceException(e.getMessage());
+			}
+			
 			break;
 		case 403:
 			/* policy not found */
-			String errorDescription = response.readEntity(String.class);
-			throw new UnknownNameException(errorDescription);
+			try{
+				String errorDescription = response.readEntity(String.class);
+				throw new UnknownNameException(errorDescription);
+			} catch (ProcessingException e) {
+				throw new ServiceException(e.getMessage());
+			}
 		case 500:
 			/* internal server error */
 		default:

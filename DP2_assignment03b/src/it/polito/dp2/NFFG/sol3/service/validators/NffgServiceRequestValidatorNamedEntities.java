@@ -1,4 +1,4 @@
-package it.polito.dp2.NFFG.sol3.service;
+package it.polito.dp2.NFFG.sol3.service.validators;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +32,6 @@ import it.polito.dp2.NFFG.sol3.service.jaxb.NamedEntities;
 @Consumes("application/xml")
 public class NffgServiceRequestValidatorNamedEntities implements MessageBodyReader<NamedEntities> {
 	
-	private final String jaxbPackage = "it.polito.dp2.NFFG.sol3.service.jaxb";
 	private Unmarshaller unmarshaller;
 	private Logger logger;
 	
@@ -45,7 +44,7 @@ public class NffgServiceRequestValidatorNamedEntities implements MessageBodyRead
 				throw new IOException("xml schema file Not found");
 			}
 	        
-			JAXBContext jc = JAXBContext.newInstance( jaxbPackage );
+			JAXBContext jc = JAXBContext.newInstance(NamedEntities.class);
 	        unmarshaller = jc.createUnmarshaller();
 	        SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	        Schema schema = sf.newSchema(new StreamSource(schemaStream));

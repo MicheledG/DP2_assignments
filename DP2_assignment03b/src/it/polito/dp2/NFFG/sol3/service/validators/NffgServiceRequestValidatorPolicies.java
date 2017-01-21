@@ -1,4 +1,4 @@
-package it.polito.dp2.NFFG.sol3.service;
+package it.polito.dp2.NFFG.sol3.service.validators;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,27 +25,26 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import it.polito.dp2.NFFG.sol3.service.jaxb.Nffgs;
+import it.polito.dp2.NFFG.sol3.service.jaxb.Policies;
 
 
 @Provider
 @Consumes("application/xml")
-public class NffgServiceRequestValidatorNffgs implements MessageBodyReader<Nffgs> {
+public class NffgServiceRequestValidatorPolicies implements MessageBodyReader<Policies> {
 	
-	private final String jaxbPackage = "it.polito.dp2.NFFG.sol3.service.jaxb";
 	private Unmarshaller unmarshaller;
 	private Logger logger;
 	
-	public NffgServiceRequestValidatorNffgs(){
-		logger = Logger.getLogger(NffgServiceRequestValidatorNffgs.class.getName());
+	public NffgServiceRequestValidatorPolicies(){
+		logger = Logger.getLogger(NffgServiceRequestValidatorPolicies.class.getName());
 		
 		try {				
-			InputStream schemaStream = NffgServiceRequestValidatorNffgs.class.getResourceAsStream("/xsd/nffgVerifier.xsd");
+			InputStream schemaStream = NffgServiceRequestValidatorPolicies.class.getResourceAsStream("/xsd/nffgVerifier.xsd");
 			if (schemaStream == null) {
 				throw new IOException("xml schema file Not found");
 			}
 	        
-			JAXBContext jc = JAXBContext.newInstance( jaxbPackage );
+			JAXBContext jc = JAXBContext.newInstance(Policies.class);
 	        unmarshaller = jc.createUnmarshaller();
 	        SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	        Schema schema = sf.newSchema(new StreamSource(schemaStream));
@@ -58,22 +57,22 @@ public class NffgServiceRequestValidatorNffgs implements MessageBodyReader<Nffgs
 	
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-		return type == Nffgs.class;
+		return type == Policies.class;
 	}
 
 	@Override
-	public Nffgs readFrom(Class<Nffgs> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+	public Policies readFrom(Class<Policies> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 					MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
 			
 		try {
-			return (Nffgs) unmarshaller.unmarshal(entityStream);
+			return (Policies) unmarshaller.unmarshal(entityStream);
 		} catch (JAXBException e) {
-			String validationErrorMessage = "Request body validation error";
-			logger.log(Level.WARNING, validationErrorMessage, e);
+			String validationErrorMesage = "Request body validation error";
+			logger.log(Level.WARNING, validationErrorMesage, e);
 			Throwable linked = e.getLinkedException();
 			if (linked != null && linked instanceof SAXParseException)
-				validationErrorMessage += ": " + linked.getMessage();
-			Response badRequestResponse = Response.status(Response.Status.BAD_REQUEST).entity(validationErrorMessage).build();
+				validationErrorMesage += ": " + linked.getMessage();
+			Response badRequestResponse = Response.status(Response.Status.BAD_REQUEST).entity(validationErrorMesage).build();
 			throw new BadRequestException(badRequestResponse);
 			
 		}

@@ -11,6 +11,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
+import it.polito.dp2.NFFG.sol3.service.DBs.NffgsDB;
+import it.polito.dp2.NFFG.sol3.service.DBs.PoliciesDB;
 import it.polito.dp2.NFFG.sol3.service.exceptions.*;
 import it.polito.dp2.NFFG.sol3.service.jaxb.EntityPointerType;
 import it.polito.dp2.NFFG.sol3.service.jaxb.EntityPointers;

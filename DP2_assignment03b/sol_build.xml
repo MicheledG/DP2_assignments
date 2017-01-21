@@ -80,6 +80,9 @@
 				<src path="${sol3.dir}/service/neo4jxml" />
 				<src path="${sol3.dir}/service/jaxb" />
 				<src path="${sol3.dir}/service/exceptions" />
+				<src path="${sol3.dir}/service/DBs" />
+				<src path="${sol3.dir}/service/filters" />
+				<src path="${sol3.dir}/service/validators" />
 				<include name="/*.java" />
 				<classpath>
 					<path refid="nffgService.classpath" />
