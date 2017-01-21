@@ -48,6 +48,114 @@ public class NFFGClientImpl implements NFFGClient {
 	private URI baseURL;
 	private NffgVerifier nffgVerifier;
 	
+	public NFFGClientImpl() throws NffgVerifierException {
+		/* check base url from the system property */
+		String baseURL = System.getProperty("it.polito.dp2.NFFG.lab3.URL");
+		if(baseURL == null)
+			this.baseURL = URI.create("http://localhost:8080/NffgService/rest");
+		else
+			this.baseURL = URI.create(baseURL);
+		/* create the source data from the random generator */
+		it.polito.dp2.NFFG.NffgVerifierFactory nffgVerifierFactory = NffgVerifierFactory.newInstance();
+		nffgVerifier = nffgVerifierFactory.newNffgVerifier();
+	}
+	
+	@Override
+	public void loadNFFG(String name) throws UnknownNameException, AlreadyLoadedException, ServiceException {
+		
+		NffgReader nffg = this.nffgVerifier.getNffg(name);
+		if(nffg == null)
+			/* nffg not found */
+			throw new UnknownNameException(NFFGClientImpl.UNKNOWN_NAME_EXCEPTION_MSG + name);
+		
+		Nffgs.Nffg nffgToLoad = this.translateNffgReaderToNffg(nffg);
+		Nffgs nffgsToLoad = new Nffgs();
+		nffgsToLoad.getNffg().add(nffgToLoad);
+		
+		this.postNffgs(nffgsToLoad);
+		
+		return;
+	}
+
+	@Override
+	public void loadAll() throws AlreadyLoadedException, ServiceException {
+		
+		/* load all the nffgs */
+		Set<NffgReader> nffgReaders = this.nffgVerifier.getNffgs();
+		Nffgs nffgsToLoad = new Nffgs();
+		List<Nffgs.Nffg> listOfNffgsToLoad = nffgsToLoad.getNffg();
+		for (NffgReader nffgReader: nffgReaders) {
+			Nffgs.Nffg nffgToLoad = this.translateNffgReaderToNffg(nffgReader);
+			listOfNffgsToLoad.add(nffgToLoad);
+		}
+		this.postNffgs(nffgsToLoad);
+		
+		/* load all the policies */
+		Set<PolicyReader> policyReaders = this.nffgVerifier.getPolicies();
+		Policies policiesToLoad = new Policies();
+		List<Policies.Policy> listOfPoliciesToLoad = policiesToLoad.getPolicy();
+		for (PolicyReader policyReader: policyReaders) {
+			Policies.Policy policyToLoad = this.translatePolicyReaderToPolicy(policyReader);
+			listOfPoliciesToLoad.add(policyToLoad);
+		}
+		this.putPolicies(policiesToLoad);
+		
+	}
+
+	@Override
+	public void loadReachabilityPolicy(String name, String nffgName, boolean isPositive, String srcNodeName,
+			String dstNodeName) throws UnknownNameException, ServiceException {
+		
+		/* check the corectness of the poliy data */
+		NffgReader nffg = this.nffgVerifier.getNffg(nffgName);
+		if(nffg == null)
+			throw new UnknownNameException(NFFGClientImpl.UNKNOWN_NAME_EXCEPTION_MSG + nffgName);
+		NodeReader srcNode = nffg.getNode(srcNodeName);
+		if(srcNode == null)
+			throw new UnknownNameException(NFFGClientImpl.UNKNOWN_NAME_EXCEPTION_MSG + srcNodeName);
+		NodeReader dstNode = nffg.getNode(dstNodeName);
+		if(dstNode == null)
+			throw new UnknownNameException(NFFGClientImpl.UNKNOWN_NAME_EXCEPTION_MSG + dstNodeName);
+		
+		/* create the policy to load */
+		Policies.Policy policyToLoad = new Policies.Policy();
+		policyToLoad.setName(name);
+		policyToLoad.setNffg(nffgName);
+		policyToLoad.setProperty(PropertyType.REACHABILITY.toString());
+		policyToLoad.setPositive(isPositive);
+		policyToLoad.setSourceNode(srcNodeName);
+		policyToLoad.setDestinationNode(dstNodeName);
+		
+		/* create the Policies envelope */
+		Policies policiesToLoad = new Policies();
+		policiesToLoad.getPolicy().add(policyToLoad);
+		
+		/* load the policy to the NffgService */
+		this.putPolicies(policiesToLoad);
+		
+		return;
+
+	}
+
+	@Override
+	public void unloadReachabilityPolicy(String name) throws UnknownNameException, ServiceException {
+		this.deletePolicy(name);
+		return;
+	}
+
+	@Override
+	public boolean testReachabilityPolicy(String name) throws UnknownNameException, ServiceException {
+		
+		/* create the named entities with the name of the policy to verify */
+		NamedEntities policyName = new NamedEntities();
+		policyName.getName().add(name);
+		
+		/* set of policies with only one policy */
+		Policies policyVerified = this.verifyPolicy(policyName);
+		
+		return policyVerified.getPolicy().get(0).getVerificationResult().isSatisfied();
+	}
+
 	/* load on NffgService a set of nffgs grouped in the element Nffgs */
 	private void postNffgs(Nffgs nffgs) throws AlreadyLoadedException, ServiceException{
 		
@@ -236,115 +344,4 @@ public class NFFGClientImpl implements NFFGClient {
 		return new XMLGregorianCalendarImpl(lastUpdateGregorian);
 	}
 	
-	
-	public NFFGClientImpl() throws NffgVerifierException {
-		/* check base url from the system property */
-		String baseURL = System.getProperty("it.polito.dp2.NFFG.lab3.URL");
-		if(baseURL == null)
-			this.baseURL = URI.create("http://localhost:8080/NffgService/rest");
-		else
-			this.baseURL = URI.create(baseURL);
-		/* create the source data from the random generator */
-		it.polito.dp2.NFFG.NffgVerifierFactory nffgVerifierFactory = NffgVerifierFactory.newInstance();
-		nffgVerifier = nffgVerifierFactory.newNffgVerifier();
-	}
-	
-	@Override
-	public void loadNFFG(String name) throws UnknownNameException, AlreadyLoadedException, ServiceException {
-		
-		NffgReader nffg = this.nffgVerifier.getNffg(name);
-		if(nffg == null)
-			/* nffg not found */
-			throw new UnknownNameException(NFFGClientImpl.UNKNOWN_NAME_EXCEPTION_MSG + name);
-		
-		Nffgs.Nffg nffgToLoad = this.translateNffgReaderToNffg(nffg);
-		Nffgs nffgsToLoad = new Nffgs();
-		nffgsToLoad.getNffg().add(nffgToLoad);
-		
-		this.postNffgs(nffgsToLoad);
-		
-		return;
-	}
-
-	
-
-	@Override
-	public void loadAll() throws AlreadyLoadedException, ServiceException {
-		
-		/* load all the nffgs */
-		Set<NffgReader> nffgReaders = this.nffgVerifier.getNffgs();
-		Nffgs nffgsToLoad = new Nffgs();
-		List<Nffgs.Nffg> listOfNffgsToLoad = nffgsToLoad.getNffg();
-		for (NffgReader nffgReader: nffgReaders) {
-			Nffgs.Nffg nffgToLoad = this.translateNffgReaderToNffg(nffgReader);
-			listOfNffgsToLoad.add(nffgToLoad);
-		}
-		this.postNffgs(nffgsToLoad);
-		
-		/* load all the policies */
-		Set<PolicyReader> policyReaders = this.nffgVerifier.getPolicies();
-		Policies policiesToLoad = new Policies();
-		List<Policies.Policy> listOfPoliciesToLoad = policiesToLoad.getPolicy();
-		for (PolicyReader policyReader: policyReaders) {
-			Policies.Policy policyToLoad = this.translatePolicyReaderToPolicy(policyReader);
-			listOfPoliciesToLoad.add(policyToLoad);
-		}
-		this.putPolicies(policiesToLoad);
-		
-	}
-
-	@Override
-	public void loadReachabilityPolicy(String name, String nffgName, boolean isPositive, String srcNodeName,
-			String dstNodeName) throws UnknownNameException, ServiceException {
-		
-		/* check the corectness of the poliy data */
-		NffgReader nffg = this.nffgVerifier.getNffg(nffgName);
-		if(nffg == null)
-			throw new UnknownNameException(NFFGClientImpl.UNKNOWN_NAME_EXCEPTION_MSG + nffgName);
-		NodeReader srcNode = nffg.getNode(srcNodeName);
-		if(srcNode == null)
-			throw new UnknownNameException(NFFGClientImpl.UNKNOWN_NAME_EXCEPTION_MSG + srcNodeName);
-		NodeReader dstNode = nffg.getNode(dstNodeName);
-		if(dstNode == null)
-			throw new UnknownNameException(NFFGClientImpl.UNKNOWN_NAME_EXCEPTION_MSG + dstNodeName);
-		
-		/* create the policy to load */
-		Policies.Policy policyToLoad = new Policies.Policy();
-		policyToLoad.setName(name);
-		policyToLoad.setNffg(nffgName);
-		policyToLoad.setProperty(PropertyType.REACHABILITY.toString());
-		policyToLoad.setPositive(isPositive);
-		policyToLoad.setSourceNode(srcNodeName);
-		policyToLoad.setDestinationNode(dstNodeName);
-		
-		/* create the Policies envelope */
-		Policies policiesToLoad = new Policies();
-		policiesToLoad.getPolicy().add(policyToLoad);
-		
-		/* load the policy to the NffgService */
-		this.putPolicies(policiesToLoad);
-		
-		return;
-
-	}
-
-	@Override
-	public void unloadReachabilityPolicy(String name) throws UnknownNameException, ServiceException {
-		this.deletePolicy(name);
-		return;
-	}
-
-	@Override
-	public boolean testReachabilityPolicy(String name) throws UnknownNameException, ServiceException {
-		
-		/* create the named entities with the name of the policy to verify */
-		NamedEntities policyName = new NamedEntities();
-		policyName.getName().add(name);
-		
-		/* set of policies with only one policy */
-		Policies policyVerified = this.verifyPolicy(policyName);
-		
-		return policyVerified.getPolicy().get(0).getVerificationResult().isSatisfied();
-	}
-
 }

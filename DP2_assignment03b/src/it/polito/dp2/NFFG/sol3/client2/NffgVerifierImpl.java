@@ -44,8 +44,6 @@ public class NffgVerifierImpl implements NffgVerifier {
 		}
 	}
 	
-	
-	
 	@Override
 	public NffgReader getNffg(String arg0) {
 		
@@ -121,7 +119,7 @@ public class NffgVerifierImpl implements NffgVerifier {
 		return policyReaders;	
 	}
 	
-private Nffgs getNffgsFromNffgService() {
+	private Nffgs getNffgsFromNffgService() {
 		
 		Nffgs nffgs = new Nffgs();
 		
