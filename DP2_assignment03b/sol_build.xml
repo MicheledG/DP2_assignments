@@ -66,6 +66,9 @@
 	</target>
 	
 	<target name="build-service" depends="generate-artifacts, generate-bindings">
+		<copy tofile="${basedir}/WebContent/WEB-INF/classes/xsd/nffgVerifier.xsd" overwrite="true">
+			<fileset file="${basedir}/xsd/nffgVerifier.xsd"/>
+		</copy>
 		<javac 
 			destdir="${build.dir}"
 			debug="${debug}"

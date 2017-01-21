@@ -94,7 +94,8 @@ public class NffgService {
 			 */
 			try{
 				/* check if the referenced nffg is present in NffgsDB */
-				this.nffgsDB.containsNffg(nffgName);
+				if(!this.nffgsDB.containsNffg(nffgName))
+					throw new RelationException("Missing nffg "+nffgName+" referenced by policy "+policyName);
 				/* check if the referenced nffg contains the src node */
 				String srcNodeName = policy.getSourceNode();
 				if(!nffgsDB.nffgContainsNode(nffgName, srcNodeName))

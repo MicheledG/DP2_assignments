@@ -38,7 +38,7 @@ public class NffgsResource {
 			Response forbiddenResponse = Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build(); 
 			throw new ForbiddenException(forbiddenResponse);
 		}
-		catch(RuntimeException | ServiceException e){
+		catch(ServiceException | RuntimeException e){
 			throw new InternalServerErrorException();
 		}
 	}
