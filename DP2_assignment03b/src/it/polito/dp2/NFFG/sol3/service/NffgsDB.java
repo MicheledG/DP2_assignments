@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -20,14 +22,19 @@ import it.polito.dp2.NFFG.sol3.service.neo4jxml.*;
 public class NffgsDB {
 	
 	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+	private static final String FAKE_NFFG_ID = "fakeId";
 	
-	private Map<String, String> mapNffgNameNffgId = new HashMap<String, String>();
-	private Map<String, Set<String>> mapNffgNameBelongsIds = new HashMap<String, Set<String>>();
-	private Map<String, Set<String>> mapNffgNameNodeIds = new HashMap<String, Set<String>>();
-	private Map<String, Set<String>> mapNffgNameLinkIds = new HashMap<String, Set<String>>();
-	private Map<String, String> mapNodeIdNodeName = new HashMap<String, String>();
-	private Map<String, String> mapLinkIdLinkName = new HashMap<String, String>();
+	/* the following map is the only one used with a concurrentmap method "putIfAbsent" in the storeNffg method*/
+	private ConcurrentMap<String, String> mapNffgNameNffgId = new ConcurrentHashMap<String, String>();
+	//USED FOR DELETE
+	//private Map<String, Set<String>> mapNffgNameBelongsIds = new ConcurrentHashMap<String, Set<String>>();
+	/* choosen concurrent hash map also for the below maps to enable concurrent storing of different nffg */
+	private Map<String, Set<String>> mapNffgNameNodeIds = new ConcurrentHashMap<String, Set<String>>();
+	private Map<String, Set<String>> mapNffgNameLinkIds = new ConcurrentHashMap<String, Set<String>>();
+	private Map<String, String> mapNodeIdNodeName = new ConcurrentHashMap<String, String>();
+	private Map<String, String> mapLinkIdLinkName = new ConcurrentHashMap<String, String>();
 	
+	/* singleton */
 	private static NffgsDB nffgsDB = new NffgsDB();
 	
 	/* return the single nffgsDB */
@@ -40,14 +47,18 @@ public class NffgsDB {
 	public void storeNffg(Nffgs.Nffg nffg) throws AlreadyLoadedException, ServiceException {
 		
 		String nffgName = nffg.getName();
-		if(this.containsNffg(nffgName))
-			throw new AlreadyLoadedException("already loaded nffg named " + nffg.getName());
+		String eventualValue = this.mapNffgNameNffgId.putIfAbsent(nffgName, NffgsDB.FAKE_NFFG_ID);
+		if(eventualValue != null)
+			/* ALSO A FAKE ID STOP THE NEW STORE! */
+			throw new AlreadyLoadedException("nffg named "+nffgName+" is already loaded on the DB");
 		
+		/* else we can perform the adding of the nffg concurrently */
 		Neo4JXMLClient client = new Neo4JXMLClient();
 		/* used to keep trace of the loaded elements */
 		Map<String, String> mapCreatedNodeNameNodeId = new HashMap<String, String>();
 		Map<String, String> mapCreatedLinkNameLinkId = new HashMap<String, String>();
-		Set<String> createdBelongs = new HashSet<String>();
+		//USED FOR DELETE
+		//Set<String> createdBelongs = new HashSet<String>();
 		
 		try {
 			
@@ -85,9 +96,12 @@ public class NffgsDB {
 				String srcNodeId = nffgCreated.getId();
 				String dstNodeId = mapCreatedNodeNameNodeId.get(node.getName());
 				/* create the belongs */
-				Relationship belongsCreated = client.createRelationship(srcNodeId, dstNodeId, "belongs");
-				/* update the list of the loaded belongs */
-				createdBelongs.add(belongsCreated.getId());
+				client.createRelationship(srcNodeId, dstNodeId, "belongs");
+				//USED FOR DELETE
+				///*Relationship belongsCreated = client.createRelationship(srcNodeId, dstNodeId, "belongs");
+				//USED FOR DELETE
+				///* update the list of the loaded belongs */
+				//createdBelongs.add(belongsCreated.getId());
 			}
 			
 			/* add all the information to the NffgsDB maps */
@@ -111,27 +125,35 @@ public class NffgsDB {
 			}
 			this.mapNffgNameLinkIds.put(nffgName, nffgLinkIds);
 			
-			/* update NffgName <=> BelongsIds map */
-			this.mapNffgNameBelongsIds.put(nffg.getName(), createdBelongs);
+			//USED FOR DELETE
+			///* update NffgName <=> BelongsIds map */
+			//this.mapNffgNameBelongsIds.put(nffg.getName(), createdBelongs);
 			
-			/* ADDING ENTRY in this last map at the end to ensure consistency at reading the other maps*/
+			/* UPDATE THE FAKE ENTRY at the end of the loading to ensure consistency */
 			/* update NffgName <=> NffgId map */
-			this.mapNffgNameNffgId.put(nffgName, nffgCreated.getId());
+			this.mapNffgNameNffgId.replace(nffgName, nffgCreated.getId());
 			
 		} catch (RuntimeException e) {
+			/* eventual spurious data from the local maps containing info about the nffg not stored correctly*/
+			this.mapNffgNameLinkIds.remove(nffgName);
+			this.mapNffgNameNodeIds.remove(nffgName);
+			/* remove nffg name entry from this last map as the very last operation to ensure consistency */
+			this.mapNffgNameNffgId.remove(nffgName);
 			throw new ServiceException("Error loading nffg named " + nffg.getName());
 		} 
 	}
 	
 	/* return the list of all the nffg */
 	public Set<String> getNffgNames() throws NoGraphException {
-		if(this.isEmpty())
-			throw new NoGraphException("no nffg in the DB");
 		Set<String> nffgNames = this.extractNffgNames();
+		if(nffgNames.isEmpty())
+			throw new NoGraphException("no nffg in the DB");
+		
 		return nffgNames;
 	}
 	
 	/* return a NFFG from neo4j */
+	/* no need to synchronize removing the delete section of the db */
 	public Nffgs.Nffg getNffg(String nffgName) throws UnknownNameException, ServiceException {
 
 		if(!this.containsNffg(nffgName))
@@ -165,70 +187,10 @@ public class NffgsDB {
 		return nffg;
 	}
 	
-	/* clear neo4j and all local maps*/
-	public void deleteNffgs() throws ServiceException{
-		try{
-			/* clear all the eventual nodes on neo4j */
-			Neo4JXMLClient client = new Neo4JXMLClient();
-			client.deleteAllNodes();
-			/* clear all the maps */
-			this.mapNffgNameNffgId.clear();
-			this.mapNffgNameBelongsIds.clear();
-			this.mapNffgNameNodeIds.clear();
-			this.mapNffgNameLinkIds.clear();
-			this.mapNodeIdNodeName.clear();
-			this.mapLinkIdLinkName.clear();
-			
-		} 
-		catch (RuntimeException e) {
-			throw new ServiceException("Error deleting all nffgs");
-		}
-		return;
-		
-	}
-
-	/* remove data of a single nffg from neo4j and the maps */
-	public void deleteNffg(String nffgName) throws UnknownNameException, ServiceException{		
-		
-		/* find and check if the nffg is present */
-		if(!this.containsNffg(nffgName))
-			throw new UnknownNameException("missing nffg named "+nffgName);
-		
-		/* delete nffg corrispondence on the local map */
-		String nffgId = this.extractNffgId(nffgName);
-		this.mapNffgNameNffgId.remove(nffgName);
-		
-		Neo4JXMLClient client = new Neo4JXMLClient();
-		/* delete all the links */
-		Set<String> linkIds = this.extractNffgLinkIds(nffgName);
-		for (String linkId: linkIds) {
-			client.deleteRelationshipById(linkId);
-			this.mapLinkIdLinkName.remove(linkId);
-		}
-		this.mapNffgNameLinkIds.remove(nffgName);
-		
-		/* delete all the belongs */
-		Set<String> belongsIds = this.extractNffgBelongsIds(nffgName);
-		for (String belongsId: belongsIds) {
-			client.deleteRelationshipById(belongsId);
-		}
-		this.mapNffgNameBelongsIds.remove(nffgName);
-		
-		/* delete all the nodes */
-		Set<String> nodeIds = this.extractNffgNodeIds(nffgName);
-		for (String nodeId: nodeIds) {
-			client.deleteNodeById(nodeId);
-			this.mapNodeIdNodeName.remove(nodeId);
-		}
-		this.mapNffgNameNodeIds.remove(nffgName);
-		
-		/* delete nffg node */
-		client.deleteNodeById(nffgId);
-	}
-	
 	/* check if there is at least one path between two nodes of the same nffg */
 	public  boolean isTherePath(String nffgName, String srcNodeName, String dstNodeName) throws UnknownNameException, ServiceException{
 		
+		/* the node id extractions already check for the presence of the nffg */
 		String srcNodeId = this.extractNodeId(nffgName, srcNodeName);
 		String dstNodeId = this.extractNodeId(nffgName, dstNodeName);
 		
@@ -242,17 +204,19 @@ public class NffgsDB {
 	}
 	
 	/* OTHER PUBLIC METHODS INVOKED BY NffgService */
-	//TODO: need to understand the advantages of the concurrent hash map
 	public boolean isEmpty(){
 		return this.mapNffgNameNffgId.isEmpty();
 	}
 	
-	public Set<String> getNffgsNames(){
-		return this.extractNffgNames();
-	}
-	
 	public boolean containsNffg(String nffgName){
-		return this.mapNffgNameNffgId.containsKey(nffgName);
+		String nffgId = this.mapNffgNameNffgId.get(nffgName);
+		boolean contains = true;
+		if(nffgId == null)
+			contains = false;
+		else if(nffgId.equals(NffgsDB.FAKE_NFFG_ID))
+			contains = false;
+		
+		return contains;
 	}
 	
 	public boolean nffgContainsNode(String nffgName, String nodeName) throws UnknownNameException, ServiceException {
@@ -262,6 +226,7 @@ public class NffgsDB {
 	
 	}
 	
+	/* no need of synchronization without delete section of the db */
 	public Set<String> getNffgNodeNames(String nffgName) throws UnknownNameException, ServiceException{
 		
 		if(!this.containsNffg(nffgName))
@@ -377,48 +342,82 @@ public class NffgsDB {
 		return lastUpdateXMLGregorianCalendar;
 	}
 	
-	/* SET OF FUNCTIONS TO TO EXTRACT INFORMATIONS FROM LOCAL MAPS*/
+	/* SET OF FUNCTIONS TO EXTRACT INFORMATIONS FROM LOCAL MAPS*/
+	/* return only the nffg names of the CONSISTENT (not fake) nffg loaded at the beginning of the iteration */
+	private Set<String> extractNffgNames(){
+		Set<String> nffgNames = new HashSet<String>();
+		for (Map.Entry<String, String> entryNffgNameNffgId: this.mapNffgNameNffgId.entrySet()) {
+			if(!entryNffgNameNffgId.getValue().equals(NffgsDB.FAKE_NFFG_ID))
+				nffgNames.add(entryNffgNameNffgId.getKey());
+		}
+		return nffgNames;
+	}
+	
+	/* WARNING: a test on nffg consistency (not fake entry) must have already be done before calling this function */
 	private String extractNffgId(String nffgName) throws ServiceException{
-		if(!this.containsNffg(nffgName))
+		String nffgId = this.mapNffgNameNffgId.get(nffgName);
+		if(nffgId == null)
 			throw new ServiceException("corrupted map! missing nffg id of nffg "+nffgName);
 		
-		return this.mapNffgNameNffgId.get(nffgName);
-		
+		return nffgId;
 	}
 	
-	private Set<String> extractNffgNames(){
-		return this.mapNffgNameNffgId.keySet();
-	}
-	
+	/* WARNING: a test on nffg consistency (not fake entry) must have already be done before calling this function */
 	private Set<String> extractNffgNodeIds(String nffgName) throws ServiceException{
-		if(!this.mapNffgNameNodeIds.containsKey(nffgName))
-			throw new ServiceException("corrupted map! missing node ids of nffg "+nffgName);
-		
-		return this.mapNffgNameNodeIds.get(nffgName);
-		
+		Set<String> nodeIds = this.mapNffgNameNodeIds.get(nffgName);
+		if(nodeIds == null)
+			throw new ServiceException("corrupted map! missing node ids of nffg "+nffgName);	
+		return nodeIds;
 	}
 	
+	/* WARNING: a test on nffg consistency (not fake entry) must have already be done before calling this function */
+	private List<NodeType> extractNffgNodes(String nffgName) throws ServiceException {
+		Neo4JXMLClient client = new Neo4JXMLClient();
+		List<NodeType> nodes = new ArrayList<NodeType>();
+		try{
+			Set<String> nodeIds = this.extractNffgNodeIds(nffgName);
+			for (String nodeId : nodeIds) {
+				Node node = client.getNodeById(nodeId);
+				NodeType nodeType = translateNodeToNodeType(node);
+				nodes.add(nodeType);
+			}
+		} catch (RuntimeException e) {
+			throw new ServiceException("Error retrieving nodes of nffg " + nffgName);
+		}
+		return nodes;
+	}
+	
+	/* WARNING: a test on nffg consistency (not fake entry) must have already be done before calling this function */
 	private Set<String> extractNffgLinkIds(String nffgName) throws ServiceException{
-		if(!this.mapNffgNameLinkIds.containsKey(nffgName))
+		Set<String> linkIds = this.mapNffgNameLinkIds.get(nffgName);
+		if(linkIds == null)
 			throw new ServiceException("corrupted map! missing link ids of nffg "+nffgName);
 		
-		return this.mapNffgNameLinkIds.get(nffgName);
-		
+		return linkIds;
 	}
 	
-	private Set<String> extractNffgBelongsIds(String nffgName) throws ServiceException{
-		if(!this.mapNffgNameBelongsIds.containsKey(nffgName))
-			throw new ServiceException("corrupted map! missing belongs ids of nffg "+nffgName);
-		
-		return this.mapNffgNameBelongsIds.get(nffgName);
-		
+	/* WARNING: a test on nffg consistency (not fake entry) must have already be done before calling this function */
+	private List<LinkType> extractNffgLinks(String nffgName) throws ServiceException {
+		Neo4JXMLClient client = new Neo4JXMLClient();
+		List<LinkType> links = new ArrayList<LinkType>();
+		try{
+			Set<String> linkIds = this.extractNffgLinkIds(nffgName);
+			for (String linkId : linkIds) {
+				Relationship relationship = client.getRelationshipById(linkId);
+				LinkType linkType = this.translateRelationshipToLinkType(relationship);
+				links.add(linkType);
+			}
+		} catch (RuntimeException e) {
+			throw new ServiceException("Error retrieving links of nffg " + nffgName);
+		} 
+		return links;
 	}
 	
 	private String extractNodeName(String nodeId) throws ServiceException{
-		if(!this.mapNodeIdNodeName.containsKey(nodeId))
+		String nodeName = this.mapNodeIdNodeName.get(nodeId);
+		if(nodeName == null)
 			throw new ServiceException("corrupted map! missing node id "+nodeId);
-		
-		return this.mapNodeIdNodeName.get(nodeId);
+		return nodeName;
 	}
 	
 	private String extractNodeId(String nffgName, String nodeName) throws UnknownNameException, ServiceException{
@@ -443,45 +442,83 @@ public class NffgsDB {
 	}
 	
 	private String extractLinkName(String linkId) throws ServiceException{
-		if(!this.mapLinkIdLinkName.containsKey(linkId))
+		String linkName = this.mapLinkIdLinkName.get(linkId);
+		if(linkName == null)
 			throw new ServiceException("corrupted map! missing link id "+linkId);
 		
-		return this.mapLinkIdLinkName.get(linkId);
+		return linkName;
 	}
 	
+	/*------ DELETE SECTION NO MORE IMPLEMENTED AND SO NO CONCURRENT ------*/
 	
-	private List<NodeType> extractNffgNodes(String nffgName) throws ServiceException {
-		Neo4JXMLClient client = new Neo4JXMLClient();
-		List<NodeType> nodes = new ArrayList<NodeType>();
-		try{
-			Set<String> nodeIds = this.extractNffgNodeIds(nffgName);
-			for (String nodeId : nodeIds) {
-				Node node = client.getNodeById(nodeId);
-				NodeType nodeType = translateNodeToNodeType(node);
-				nodes.add(nodeType);
-			}
-		} catch (RuntimeException e) {
-			throw new ServiceException("Error retrieving nodes of nffg " + nffgName);
-		}
-		return nodes;
-	}
+	///* clear neo4j and all local maps*/
+	//public void deleteNffgs() throws ServiceException{
+	//	try{
+	//		/* clear all the eventual nodes on neo4j */
+	//		Neo4JXMLClient client = new Neo4JXMLClient();
+	//		client.deleteAllNodes();
+	//		/* clear all the maps */
+	//		this.mapNffgNameNffgId.clear();
+	//		this.mapNffgNameBelongsIds.clear();
+	//		this.mapNffgNameNodeIds.clear();
+	//		this.mapNffgNameLinkIds.clear();
+	//		this.mapNodeIdNodeName.clear();
+	//		this.mapLinkIdLinkName.clear();
+	//		
+	//	} 
+	//	catch (RuntimeException e) {
+	//		throw new ServiceException("Error deleting all nffgs");
+	//	}
+	//	return;
+	//	
+	//}
+
+	///* remove data of a single nffg from neo4j and the maps */
+	//public void deleteNffg(String nffgName) throws UnknownNameException, ServiceException{		
+	//	
+	//	/* find and check if the nffg is present */
+	//	if(!this.containsNffg(nffgName))
+	//		throw new UnknownNameException("missing nffg named "+nffgName);
+	//	
+	//	/* delete nffg corrispondence on the local map */
+	//	String nffgId = this.extractNffgId(nffgName);
+	//	this.mapNffgNameNffgId.remove(nffgName);
+	//	
+	//	Neo4JXMLClient client = new Neo4JXMLClient();
+	//	/* delete all the links */
+	//	Set<String> linkIds = this.extractNffgLinkIds(nffgName);
+	//	for (String linkId: linkIds) {
+	//		client.deleteRelationshipById(linkId);
+	//		this.mapLinkIdLinkName.remove(linkId);
+	//	}
+	//	this.mapNffgNameLinkIds.remove(nffgName);
+	//	
+	//	/* delete all the belongs */
+	//	Set<String> belongsIds = this.extractNffgBelongsIds(nffgName);
+	//	for (String belongsId: belongsIds) {
+	//		client.deleteRelationshipById(belongsId);
+	//	}
+	//	this.mapNffgNameBelongsIds.remove(nffgName);
+	//	
+	//	/* delete all the nodes */
+	//	Set<String> nodeIds = this.extractNffgNodeIds(nffgName);
+	//	for (String nodeId: nodeIds) {
+	//		client.deleteNodeById(nodeId);
+	//		this.mapNodeIdNodeName.remove(nodeId);
+	//	}
+	//	this.mapNffgNameNodeIds.remove(nffgName);
+	//	
+	//	/* delete nffg node */
+	//	client.deleteNodeById(nffgId);
+	//}
 	
-	private List<LinkType> extractNffgLinks(String nffgName) throws ServiceException {
-		Neo4JXMLClient client = new Neo4JXMLClient();
-		List<LinkType> links = new ArrayList<LinkType>();
-		try{
-			Set<String> linkIds = this.extractNffgLinkIds(nffgName);
-			for (String linkId : linkIds) {
-				Relationship relationship = client.getRelationshipById(linkId);
-				LinkType linkType = this.translateRelationshipToLinkType(relationship);
-				links.add(linkType);
-			}
-		} catch (RuntimeException e) {
-			throw new ServiceException("Error retrieving links of nffg " + nffgName);
-		} 
-		return links;
-	}
-	
-	/* SET OF FUNCTIONS TO STORE/EXTRACT INFORMATION TO/FROM NEO4J */
+	///* WARNING: a test on nffg consistency (not fake entry) must have already be done before calling this function */
+	//private Set<String> extractNffgBelongsIds(String nffgName) throws ServiceException{
+	//	Set<String> belongsIds = this.mapNffgNameBelongsIds.get(nffgName);
+	//	if(belongsIds == null)
+	//		throw new ServiceException("corrupted map! missing belongs ids of nffg "+nffgName);
+	//	return belongsIds;
+	//	
+	//}
 	
 }
