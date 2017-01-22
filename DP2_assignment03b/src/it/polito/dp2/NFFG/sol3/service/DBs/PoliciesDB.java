@@ -60,10 +60,6 @@ public class PoliciesDB {
 		return this.mapPolicyNamePolicyObject.containsKey(policyName);
 	}
 	
-	public Set<String> getPoliciesNames(){
-		return this.mapPolicyNamePolicyObject.keySet();
-	}
-	
 	/* check if there is a policy referring a particular nffg */
 	/* using concurrent hash map there are no problem during iteration => no concurrent modification exception (and also no semantic problem) */
 	public boolean areReferringThisNffg(String nffgName){
