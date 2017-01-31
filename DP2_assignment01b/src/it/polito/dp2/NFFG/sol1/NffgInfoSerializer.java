@@ -7,13 +7,13 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
-
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 import it.polito.dp2.NFFG.*;
 import it.polito.dp2.NFFG.sol1.jaxb.*;
@@ -254,7 +254,12 @@ public class NffgInfoSerializer {
 		GregorianCalendar gregorianCalendar = new GregorianCalendar();
 		gregorianCalendar.setTime(calendar.getTime());
 		gregorianCalendar.setTimeZone(calendar.getTimeZone());
-		XMLGregorianCalendar xmlGregorianCalendar = new XMLGregorianCalendarImpl(gregorianCalendar);
+		XMLGregorianCalendar xmlGregorianCalendar;
+		try {
+			xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
+		} catch (DatatypeConfigurationException e) {
+			xmlGregorianCalendar = null;
+		}
 		return xmlGregorianCalendar;
 	}
 	
